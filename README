@@ -16,6 +16,8 @@ LPCPU relies on profiling utilities that are standard components of both
 enterprise and community based distributions.  In addition to these dependencies
 LPCPU bundles additional tools for processing the data and generating graphs.
 
+Note: To create a new lpcpu.tar.bz2 tar ball, run:  
+./create-tarball.sh
 
 2. Running LPCPU
 ================
