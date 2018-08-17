@@ -53,7 +53,7 @@ file_add "lpcpu.sh"
 cp -v lpcpu.sh ${TMP_DIR}
 
 msg "Updating lpcpu.sh"
-sed -i -e "s/VERSION_STRING=\"\"/VERSION_STRING=\"$lpcpu_version\"/" ${TMP_DIR}/lpcpu.sh
+sed -i -e "s/VERSION_STRING=\".*/VERSION_STRING=\"$lpcpu_version\"/" ${TMP_DIR}/lpcpu.sh
 
 file_add "README"
 cp -v README ${TMP_DIR}
