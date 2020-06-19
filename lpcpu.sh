@@ -321,7 +321,7 @@ function setup_oprofile() {
 }
 
 function start_oprofile() {
-	echo "starting oprofile."$id"" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting oprofile."$id"" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
         opcontrol --start && opcontrol --reset
 }
 
@@ -394,7 +394,7 @@ function setup_sar() {
 }
 
 function start_sar() {
-      echo "starting sar."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+      echo "Starting sar."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
       sar -o $LOGDIR/sar.bin.$id.$RUN_NUMBER $interval 100000 > $LOGDIR/sar.STDOUT 2> $LOGDIR/sar.STDERR &
       SAR_PID=$!
       disown $SAR_PID
@@ -475,7 +475,7 @@ function setup_iostat() {
 }
 
 function start_iostat() {
-	echo "starting iostat."$id" ["$interval"] [mode=disks]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting iostat."$id" ["$interval"] [mode=disks]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	iostat -x -k -t $interval > $LOGDIR/iostat.$id.$RUN_NUMBER &
 	IOSTAT_PID=$!
 	disown $IOSTAT_PID
@@ -498,6 +498,111 @@ function setup_postprocess_iostat() {
     echo
 }
 
+#################################################
+#
+# 	Security Level (selinux) 
+##
+sestatus > $LOGDIR/selinux_status.$id.$RUN_NUMBER
+
+
+## slabtop ##########################################################################################
+function setup_slabtop() {
+	echo "Setting up slabtop."
+	SLABTOP=$(which slabtop)
+	if [ -z "$SLABTOP" ]; then
+		echo "ERROR: slabtop is not installed.  To correct this problem install the required package for your distribution."
+		exit 1
+	fi
+}
+
+function start_slabtop() {
+	echo "Starting slabtop." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	slabtop -s u -d $interval >> $LOGDIR/slabtop.$id.$RUN_NUMBER &
+	SLABTOP_PID=$!
+	disown $SLABTOP_PID
+}
+
+function stop_slabtop() {
+	echo "Stopping slabtop."
+	kill $ISLABTOP_PID
+}
+
+## cpupower ##########################################################################################
+function setup_cpupower() {
+	echo "Setting up cpupower."
+	CPUPOWER=$(which cpupower)
+	if [ -z "$CPUPOWER" ]; then
+		echo "ERROR: cpupower is not installed."
+		exit 1
+	fi
+}
+
+function start_cpupower() {
+	echo "Starting cpupower." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	while [ 1 ]; do cpupower monitor -i $interval ;  done  >> $LOGDIR/cpupower.$id.$RUN_NUMBER &
+	CPUPOWER_PID=$!
+	disown $CPUPOWER_PID
+}
+
+function stop_cpupower() {
+	echo "Stopping cpupower."
+	kill $CPUPOWER_PID
+}
+
+## cpu_vulnerabilities ##########################################################################################
+
+function setup_cpu_vulnerabilities() {
+        echo "Setting up cpu_vulnerabilities."
+       	if [ ! -d  /sys/devices/system/cpu/vulnerabilities ]; then
+               	echo "Warning: /sys/devices/system/cpu/vulnerabilities not found."
+       	fi
+}
+
+function start_cpu_vulnerabilities() {
+        echo "Starting cpu_vulnerabilities." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+       	grep . /sys/devices/system/cpu/vulnerabilities/* >> $LOGDIR/cpu_vulnerabilities.$id.$RUN_NUMBER
+}
+
+## schedstat ##########################################################################################
+function setup_schedstat() {
+        echo "Setting up schedstat."
+        if [ ! -f  /proc/schedstat ]; then
+                echo "Warning: /proc/schedstat not found."
+        fi
+}
+
+function start_schedstat() {
+        echo "Starting schedstat." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+        while [ 1 ]; do cat /proc/schedstat; sleep $interval; done >> $LOGDIR/schedstat.$id.$RUN_NUMBER &
+        SCHEDSTAT_PID=$!
+        disown $SCHEDSTAT_PID
+}
+
+function stop_schedstat() {
+        echo "Stopping schedstat."
+        kill $SCHEDSTAT_PID
+}
+
+## proc_vmstat ##########################################################################################
+function setup_proc_vmstat() {
+        echo "Setting up proc_vmstat."
+        if [ ! -f  /proc/vmstat ]; then
+                echo "Warning: /proc/vmstat not found."
+        fi
+}
+
+function start_proc_vmstat() {
+        echo "Starting proc_vmstat." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+        while [ 1 ]; do cat /proc/vmstat | grep thp; sleep $interval; done >> $LOGDIR/proc_vmstat.$id.$RUN_NUMBER &
+        PROC_VMSTAT_PID=$!
+        disown $PROC_VMSTAT_PID
+}
+
+function stop_proc_vmstat() {
+        echo "Stopping proc_vmstat."
+        kill $PROC_VMSTAT_PID
+}
+
 ## proc-interrupts ##########################################################################################
 function setup_interrupts() {
 	echo "Setting up proc-interrupts."
@@ -508,7 +613,7 @@ function setup_interrupts() {
 }
 
 function start_interrupts() {
-	echo "starting proc-interrupts."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting proc-interrupts."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	${LPCPUDIR}/tools/proc-interrupts.pl $interval > $LOGDIR/proc-interrupts.$id.$RUN_NUMBER &
 	INTERRUPTS_PID=$!
 	disown $INTERRUPTS_PID
@@ -553,15 +658,15 @@ function setup_kvm() {
 
 function start_kvm() {
 	echo "Starting KVM host profilers"
-	echo "starting process-cpu.KVM-guests ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting process-cpu.KVM-guests ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	${LPCPUDIR}/tools/proc-cpu -d $interval -r -i --qemu-guest-mode > $LOGDIR/process-cpu.KVM-guests.$RUN_NUMBER &
 	PROC_CPU_PID=$!
 	disown $PROC_CPU_PID
-	echo "starting kvmstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting kvmstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	${LPCPUDIR}/tools/kvm-stat log=yes timestamps=yes interval=${interval} >> $LOGDIR/kvmstat.$id.$RUN_NUMBER &
 	KVM_STAT_PID=$!
 	disown $KVM_STAT_PID
-	echo "starting ksm."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting ksm."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	${LPCPUDIR}/tools/ksm.pl $interval > $LOGDIR/ksm.$id.$RUN_NUMBER &
 	KSM_PID=$!
 	disown $KSM_PID
@@ -592,7 +697,7 @@ function setup_meminfo() {
 }
 
 function start_meminfo() {
-        echo "starting meminfo."$id" ["$interval"] " | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+        echo "Starting meminfo."$id" ["$interval"] " | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	MEMINFO_WATCH_OUTPUT_FILE=$LOGDIR/meminfo-watch.$id.$RUN_NUMBER
         while [ 1 ]; do
 	        echo "============================= SAMPLE =============================" >> ${MEMINFO_WATCH_OUTPUT_FILE}
@@ -634,7 +739,7 @@ function setup_vmstat() {
 }
 
 function start_vmstat() {
-	echo "starting vmstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting vmstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	vmstat $interval | ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/vmstat.$id.$RUN_NUMBER &
 	VMSTAT_PID=$!
 	disown $VMSTAT_PID
@@ -700,7 +805,7 @@ function setup_mpstat() {
 }
 
 function start_mpstat() {
-	echo "starting mpstat.$id ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting mpstat.$id ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	mpstat -P ${MPSTAT_PROCESSOR_SELECTION} $interval > $LOGDIR/mpstat.$id.$RUN_NUMBER &
 	MPSTAT_PID=$!
 	disown $MPSTAT_PID
@@ -742,7 +847,7 @@ function setup_perf() {
 function start_perf() {
 	local perf_cmd
 
-	echo "starting perf" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	echo "Starting perf" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
         perf_cpu_arg="-a"
         if [ -n "$perf_cpu" ]; then
 	        perf_cpu_arg="--cpu=$perf_cpu"
@@ -839,7 +944,7 @@ function setup_secfs() {
 }
 
 function start_secfs() {
-        echo "starting secfs."$id" ["$interval"] " | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+        echo "Starting secfs."$id" ["$interval"] " | tee -a $LOGDIR/profile-log.$RUN_NUMBER
 	secfsd -status guard > $LOGDIR/secfs-guards
 	secfsd -status guard -v > $LOGDIR/secfs-guards_v
         voradmin cmd profile_on
