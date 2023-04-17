@@ -35,7 +35,7 @@ VERSION_STRING="356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -05
 # oprofile: see README for additional options
 # perf: See README for additional options
 # The following are the default profilers to use
-profilers="sar iostat mpstat vmstat top meminfo interrupts"
+profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts"
 
 # list of profilers to add in addition to the defaults
 extra_profilers=""
@@ -727,6 +727,33 @@ function report_meminfo() {
 function setup_postprocess_meminfo() {
     echo '${LPCPUDIR}/postprocess/postprocess-meminfo-watch .'" $RUN_NUMBER $id"
 }
+
+## lparstat ##########################################################################################
+function setup_lparstat() {
+	echo "Setting up lparstat."
+	LPARSTAT=$(which lparstat)
+	if [ -z "$LPARSTAT" ]; then
+		echo "ERROR: lparstat is not installed."
+		exit 1
+	fi
+}
+
+function start_lparstat() {
+	echo "Starting lparstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	lparstat $interval | ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/lparstat.$id.$RUN_NUMBER &
+	LPARSTAT_PID=$!
+	disown $LPARSTAT_PID
+}
+
+function stop_lparstat() {
+	echo "Stopping lparstat."
+	kill $LPARSTAT_PID
+}
+
+function report_lparstat() {
+	echo "Processing lparstat data."
+}
+
 
 ## vmstat ##########################################################################################
 function setup_vmstat() {
