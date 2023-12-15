@@ -739,8 +739,10 @@ function setup_lparstat() {
 }
 
 function start_lparstat() {
+	## lparstat by default does not run infinitely. So, calculate samples and pass as argument
+	samples=$((duration/interval))
 	echo "Starting lparstat."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
-	lparstat $interval | ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/lparstat.$id.$RUN_NUMBER &
+	lparstat $interval $samples| ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/lparstat.$id.$RUN_NUMBER &
 	LPARSTAT_PID=$!
 	disown $LPARSTAT_PID
 }
