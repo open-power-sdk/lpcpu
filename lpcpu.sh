@@ -1282,7 +1282,7 @@ function sigint_running_trap() {
 
     chmod +x $LOGDIR/postprocess.sh
 
-    # capture data
+    # capture system info and config data
     echo "Gathering system information"
     dmesg > $LOGDIR/dmesg.STDOUT 2> $LOGDIR/dmesg.STDERR
     dmidecode > $LOGDIR/dmidecode.STDOUT 2> $LOGDIR/dmidecode.STDERR
@@ -1312,6 +1312,8 @@ function sigint_running_trap() {
     ip addr > $LOGDIR/ip-addr.STDOUT 2> $LOGDIR/ip-addr.STDERR
     ip route > $LOGDIR/ip-route.STDOUT 2> $LOGDIR/ip-route.STDERR
     brctl show > $LOGDIR/brctl-show.STDOUT 2> $LOGDIR/brctl-show.STDERR
+    lparstat -i > $LOGDIR/lparstat-i.STDOUT 2> $LOGDIR/lparstat-i.STDERR
+
     for IF in /sys/class/net/*; do
 	[ -e "$IF" ]      || continue
 	IF=$(basename $IF)
