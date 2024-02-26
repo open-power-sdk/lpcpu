@@ -35,7 +35,7 @@ VERSION_STRING="356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -05
 # oprofile: see README for additional options
 # perf: See README for additional options
 # The following are the default profilers to use
-profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts"
+profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts cpupower"
 
 # list of profilers to add in addition to the defaults
 extra_profilers=""
