@@ -1441,11 +1441,11 @@ function sigint_running_trap() {
 	cp -a ${LPCPUDIR}/tools/results-web-server.py ${LOGDIR}
     fi
 	
-	# for some reason the +fg flag fails on some system, even though the man
+    # for some reason the +fg flag fails on some system, even though the man
     # page documentation implies that it should work.  if it does fail, just
     # run lsof without any flags so that we get some data
     if ! lsof +fg > $LOGDIR/lsof.fg.STDOUT 2> $LOGDIR/lsof.fg.STDERR; then
-	lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
+    lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
     fi
 
     echo "Finishing time: `date`"
