@@ -1333,13 +1333,6 @@ function sigint_running_trap() {
 	dpkg-query --list > $LOGDIR/dpkg-query.STDOUT 2> $LOGDIR/dpkg-query.STDERR
     fi
 
-    # for some reason the +fg flag fails on some system, even though the man
-    # page documentation implies that it should work.  if it does fail, just
-    # run lsof without any flags so that we get some data
-    if ! lsof +fg > $LOGDIR/lsof.fg.STDOUT 2> $LOGDIR/lsof.fg.STDERR; then
-	lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
-    fi
-
     if which btrfs &> /dev/null; then
 	btrfs filesystem show > $LOGDIR/btrfs.show.STDOUT 2> $LOGDIR/btrfs.show.STDERR
 	for btrfs_mount in `grep btrfs /proc/mounts | awk '{ print $2 }'`; do
@@ -1446,6 +1439,13 @@ function sigint_running_trap() {
 
     if [ -e "${LPCPUDIR}/tools/results-web-server.py" ]; then
 	cp -a ${LPCPUDIR}/tools/results-web-server.py ${LOGDIR}
+    fi
+	
+	# for some reason the +fg flag fails on some system, even though the man
+    # page documentation implies that it should work.  if it does fail, just
+    # run lsof without any flags so that we get some data
+    if ! lsof +fg > $LOGDIR/lsof.fg.STDOUT 2> $LOGDIR/lsof.fg.STDERR; then
+	lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
     fi
 
     echo "Finishing time: `date`"
