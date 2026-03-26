@@ -83,6 +83,12 @@ oprofile_pid=""
 # oprofile_kernel=--no-vmlinux
 oprofile_kernel=""
 
+# Depth variable defines how much detailed information we need. 
+# Default value is 1 captures most of the information
+# Value of 2 captures numa data of memory and lsof 
+
+depth=1
+
 # specify specific hardware counters to oprofile
 # the counters should be specified in the same form as opcontrol accepts them
 # for example: oprofile_hw_counters="-e <counter name>:<count>"
@@ -1157,9 +1163,11 @@ function sigint_running_trap() {
     netstat -s > $LOGDIR/netstat-s.before 2>&1
     cat /proc/interrupts > $LOGDIR/interrupts.before
     cat /proc/meminfo > $LOGDIR/meminfo.before
-    #mkdir $LOGDIR/numa-node.before
-    #cp -a /sys/devices/system/node/* $LOGDIR/numa-node.before 2> $LOGDIR/numa-node.before/cp.STDERR
-    df -a > $LOGDIR/df.before 2>&1
+    if (( depth > 1 )); then
+		mkdir $LOGDIR/numa-node.before
+    	cp -a /sys/devices/system/node/* $LOGDIR/numa-node.before 2> $LOGDIR/numa-node.before/cp.STDERR
+    fi
+	df -a > $LOGDIR/df.before 2>&1
     ip -s link > $LOGDIR/ip-statistics.before 2>&1
     ifconfig -a > $LOGDIR/ifconfig.before 2>&1
     cat /proc/net/snmp > $LOGDIR/snmp.before
@@ -1215,8 +1223,10 @@ function sigint_running_trap() {
     netstat -s > $LOGDIR/netstat-s.after 2>&1
     cat /proc/interrupts > $LOGDIR/interrupts.after
     cat /proc/meminfo > $LOGDIR/meminfo.after
-    #mkdir $LOGDIR/numa-node.after
-    #cp -a /sys/devices/system/node/* $LOGDIR/numa-node.after 2> $LOGDIR/numa-node.after/cp.STDERR
+    if (( depth > 1 )); then
+		mkdir $LOGDIR/numa-node.after
+    	cp -a /sys/devices/system/node/* $LOGDIR/numa-node.after 2> $LOGDIR/numa-node.after/cp.STDERR
+	fi
     df -a > $LOGDIR/df.after 2>&1
     ip -s link > $LOGDIR/ip-statistics.after 2>&1
     ifconfig -a > $LOGDIR/ifconfig.after 2>&1
@@ -1444,9 +1454,11 @@ function sigint_running_trap() {
     # for some reason the +fg flag fails on some system, even though the man
     # page documentation implies that it should work.  if it does fail, just
     # run  without any flags so that we get some data
-    #if ! lsof +fg > $LOGDIR/lsof.fg.STDOUT 2> $LOGDIR/lsof.fg.STDERR; then
-    #lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
-    #fi
+    if (( depth > 1 )); then
+		if ! lsof +fg > $LOGDIR/lsof.fg.STDOUT 2> $LOGDIR/lsof.fg.STDERR; then
+    	lsof > $LOGDIR/lsof.STDOUT 2> $LOGDIR/lsof.STDERR
+    	fi
+	fi
 
     echo "Finishing time: `date`"
 } 2>&1 | tee -i ${LOGDIR}/lpcpu.out
