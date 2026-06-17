@@ -1,0 +1,302 @@
+#!/usr/bin/perl
+
+#
+# LPCPU (Linux Performance Customer Profiler Utility): ./postprocess/postprocess-ipi
+#
+# (C) Copyright IBM Corp. 2018
+#
+# This file is subject to the terms and conditions of the Eclipse
+# Public License.  See the file LICENSE.TXT in the main directory of the
+# distribution for more details.
+#
+
+# postprocess the IPI (Inter-Process Interrupt) profiler data.
+
+use strict;
+use autobench::strings;
+use autobench::time;
+use autobench::jschart;
+
+if (@ARGV < 1) {
+	print STDERR "postprocess-ipi: No working directory specified.\n";
+	exit 1;
+}
+
+if (@ARGV < 2) {
+	print STDERR "postprocess-ipi: No run number specified.\n";
+	exit 1;
+}
+
+my $working_directory = $ARGV[0];
+my $identifier = $ARGV[1];
+my $invocation_id;
+my $input_file;
+
+if (@ARGV > 2) {
+    $invocation_id = $ARGV[2];
+    $input_file = "ipi." . $invocation_id . "." . $identifier;
+} else {
+    $input_file = "ipi." . $identifier;
+}
+
+print "Processing IPI File : $input_file\n";
+
+my $interval = 5;
+
+if (open(INPUT,"<$working_directory/profile-log.$identifier")) {
+	while (<INPUT>) {
+		if (($_ =~ /starting ipi \[[0-9]+\]/i)) {
+			$_ =~ m/.*\[([0-9]+)\].*/;
+			$interval = $1;
+			print "Discovered IPI interval=[$interval]\n";
+		}
+	}
+} else {
+	print STDERR "postprocess-ipi: could not open $working_directory/profile-log.$identifier  Using default interval of $interval.\n";
+}
+
+close INPUT;
+
+if (!open(INPUT,"<$working_directory/$input_file")) {
+	print STDERR "postprocess-ipi: could not open specified input file.\n";
+	exit 1;
+}
+
+my $output_directory;
+
+if (@ARGV > 2) {
+    $output_directory = "$working_directory/ipi-processed.$invocation_id.$identifier";
+} else {
+    $output_directory = "$working_directory/ipi-processed.$identifier";
+}
+
+`rm -rf $output_directory`;
+mkdir $output_directory;
+mkdir "$output_directory/plot-files";
+
+my $elapsed_time = 0;
+my @intervals;
+my @cpus;
+my %ipi_data;
+my %cpu_data;
+my $prev_time = 0;
+my $line;
+my @fields;
+my $i;
+
+while (<INPUT>) {
+	$line = $_;
+	chomp $line;
+
+	if ($line =~ /[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/) {
+		my $curr_time;
+		if ($line =~ / \/ /) {
+		    $line =~ m/.*\/ ([0-9]+)/;
+		    $curr_time = $1;
+		} else {
+		    $curr_time = time_in_seconds($line);
+		}
+		if ($prev_time) {
+			$interval = $curr_time - $prev_time;
+		}
+		$elapsed_time += $interval;
+		push @intervals, $elapsed_time;
+		$prev_time = $curr_time;
+
+		@cpus = split " ", <INPUT>;
+
+		my $index = 0;
+		while (1) {
+			$line = <INPUT>;
+			chomp $line;
+			last if (! $line);
+
+			@fields = ();
+			@fields	= split " ", $line, @cpus + 2;
+
+			my $ipi = shift @fields;
+
+			# Get rid of the colon since we use the ipi name as part
+			# of the plot file name.
+			$ipi =~ s/://;
+
+			# Prepend an index number so that we can
+			# sort the IPI plot files in the order seen
+			# in the output.
+			$ipi = prepend($index, 2) . "|" . $ipi;
+
+			# if the number of elements in @fields exceeds the elements in
+			# @cpus, there is a description of the IPI in the last field
+			if (@fields > @cpus) {
+			    # collapse multiple space fields to a single space
+			    $fields[@fields - 1] =~ s/\s+/ /g;
+			    # append the rest of the IPI descriptor
+			    $ipi .= " " . $fields[@fields - 1];
+			}
+
+			for ($i = 0; $i < @cpus; $i++) {
+				# Prepend an index number so that we can
+				# sort the CPU plot files in the order seen
+				# in the output.
+				my $cpu = prepend($i, 2) . "|" . $cpus[$i];
+
+				push @{$ipi_data{$ipi}{$cpu}}, $fields[$i] / $interval;
+				push @{$cpu_data{$cpu}{$ipi}}, $fields[$i] / $interval;
+			}
+			$index++;
+		}
+	}
+
+}
+
+close INPUT;
+
+my $ipi;
+my $cpu;
+
+foreach $ipi (keys %ipi_data) {
+	my $ipi_filename = $ipi;
+	$ipi_filename =~ s/\s/_/g;
+	$ipi_filename =~ s/\|/_/g;
+	$ipi_filename =~ s/\//_/g;
+	$ipi_filename =~ s/,/_/g;
+	$ipi_filename =~ s/:/_/g;
+
+	foreach $cpu (keys %{$ipi_data{$ipi}}) {
+		my $cpu_filename = $cpu;
+		$cpu_filename =~ s/\s/_/g;
+		$cpu_filename =~ s/\|/_/g;
+
+		if (!open(OUTPUT_FILE, ">$output_directory/plot-files/ipi-" . $ipi_filename . "-" . $cpu_filename . ".plot")) {
+			print STDERR "postprocess-ipi: Failed to open output file $ipi for $cpu.\n";
+			next;
+		} else {
+			$cpu =~ m/.*\|(.*)$/;
+			print OUTPUT_FILE "#LABEL:" . $1 . "\n";
+
+			for ($i=0; $i<@{$ipi_data{$ipi}{$cpu}}; $i++) {
+				print OUTPUT_FILE $intervals[$i] . ' ' . $ipi_data{$ipi}{$cpu}[$i] . "\n";
+			}
+
+			close OUTPUT_FILE;
+		}
+	}
+}
+
+foreach $cpu (keys %cpu_data) {
+	my $cpu_filename = $cpu;
+	$cpu_filename =~ s/\s/_/g;
+	$cpu_filename =~ s/\|/_/g;
+
+	foreach $ipi (keys %{$cpu_data{$cpu}}) {
+		my $ipi_filename = $ipi;
+		$ipi_filename =~ s/\s/_/g;
+		$ipi_filename =~ s/\|/_/g;
+		$ipi_filename =~ s/\//_/g;
+		$ipi_filename =~ s/,/_/g;
+		$ipi_filename =~ s/:/_/g;
+
+		if (!open(OUTPUT_FILE, ">$output_directory/plot-files/ipi-" . $cpu_filename . "-" . $ipi_filename . ".plot")) {
+			print STDERR "postprocess-ipi: Failed to open output file $cpu for $ipi.\n";
+			next;
+		} else {
+			$ipi =~ m/.*\|(.*)$/;
+			print OUTPUT_FILE "#LABEL:IPI " . $1 . "\n";
+
+			for ($i=0; $i<@{$cpu_data{$cpu}{$ipi}}; $i++) {
+				print OUTPUT_FILE $intervals[$i] . ' ' . $cpu_data{$cpu}{$ipi}[$i] . "\n";
+			}
+
+			close OUTPUT_FILE;
+		}
+	}
+
+	$cpu_filename =~ s/.*(CPU.*)$/\1/;
+
+	if (!open(OUTPUT_FILE, ">$output_directory/plot-files/" . $cpu_filename . ".plot")) {
+	    print STDERR "postprocess-ipi: Failed to open output file " . $cpu_filename . ".plot\n";
+	    next;
+	} else {
+	    print OUTPUT_FILE "#LABEL:" . $cpu_filename . "\n";
+
+	    for ($i=0; $i<@intervals; $i++) {
+		my $ipis = 0;
+
+		foreach $ipi (keys (%{$cpu_data{$cpu}})) {
+		    $ipis += $cpu_data{$cpu}{$ipi}[$i];
+		}
+
+		print OUTPUT_FILE $intervals[$i] . ' ' . $ipis . "\n";
+	    }
+
+	    close OUTPUT_FILE;
+	}
+}
+
+if (! $ENV{'FORCE_CHART_PL'}) {
+    my $chart_page = new autobench::jschart("IPI (Inter-Process Interrupt) Charts");
+    if ($ENV{'FORCE_JSCHART_REMOTE_LIBRARY'}) {
+	$chart_page->set_library_remote;
+    }
+
+    if (! $ENV{'FORCE_JSCHART_NO_PACKED_PLOTFILES'}) {
+	$chart_page->enable_packed_plotfiles($output_directory);
+    }
+
+    $chart_page->enable_raw_data_file_links('../');
+
+    $chart_page->add_link('ipi_link', '#ipi_section', 'IPI Distribution');
+    $chart_page->add_link('cpu_link', '#cpu_section', 'Per CPU IPIs');
+
+    $chart_page->add_section('ipi_section', 'IPI Distribution');
+
+    for $ipi (sort { $a <=> $b } (keys %ipi_data)) {
+	$ipi =~ m/.*\|(.*)$/;
+	my $print_ipi = $1;
+	$ipi =~ s/\s/_/g;
+	$ipi =~ s/\|/_/g;
+	$ipi =~ s/\//_/g;
+	$ipi =~ s/,/_/g;
+	$ipi =~ s/:/_/g;
+	$ipi =~ s/\(/\\\(/g;
+	$ipi =~ s/\)/\\\)/g;
+	$ipi =~ s/\[/\\\[/g;
+	$ipi =~ s/\]/\\\]/g;
+
+	$chart_page->add_chart('ipi_' . $ipi, 'stacked', 'IPIs on ' . $print_ipi, 'Time (secs.)', 'IPIs / sec.');
+	foreach my $cpu (sort { $a <=> $b } (keys %cpu_data)) {
+	    $cpu =~ s/\s/_/g;
+	    $cpu =~ s/\|/_/g;
+
+	    $chart_page->add_plots('ipi_' . $ipi, 'ipi-' . $ipi . '-' . $cpu);
+	}
+
+	$chart_page->add_raw_data_sources('ipi_' . $ipi, $input_file);
+    }
+
+    $chart_page->add_section('cpu_section', 'Per CPU IPIs');
+
+    for $cpu (sort { $a <=> $b } (keys %cpu_data)) {
+	$cpu =~ m/.*\|(.*)$/;
+	my $print_cpu = $1;
+	$cpu =~ s/\s/_/g;
+	$cpu =~ s/\|/_/g;
+
+	$chart_page->add_chart('cpu_' . $cpu, 'stacked', 'IPIs on ' . $print_cpu, 'Time (secs.)', 'IPIs / sec.');
+	foreach my $ipi (sort { $a <=> $b } (keys %ipi_data)) {
+	    $ipi =~ s/\s/_/g;
+	    $ipi =~ s/\|/_/g;
+	    $ipi =~ s/\//_/g;
+	    $ipi =~ s/,/_/g;
+	    $ipi =~ s/:/_/g;
+
+	    $chart_page->add_plots('cpu_' . $cpu, 'ipi-' . $cpu . '-' . $ipi);
+	}
+
+	$chart_page->add_raw_data_sources('cpu_' . $cpu, $input_file);
+    }
+
+    $chart_page->generate_page("$output_directory/chart.html");
+}
+
+# Made with Bob
