@@ -141,6 +141,34 @@ class TestLPCPUHelperScripts:
             assert os.access(script_path, os.R_OK), "rtst.py is not readable"
 
 
+class TestLPCPUIPIMonitoring:
+    """Test that IPI monitoring support is integrated"""
+
+    def test_ipi_profiler_in_script(self):
+        """Test that IPI profiler functions exist in lpcpu.sh"""
+        script_path = Path("lpcpu/lpcpu.sh")
+        if not script_path.exists():
+            pytest.skip("lpcpu.sh not found")
+
+        content = script_path.read_text()
+        assert "setup_ipi" in content, "setup_ipi function not found"
+        assert "start_ipi" in content, "start_ipi function not found"
+        assert "stop_ipi" in content, "stop_ipi function not found"
+        assert 'profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts ipi cpupower"' in content, "ipi not in default profilers"
+
+    def test_proc_ipi_tool_exists(self):
+        """Test that proc-ipi.pl tool exists"""
+        tool_path = Path("lpcpu/tools/proc-ipi.pl")
+        assert tool_path.exists(), "proc-ipi.pl not found"
+        assert os.access(tool_path, os.R_OK), "proc-ipi.pl is not readable"
+
+    def test_postprocess_ipi_exists(self):
+        """Test that postprocess-ipi script exists"""
+        script_path = Path("lpcpu/postprocess/postprocess-ipi")
+        assert script_path.exists(), "postprocess-ipi not found"
+        assert os.access(script_path, os.R_OK), "postprocess-ipi is not readable"
+
+
 class TestLPCPUDocumentation:
     """Test that documentation files exist"""
     

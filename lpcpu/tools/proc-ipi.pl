@@ -50,8 +50,8 @@ $cpu_count = @headers;
 
 # Extract only IPI lines from the initial snapshot
 for ($i = 1; $i < @lines; $i++) {
-	# Process lines that start with IPI (x86/ARM) or contain IPI at the end (PowerPC)
-	if ($lines[$i] =~ /^\s*IPI/ || $lines[$i] =~ /\s+IPI\s*$/) {
+	# Only process lines that start with IPI
+	if ($lines[$i] =~ /^\s*IPI/) {
 		my @fields = ();
 		@fields = split(" ", $lines[$i], $cpu_count + 1);
 		# Parse the description out of the last field.
@@ -75,8 +75,8 @@ while (1) {
 	
 	# Extract only IPI lines from the current snapshot
 	for ($i = 1; $i < @lines; $i++) {
-		# Process lines that start with IPI (x86/ARM) or contain IPI at the end (PowerPC)
-		if ($lines[$i] =~ /^\s*IPI/ || $lines[$i] =~ /\s+IPI\s*$/) {
+		# Only process lines that start with IPI
+		if ($lines[$i] =~ /^\s*IPI/) {
 			my @fields = ();
 			@fields = split(" ", $lines[$i], $cpu_count + 1);
 			# Parse the description out of the last field.
