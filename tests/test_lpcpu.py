@@ -35,8 +35,9 @@ class TestLPCPUSyntax:
         
         result = subprocess.run(
             ['bash', '-n', str(script_path)],
-            capture_output=True,
-            text=True
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
         )
         assert result.returncode == 0, f"Syntax error in lpcpu.sh: {result.stderr}"
 
