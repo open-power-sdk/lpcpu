@@ -641,6 +641,47 @@ function setup_postprocess_interrupts() {
     echo 'PROC_INTERRUPTS_NO_NUMA=1 ${LPCPUDIR}/postprocess/postprocess-proc-interrupts .'" $RUN_NUMBER $id"
     echo 'fi'
 }
+## IPI (Inter-Processor Interrupts) ##################################################################
+function setup_ipi() {
+	echo "Setting up IPI monitoring."
+	if [ ! -e "${LPCPUDIR}/tools/proc-ipi.pl" ]; then
+	    echo "ERROR: proc-ipi.pl is not available.  To correct this problem ensure that you have the entire LPCPU distribution or disable the ipi profiler."
+	    exit 1
+	fi
+}
+
+function start_ipi() {
+	echo "Starting IPI monitoring."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	${LPCPUDIR}/tools/proc-ipi.pl $interval > $LOGDIR/proc-ipi.$id.$RUN_NUMBER &
+	IPI_PID=$!
+	disown $IPI_PID
+}
+
+function stop_ipi() {
+	echo "Stopping IPI monitoring."
+	kill $IPI_PID
+}
+
+function report_ipi() {
+	echo "Processing IPI data."
+	# Process IPI data immediately to generate charts (like mpstat and sar do)
+	if [ -f "${LPCPUDIR}/postprocess/postprocess-ipi" ]; then
+		if [ -f ./system-topology.dump ]; then
+			PERL5LIB=${LPCPUDIR}/perl ${LPCPUDIR}/postprocess/postprocess-ipi . $RUN_NUMBER $id ./system-topology.dump
+		else
+			IPI_NO_NUMA=1 PERL5LIB=${LPCPUDIR}/perl ${LPCPUDIR}/postprocess/postprocess-ipi . $RUN_NUMBER $id
+		fi
+	fi
+}
+
+function setup_postprocess_ipi() {
+    echo 'if [ -f ./system-topology.dump ]; then'
+    echo '${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id ./system-topology.dump"
+    echo 'else'
+    echo 'IPI_NO_NUMA=1 ${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id"
+    echo 'fi'
+}
+
 
 ## KVM ###############################################################################################
 function setup_kvm() {
