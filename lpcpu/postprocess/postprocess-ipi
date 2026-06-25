@@ -294,9 +294,17 @@ if (! $ENV{'FORCE_CHART_PL'}) {
 	}
 
 	$chart_page->add_raw_data_sources('cpu_' . $cpu, $input_file);
-    }
+	   }
 
-    $chart_page->generate_page("$output_directory/chart.html");
+	   # Generate the HTML chart page
+	   if (!open(CHART_HTML, ">$output_directory/chart.html")) {
+	print STDERR "postprocess-ipi: Could not create chart.html file\n";
+	exit 1;
+	   } else {
+	chmod (0644, "$output_directory/chart.html");
+	print CHART_HTML $chart_page->dump_page;
+	close CHART_HTML;
+	   }
 }
 
 # Made with Bob

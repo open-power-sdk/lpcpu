@@ -52,19 +52,54 @@ Inter-Process Interrupts (IPIs) are interrupts sent between CPU cores for coordi
 
 ## Usage
 
-### Including IPI Monitoring in a Profile Run
+### Quick Start: Automated IPI Analysis (Recommended)
 
-IPI monitoring is now included by default in the profilers list. To run lpcpu with IPI monitoring:
+The easiest way to run a complete IPI analysis is using the automation script:
 
 ```bash
-./lpcpu.sh
+# Run with defaults (30 seconds, 5 second intervals)
+python3 ipi-demo-runner.py
+
+# Custom duration and interval
+python3 ipi-demo-runner.py 60 10    # 60 seconds, 10 second intervals
+python3 ipi-demo-runner.py 15 3     # 15 seconds, 3 second intervals
 ```
 
-### Running with Custom Profilers
+**What it does:**
+1. Runs lpcpu with IPI profiler
+2. Extracts and navigates to output directory
+3. Shows raw IPI data
+4. Runs postprocessing and analysis
+5. Shows parsed data (plot files)
+6. Shows complete analysis summary with recommendations
 
-To explicitly include IPI monitoring:
+All output is displayed in the terminal with clear section labels.
+
+### Alternative: Generate HTML Report
+
+For a comprehensive HTML report with all data in one page:
 
 ```bash
+# After running lpcpu, generate HTML report
+python3 generate-ipi-report.py /path/to/lpcpu_data.directory
+```
+
+Opens a beautiful web page showing:
+- Raw IPI data
+- Parsed plot files
+- Complete analysis
+- Recommendations
+- Link to interactive chart
+
+### Manual: Including IPI Monitoring in a Profile Run
+
+To run lpcpu manually with IPI monitoring:
+
+```bash
+# Add IPI to default profilers
+./lpcpu.sh extra_profilers="ipi"
+
+# Or specify all profilers explicitly
 ./lpcpu.sh profilers="sar iostat mpstat vmstat ipi"
 ```
 
@@ -81,26 +116,45 @@ To run without IPI monitoring, specify profilers without `ipi`:
 To change the sampling interval (default is 5 seconds):
 
 ```bash
-./lpcpu.sh interval=2
+./lpcpu.sh extra_profilers="ipi" interval=2 duration=60
 ```
 
 ## Output Files
 
 After running lpcpu with IPI monitoring, you'll find:
 
-1. **Raw Data**: `ipi.default.001` - Contains timestamped IPI delta data
-2. **Processed Data**: `ipi-processed.default.001/` directory containing:
-   - `plot-files/` - Individual plot files for each IPI type and CPU
+1. **Raw Data**: `proc-ipi.default.001` - Contains timestamped IPI counts from `/proc/interrupts`
+2. **Processed Data**: `proc-ipi-processed.default.001/` directory containing:
+   - `plot-files/` - Individual plot files for each CPU (timestamp + IPI rate)
    - `chart.html` - Interactive visualization of IPI data
+   - `ipi-analysis-summary.txt` - Analysis report with recommendations
 
 ## Viewing Results
 
-1. Navigate to the output directory (e.g., `run-output/lpcpu_data.*/`)
-2. Open `ipi-processed.default.001/chart.html` in a web browser
-3. View charts showing:
-   - IPI distribution across CPUs
-   - Per-CPU IPI activity over time
-   - Individual IPI type trends
+### Option 1: Automated Script Output
+If you used `ipi-demo-runner.py`, all results are already displayed in your terminal.
+
+### Option 2: HTML Report
+If you generated an HTML report with `generate-ipi-report.py`:
+1. Open `ipi-comprehensive-report.html` in a web browser
+2. Navigate through sections using the menu
+3. View raw data, parsed data, analysis, and recommendations all in one page
+
+### Option 3: Manual Viewing
+1. Navigate to the output directory (e.g., `/tmp/lpcpu_data.*/`)
+2. View raw data: `cat proc-ipi.default.001`
+3. View analysis: `cat proc-ipi-processed.default.001/ipi-analysis-summary.txt`
+4. Open interactive chart: `firefox proc-ipi-processed.default.001/chart.html`
+
+### What the Analysis Shows
+
+The IPI analysis provides:
+- **IPI Rates**: Total IPIs, system-wide rate, per-CPU averages
+- **Hot CPUs**: CPUs handling >200% of average load (potential bottlenecks)
+- **Cold CPUs**: CPUs handling <10% of average load (underutilized)
+- **Imbalance Coefficient**: 0-1 scale (0=perfect balance, 1=maximum imbalance)
+- **Spike Detection**: CPUs with >2x average rate bursts
+- **Recommendations**: HIGH and MEDIUM priority actions to improve performance
 
 ## Use Cases
 
