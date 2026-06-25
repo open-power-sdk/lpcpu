@@ -38,7 +38,7 @@ def generate_html_report(output_dir):
     raw_data = read_file(output_dir / 'proc-ipi.default.001', max_lines=50)
     
     # Read plot files
-    plot_dir = output_dir / 'proc-ipi-processed.default.001' / 'plot-files'
+    plot_dir = output_dir / 'ipi-processed.default.001' / 'plot-files'
     plot_files = []
     if plot_dir.exists():
         plot_files = sorted([f.name for f in plot_dir.glob('*.plot')])
@@ -48,7 +48,7 @@ def generate_html_report(output_dir):
         sample_plot = read_file(plot_dir / plot_files[0], max_lines=20)
     
     # Read analysis summary
-    summary_file = output_dir / 'proc-ipi-processed.default.001' / 'ipi-analysis-summary.txt'
+    summary_file = output_dir / 'ipi-processed.default.001' / 'ipi-analysis-summary.txt'
     analysis_summary = read_file(summary_file) if summary_file.exists() else "Analysis not yet run"
     
     # Generate HTML

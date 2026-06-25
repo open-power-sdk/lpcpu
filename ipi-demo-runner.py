@@ -116,13 +116,13 @@ Starting in 3 seconds...
     print("Processed data in timestamp + IPI rate format, ready for charting")
     print("-" * 80 + "\n")
     
-    plot_files = run_command('ls -lh proc-ipi-processed.default.001/plot-files/ | head -10')
+    plot_files = run_command('ls -lh ipi-processed.default.001/plot-files/ | head -10')
     print(plot_files)
     
     print("\n" + "-" * 80)
     print("Sample Plot File (CPU0) - Format: timestamp ipi_rate")
     print("-" * 80)
-    sample_plot = run_command('head -15 proc-ipi-processed.default.001/plot-files/CPU0.plot')
+    sample_plot = run_command('head -15 ipi-processed.default.001/plot-files/CPU0.plot')
     print(sample_plot)
     
     # Step 6: Show analysis summary
@@ -132,7 +132,7 @@ Starting in 3 seconds...
     print("Complete analysis with rates, imbalance detection, hot/cold CPUs, and recommendations")
     print("-" * 80 + "\n")
     
-    summary = run_command('cat proc-ipi-processed.default.001/ipi-analysis-summary.txt')
+    summary = run_command('cat ipi-processed.default.001/ipi-analysis-summary.txt')
     print(summary)
     
     # Final summary
@@ -144,12 +144,12 @@ Output Location: /tmp/{output_dir}
 
 Files Generated:
   • Raw data:        proc-ipi.default.001
-  • Plot files:      proc-ipi-processed.default.001/plot-files/
-  • HTML chart:      proc-ipi-processed.default.001/chart.html
-  • Analysis:        proc-ipi-processed.default.001/ipi-analysis-summary.txt
-
+  • Plot files:      ipi-processed.default.001/plot-files/
+  • HTML chart:      ipi-processed.default.001/chart.html
+  • Analysis:        ipi-processed.default.001/ipi-analysis-summary.txt
+ 
 To view the interactive chart:
-  firefox proc-ipi-processed.default.001/chart.html
+  firefox ipi-processed.default.001/chart.html
   
 To re-run analysis:
   PERL5LIB=/tmp/lpcpu/perl /tmp/lpcpu/postprocess/postprocess-ipi . 001 default

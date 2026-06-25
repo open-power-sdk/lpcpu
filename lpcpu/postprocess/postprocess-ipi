@@ -34,9 +34,9 @@ my $input_file;
 
 if (@ARGV > 2) {
     $invocation_id = $ARGV[2];
-    $input_file = "ipi." . $invocation_id . "." . $identifier;
+    $input_file = "proc-ipi." . $invocation_id . "." . $identifier;
 } else {
-    $input_file = "ipi." . $identifier;
+    $input_file = "proc-ipi." . $identifier;
 }
 
 print "Processing IPI File : $input_file\n";
@@ -294,17 +294,279 @@ if (! $ENV{'FORCE_CHART_PL'}) {
 	}
 
 	$chart_page->add_raw_data_sources('cpu_' . $cpu, $input_file);
-	   }
+    }
 
-	   # Generate the HTML chart page
-	   if (!open(CHART_HTML, ">$output_directory/chart.html")) {
-	print STDERR "postprocess-ipi: Could not create chart.html file\n";
-	exit 1;
-	   } else {
-	chmod (0644, "$output_directory/chart.html");
-	print CHART_HTML $chart_page->dump_page;
-	close CHART_HTML;
-	   }
+    if (!open(CHART_HTML, ">$output_directory/chart.html")) {
+ print STDERR "postprocess-ipi: Could not create chart.html file\n";
+ exit 1;
+    } else {
+ chmod (0644, "$output_directory/chart.html");
+ print CHART_HTML $chart_page->dump_page;
+ close CHART_HTML;
+    }
 }
+
+# ============================================================================
+# IPI ANALYSIS ENHANCEMENTS
+# ============================================================================
+
+print "\n";
+print "=" x 80 . "\n";
+print "IPI ANALYSIS REPORT\n";
+print "=" x 80 . "\n\n";
+
+# Calculate total IPIs and statistics per CPU
+my %cpu_totals;
+my %cpu_rates;
+my %cpu_max_rates;
+my %cpu_min_rates;
+my $total_ipis_system = 0;
+my $num_cpus = scalar(keys %cpu_data);
+my $total_time = $intervals[-1] || 1;
+
+foreach $cpu (keys %cpu_data) {
+    my $cpu_total = 0;
+    my @rates;
+    
+    foreach $ipi (keys %{$cpu_data{$cpu}}) {
+        for ($i = 0; $i < @{$cpu_data{$cpu}{$ipi}}; $i++) {
+            $cpu_total += $cpu_data{$cpu}{$ipi}[$i] * $interval;
+            push @rates, $cpu_data{$cpu}{$ipi}[$i];
+        }
+    }
+    
+    $cpu =~ m/.*\|(CPU\d+)$/;
+    my $cpu_name = $1;
+    $cpu_totals{$cpu_name} = $cpu_total;
+    $total_ipis_system += $cpu_total;
+    
+    # Calculate average rate
+    if (@rates > 0) {
+        my $sum = 0;
+        my $max = $rates[0];
+        my $min = $rates[0];
+        
+        foreach my $rate (@rates) {
+            $sum += $rate;
+            $max = $rate if $rate > $max;
+            $min = $rate if $rate < $min;
+        }
+        
+        $cpu_rates{$cpu_name} = $sum / @rates;
+        $cpu_max_rates{$cpu_name} = $max;
+        $cpu_min_rates{$cpu_name} = $min;
+    } else {
+        $cpu_rates{$cpu_name} = 0;
+        $cpu_max_rates{$cpu_name} = 0;
+        $cpu_min_rates{$cpu_name} = 0;
+    }
+}
+
+# 1. IPI RATE ANALYSIS
+print "1. IPI RATE ANALYSIS\n";
+print "-" x 80 . "\n";
+printf "Total IPIs (system-wide): %d\n", $total_ipis_system;
+printf "Collection Duration: %.1f seconds\n", $total_time;
+printf "Average System IPI Rate: %.2f IPIs/sec\n", $total_ipis_system / $total_time;
+printf "Number of CPUs: %d\n", $num_cpus;
+printf "Average per CPU: %.2f IPIs/sec\n\n", ($total_ipis_system / $total_time) / $num_cpus;
+
+# Find top 5 CPUs by rate
+my @sorted_cpus = sort { $cpu_rates{$b} <=> $cpu_rates{$a} } keys %cpu_rates;
+my @top_cpus = @sorted_cpus[0..4];
+
+print "Top 5 CPUs by Average IPI Rate:\n";
+foreach my $cpu (@top_cpus) {
+    last unless defined $cpu;
+    printf "  %-8s: %8.2f IPIs/sec (max: %8.2f, min: %8.2f)\n",
+           $cpu, $cpu_rates{$cpu}, $cpu_max_rates{$cpu}, $cpu_min_rates{$cpu};
+}
+
+# Flag high-rate CPUs (>1000 IPIs/sec threshold)
+my @high_rate_cpus = grep { $cpu_max_rates{$_} > 1000 } keys %cpu_max_rates;
+if (@high_rate_cpus) {
+    print "\n⚠️  HIGH IPI RATE ALERT:\n";
+    foreach my $cpu (sort @high_rate_cpus) {
+        printf "  %s exceeded 1000 IPIs/sec (peak: %.2f IPIs/sec)\n",
+               $cpu, $cpu_max_rates{$cpu};
+    }
+}
+
+# Detect IPI spikes (>2x average)
+print "\n";
+my @spike_cpus;
+foreach my $cpu (keys %cpu_rates) {
+    if ($cpu_rates{$cpu} > 0 && $cpu_max_rates{$cpu} > ($cpu_rates{$cpu} * 2)) {
+        push @spike_cpus, $cpu;
+    }
+}
+if (@spike_cpus) {
+    print "⚠️  IPI SPIKE DETECTION:\n";
+    foreach my $cpu (sort @spike_cpus) {
+        printf "  %s: Peak rate %.2fx higher than average\n",
+               $cpu, $cpu_max_rates{$cpu} / $cpu_rates{$cpu};
+    }
+}
+
+# 2. IPI IMBALANCE DETECTION
+print "\n\n2. IPI IMBALANCE ANALYSIS\n";
+print "-" x 80 . "\n";
+
+my $avg_per_cpu = $total_ipis_system / $num_cpus;
+my @hot_cpus = grep { $cpu_totals{$_} > ($avg_per_cpu * 2) } keys %cpu_totals;
+my @cold_cpus = grep { $cpu_totals{$_} < ($avg_per_cpu * 0.1) } keys %cpu_totals;
+
+if (@hot_cpus) {
+    my $hot_total = 0;
+    foreach my $cpu (@hot_cpus) {
+        $hot_total += $cpu_totals{$cpu};
+    }
+    my $hot_percentage = ($hot_total / $total_ipis_system) * 100;
+    
+    print "⚠️  IPI IMBALANCE DETECTED\n\n";
+    printf "Hot CPUs (%d CPUs handling >200%% of average):\n", scalar(@hot_cpus);
+    foreach my $cpu (sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus) {
+        printf "  %-8s: %6d IPIs (%.1f%% of total, %.1fx average)\n",
+               $cpu, $cpu_totals{$cpu},
+               ($cpu_totals{$cpu} / $total_ipis_system) * 100,
+               $cpu_totals{$cpu} / $avg_per_cpu;
+    }
+    printf "\nThese %d CPUs handle %.1f%% of all IPIs\n", scalar(@hot_cpus), $hot_percentage;
+    
+    if (@cold_cpus) {
+        printf "\nCold CPUs (%d CPUs handling <10%% of average):\n", scalar(@cold_cpus);
+        foreach my $cpu (sort @cold_cpus) {
+            printf "  %-8s: %6d IPIs (%.1f%% of total)\n",
+                   $cpu, $cpu_totals{$cpu},
+                   ($cpu_totals{$cpu} / $total_ipis_system) * 100;
+        }
+    }
+} else {
+    print "✅ IPI distribution is balanced\n";
+    print "   No CPU handles more than 2x the average IPI load\n";
+}
+
+# Calculate Gini coefficient for imbalance quantification
+my @sorted_totals = sort { $a <=> $b } values %cpu_totals;
+my $gini_sum = 0;
+for (my $i = 0; $i < @sorted_totals; $i++) {
+    $gini_sum += ($i + 1) * $sorted_totals[$i];
+}
+my $gini = (2 * $gini_sum) / ($num_cpus * $total_ipis_system) - ($num_cpus + 1) / $num_cpus;
+printf "\nImbalance Coefficient: %.3f ", $gini;
+if ($gini < 0.3) {
+    print "(Low - Well balanced)\n";
+} elsif ($gini < 0.5) {
+    print "(Moderate - Some imbalance)\n";
+} else {
+    print "(High - Significant imbalance)\n";
+}
+
+# 3. ACTIONABLE RECOMMENDATIONS
+print "\n\n3. RECOMMENDATIONS\n";
+print "-" x 80 . "\n";
+
+my @recommendations;
+
+if (@hot_cpus && $gini > 0.4) {
+    push @recommendations, {
+        priority => "HIGH",
+        issue => "Significant IPI imbalance detected",
+        actions => [
+            "Review CPU affinity settings for running processes",
+            "Check interrupt distribution: cat /proc/interrupts",
+            "Consider pinning high-IPI workloads to specific CPUs",
+            "Investigate if workload can be distributed more evenly"
+        ]
+    };
+}
+
+if (@high_rate_cpus) {
+    push @recommendations, {
+        priority => "HIGH",
+        issue => "CPUs experiencing very high IPI rates (>1000/sec)",
+        actions => [
+            "Profile the workload on hot CPUs to identify IPI sources",
+            "Check for excessive context switching or lock contention",
+            "Consider reducing thread count or adjusting scheduling policy",
+            "Review NUMA topology and ensure local memory access"
+        ]
+    };
+}
+
+if (@spike_cpus) {
+    push @recommendations, {
+        priority => "MEDIUM",
+        issue => "IPI rate spikes detected (>2x average)",
+        actions => [
+            "Correlate spike times with application events or system logs",
+            "Check for periodic tasks or timers causing bursts",
+            "Review workload patterns for optimization opportunities"
+        ]
+    };
+}
+
+if ($total_ipis_system / $total_time > 10000) {
+    push @recommendations, {
+        priority => "MEDIUM",
+        issue => "High system-wide IPI rate",
+        actions => [
+            "Evaluate if workload is appropriate for system size",
+            "Consider CPU isolation for latency-sensitive workloads",
+            "Review kernel scheduler settings (e.g., sched_migration_cost_ns)"
+        ]
+    };
+}
+
+if (@recommendations == 0) {
+    print "✅ No significant issues detected\n\n";
+    print "IPI activity appears normal for this workload. Key indicators:\n";
+    print "  • Balanced distribution across CPUs\n";
+    print "  • No excessive IPI rates\n";
+    print "  • No significant spikes detected\n";
+} else {
+    foreach my $rec (@recommendations) {
+        print "\n[$rec->{priority} PRIORITY] $rec->{issue}\n";
+        print "Actions:\n";
+        foreach my $action (@{$rec->{actions}}) {
+            print "  • $action\n";
+        }
+    }
+}
+
+# Summary statistics file
+if (open(SUMMARY, ">$output_directory/ipi-analysis-summary.txt")) {
+    print SUMMARY "IPI Analysis Summary\n";
+    print SUMMARY "=" x 80 . "\n\n";
+    print SUMMARY "Collection Duration: $total_time seconds\n";
+    print SUMMARY "Total IPIs: $total_ipis_system\n";
+    print SUMMARY "System IPI Rate: " . sprintf("%.2f", $total_ipis_system / $total_time) . " IPIs/sec\n";
+    print SUMMARY "Number of CPUs: $num_cpus\n";
+    print SUMMARY "Imbalance Coefficient: " . sprintf("%.3f", $gini) . "\n\n";
+    
+    print SUMMARY "Top 5 CPUs by IPI Activity:\n";
+    foreach my $cpu (@top_cpus) {
+        last unless defined $cpu;
+        print SUMMARY sprintf("  %-8s: %6d IPIs (%.1f%% of total)\n",
+                             $cpu, $cpu_totals{$cpu},
+                             ($cpu_totals{$cpu} / $total_ipis_system) * 100);
+    }
+    
+    if (@recommendations) {
+        print SUMMARY "\nRecommendations: " . scalar(@recommendations) . " issue(s) identified\n";
+        foreach my $rec (@recommendations) {
+            print SUMMARY "  [$rec->{priority}] $rec->{issue}\n";
+        }
+    } else {
+        print SUMMARY "\nNo significant issues detected\n";
+    }
+    
+    close SUMMARY;
+    print "\n\n📄 Detailed analysis saved to: $output_directory/ipi-analysis-summary.txt\n";
+}
+
+print "\n" . "=" x 80 . "\n";
+print "IPI Analysis Complete\n";
+print "=" x 80 . "\n";
 
 # Made with Bob

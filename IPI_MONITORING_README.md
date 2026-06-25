@@ -124,7 +124,7 @@ To change the sampling interval (default is 5 seconds):
 After running lpcpu with IPI monitoring, you'll find:
 
 1. **Raw Data**: `proc-ipi.default.001` - Contains timestamped IPI counts from `/proc/interrupts`
-2. **Processed Data**: `proc-ipi-processed.default.001/` directory containing:
+2. **Processed Data**: `ipi-processed.default.001/` directory containing:
    - `plot-files/` - Individual plot files for each CPU (timestamp + IPI rate)
    - `chart.html` - Interactive visualization of IPI data
    - `ipi-analysis-summary.txt` - Analysis report with recommendations
@@ -143,8 +143,8 @@ If you generated an HTML report with `generate-ipi-report.py`:
 ### Option 3: Manual Viewing
 1. Navigate to the output directory (e.g., `/tmp/lpcpu_data.*/`)
 2. View raw data: `cat proc-ipi.default.001`
-3. View analysis: `cat proc-ipi-processed.default.001/ipi-analysis-summary.txt`
-4. Open interactive chart: `firefox proc-ipi-processed.default.001/chart.html`
+3. View analysis: `cat ipi-processed.default.001/ipi-analysis-summary.txt`
+4. Open interactive chart: `firefox ipi-processed.default.001/chart.html`
 
 ### What the Analysis Shows
 
