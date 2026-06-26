@@ -538,6 +538,59 @@ if (@recommendations == 0) {
 if (open(SUMMARY, ">$output_directory/ipi-analysis-summary.txt")) {
     print SUMMARY "IPI Analysis Summary\n";
     print SUMMARY "=" x 80 . "\n\n";
+    
+    # Generate executive summary
+    my $exec_summary = "";
+    my $hot_cpu_count = scalar(@hot_cpus);
+    my $spike_cpu_count = scalar(@spike_cpus);
+    
+    if (@recommendations == 0) {
+        $exec_summary = "**ASSESSMENT: System shows balanced IPI distribution with no significant issues.**";
+    } elsif ($gini >= 0.5) {
+        if ($hot_cpu_count > 0) {
+            my $hot_pct = 0;
+            foreach my $cpu (@hot_cpus) { $hot_pct += $cpu_totals{$cpu}; }
+            $hot_pct = ($hot_pct / $total_ipis_system) * 100;
+            
+            # List hot CPUs
+            my @sorted_hot = sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus;
+            my $hot_list = join(", ", @sorted_hot[0..2]);  # Show top 3
+            if ($hot_cpu_count > 3) {
+                $hot_list .= sprintf(" (+%d more)", $hot_cpu_count - 3);
+            }
+            
+            $exec_summary = sprintf("**ASSESSMENT: Severe IPI imbalance detected - %s handling %.0f%% of all IPIs (Gini: %.3f).**",
+                                   $hot_list, $hot_pct, $gini);
+        } else {
+            $exec_summary = sprintf("**ASSESSMENT: High IPI imbalance detected with Gini coefficient of %.3f.**", $gini);
+        }
+    } elsif ($gini >= 0.3) {
+        # List hot CPUs for moderate imbalance
+        my @sorted_hot = sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus;
+        my $hot_list;
+        if ($hot_cpu_count <= 3) {
+            $hot_list = join(", ", @sorted_hot);
+        } else {
+            $hot_list = join(", ", @sorted_hot[0..2]) . sprintf(" (+%d more)", $hot_cpu_count - 3);
+        }
+        
+        $exec_summary = sprintf("**ASSESSMENT: Moderate IPI imbalance - %s are hot CPUs, %d CPUs showing spikes.**",
+                               $hot_list, $spike_cpu_count);
+    } elsif (@spike_cpus > 5) {
+        # List some spike CPUs
+        my @sorted_spikes = sort @spike_cpus;
+        my $spike_list = join(", ", @sorted_spikes[0..4]);
+        if ($spike_cpu_count > 5) {
+            $spike_list .= sprintf(" (+%d more)", $spike_cpu_count - 5);
+        }
+        $exec_summary = sprintf("**ASSESSMENT: %s showing bursty IPI behavior (spikes >2x average).**", $spike_list);
+    } else {
+        $exec_summary = "**ASSESSMENT: Minor IPI distribution issues detected - review recommendations below.**";
+    }
+    
+    print SUMMARY "$exec_summary\n\n";
+    print SUMMARY "-" x 80 . "\n\n";
+    
     print SUMMARY "Collection Duration: $total_time seconds\n";
     print SUMMARY "Total IPIs: $total_ipis_system\n";
     print SUMMARY "System IPI Rate: " . sprintf("%.2f", $total_ipis_system / $total_time) . " IPIs/sec\n";
