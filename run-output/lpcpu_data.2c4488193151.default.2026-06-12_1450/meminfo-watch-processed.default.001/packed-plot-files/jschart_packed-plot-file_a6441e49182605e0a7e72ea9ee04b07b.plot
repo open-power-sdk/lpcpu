@@ -1,0 +1,7 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:Node 0
+0 334148
+5 334148
+10 334148
+15 334148
+20 334148

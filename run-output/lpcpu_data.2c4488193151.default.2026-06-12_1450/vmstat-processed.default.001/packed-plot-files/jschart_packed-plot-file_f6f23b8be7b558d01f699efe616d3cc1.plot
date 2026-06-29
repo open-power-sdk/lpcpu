@@ -1,0 +1,32 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:Buffer Cache
+5 82516
+10 82524
+15 82524
+20 82536
+25 82544
+30 82552
+--- JSChart Packed Plot File V1 ---
+#LABEL:Page Cache
+5 819800
+10 819756
+15 819768
+20 819772
+25 819724
+30 819724
+--- JSChart Packed Plot File V1 ---
+#LABEL:Free
+5 2809220
+10 2866236
+15 2885284
+20 2901220
+25 2914728
+30 2928684
+--- JSChart Packed Plot File V1 ---
+#LABEL:Used Virtual
+5 0
+10 0
+15 0
+20 0
+25 0
+30 0

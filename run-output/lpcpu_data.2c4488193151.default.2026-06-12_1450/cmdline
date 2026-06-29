@@ -1,0 +1,1 @@
+BOOT_IMAGE=/vmlinuz-6.8.0-117-generic root=PARTUUID=b42f7b28-0777-4823-9ec1-0098926cabac ro console=tty1 console=ttyAMA0

@@ -1,0 +1,134 @@
+netstat: no support for `AF INET (sctp)' on this system.
+netstat: no support for `AF INET (sctp)' on this system.
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 ltczz345-lp2.ltc.ta:ssh 172.22.33.2:51259       ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  3      [ ]         STREAM     CONNECTED     20683    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     7356     /var/lib/pcp/pmcd/root.socket
+unix  3      [ ]         DGRAM      CONNECTED     13909    
+unix  3      [ ]         DGRAM      CONNECTED     10407    
+unix  3      [ ]         STREAM     CONNECTED     31050    /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM      CONNECTED     29395    
+unix  3      [ ]         STREAM     CONNECTED     2681     /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM                    13907    /run/user/0/systemd/notify
+unix  3      [ ]         STREAM     CONNECTED     24854    
+unix  3      [ ]         DGRAM      CONNECTED     13908    
+unix  2      [ ]         DGRAM      CONNECTED     4194546  
+unix  3      [ ]         STREAM     CONNECTED     21685    
+unix  2      [ ]         DGRAM      CONNECTED     4180420  
+unix  3      [ ]         DGRAM      CONNECTED     13910    
+unix  3      [ ]         STREAM     CONNECTED     3451     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     3944     /run/systemd/journal/stdout
+unix  3      [ ]         DGRAM      CONNECTED     13325    /run/systemd/notify
+unix  3      [ ]         STREAM     CONNECTED     7338     
+unix  2      [ ]         DGRAM                    17537    
+unix  3      [ ]         STREAM     CONNECTED     16742    /run/dbus/system_bus_socket
+unix  9      [ ]         DGRAM      CONNECTED     13345    /run/systemd/journal/dev-log
+unix  11     [ ]         DGRAM      CONNECTED     13346    /run/systemd/journal/socket
+unix  3      [ ]         DGRAM      CONNECTED     13913    
+unix  3      [ ]         STREAM     CONNECTED     23381    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     10373    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     6899     /run/pcp/pmcd.socket
+unix  3      [ ]         STREAM     CONNECTED     17531    
+unix  3      [ ]         STREAM     CONNECTED     14451    
+unix  3      [ ]         STREAM     CONNECTED     23052    /run/pcp/pmcd.socket
+unix  3      [ ]         STREAM     CONNECTED     2666     
+unix  3      [ ]         STREAM     CONNECTED     1925     
+unix  3      [ ]         DGRAM      CONNECTED     10406    
+unix  3      [ ]         STREAM     CONNECTED     10170    
+unix  3      [ ]         STREAM     CONNECTED     10358    
+unix  3      [ ]         STREAM     CONNECTED     6904     /run/pcp/pmcd.socket
+unix  3      [ ]         STREAM     CONNECTED     9441     /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     1758     
+unix  3      [ ]         DGRAM      CONNECTED     13911    
+unix  2      [ ]         DGRAM      CONNECTED     18783    
+unix  3      [ ]         STREAM     CONNECTED     2747     
+unix  3      [ ]         STREAM     CONNECTED     37899    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     24241    
+unix  3      [ ]         STREAM     CONNECTED     24857    
+unix  3      [ ]         STREAM     CONNECTED     4031     /var/lib/pcp/pmcd/root.socket
+unix  3      [ ]         STREAM     CONNECTED     1679     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     16740    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     40904    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     30865    
+unix  3      [ ]         STREAM     CONNECTED     4194550  
+unix  2      [ ]         DGRAM      CONNECTED     37785    
+unix  3      [ ]         STREAM     CONNECTED     1757     
+unix  3      [ ]         STREAM     CONNECTED     2664     
+unix  3      [ ]         STREAM     CONNECTED     1785     
+unix  3      [ ]         STREAM     CONNECTED     1680     /run/systemd/journal/stdout
+unix  3      [ ]         DGRAM      CONNECTED     13326    
+unix  3      [ ]         STREAM     CONNECTED     2808     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     19826    
+unix  3      [ ]         DGRAM      CONNECTED     1310     
+unix  3      [ ]         STREAM     CONNECTED     49515    
+unix  3      [ ]         STREAM     CONNECTED     4103201  /run/pcp/pmcd.socket
+unix  3      [ ]         DGRAM      CONNECTED     13912    
+unix  3      [ ]         STREAM     CONNECTED     3941     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     17505    
+unix  3      [ ]         STREAM     CONNECTED     7339     
+unix  2      [ ]         DGRAM      CONNECTED     12210    
+unix  3      [ ]         DGRAM      CONNECTED     13328    
+unix  2      [ ]         DGRAM      CONNECTED     6768     
+unix  2      [ ]         DGRAM      CONNECTED     14504    
+unix  3      [ ]         STREAM     CONNECTED     2667     
+unix  3      [ ]         DGRAM      CONNECTED     22797    
+unix  3      [ ]         STREAM     CONNECTED     18798    
+unix  2      [ ]         DGRAM      CONNECTED     4180416  
+unix  3      [ ]         STREAM     CONNECTED     10166    
+unix  3      [ ]         STREAM     CONNECTED     24167    
+unix  2      [ ]         DGRAM      CONNECTED     4170461  
+unix  3      [ ]         STREAM     CONNECTED     34111    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     2663     
+unix  3      [ ]         STREAM     CONNECTED     1786     
+unix  3      [ ]         STREAM     CONNECTED     31035    
+unix  2      [ ]         DGRAM      CONNECTED     22809    
+unix  2      [ ]         DGRAM      CONNECTED     13592    
+unix  3      [ ]         DGRAM      CONNECTED     13327    
+unix  3      [ ]         DGRAM      CONNECTED     1309     
+unix  3      [ ]         STREAM     CONNECTED     4194549  
+unix  3      [ ]         DGRAM      CONNECTED     13329    
+unix  3      [ ]         STREAM     CONNECTED     18886    
+unix  3      [ ]         STREAM     CONNECTED     17538    
+unix  3      [ ]         STREAM     CONNECTED     32587    
+unix  3      [ ]         STREAM     CONNECTED     10996    /run/pcp/pmcd.socket
+unix  2      [ ]         DGRAM      CONNECTED     17383    
+unix  3      [ ]         STREAM     CONNECTED     1677     /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM      CONNECTED     6744     
+unix  3      [ ]         DGRAM      CONNECTED     22796    
+unix  3      [ ]         DGRAM      CONNECTED     13596    
+unix  3      [ ]         STREAM     CONNECTED     11085    
+unix  2      [ ]         STREAM     CONNECTED     4189339  
+unix  3      [ ]         STREAM     CONNECTED     16852    /run/dbus/system_bus_socket
+unix  2      [ ]         DGRAM      CONNECTED     2665     
+unix  2      [ ]         DGRAM      CONNECTED     22814    /run/chrony/chronyd.sock
+unix  3      [ ]         STREAM     CONNECTED     23060    /run/pcp/pmcd.socket
+unix  2      [ ]         DGRAM      CONNECTED     24242    
+unix  3      [ ]         STREAM     CONNECTED     18686    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     4035     /var/lib/pcp/pmcd/root.socket
+unix  3      [ ]         STREAM     CONNECTED     24856    
+unix  3      [ ]         STREAM     CONNECTED     24548    
+unix  2      [ ]         DGRAM      CONNECTED     1374     
+unix  3      [ ]         STREAM     CONNECTED     3814     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     4095742  
+unix  3      [ ]         STREAM     CONNECTED     29419    
+unix  3      [ ]         STREAM     CONNECTED     24223    
+unix  3      [ ]         STREAM     CONNECTED     10183    
+unix  3      [ ]         STREAM     CONNECTED     4032     /var/lib/pcp/pmcd/root.socket
+unix  3      [ ]         DGRAM      CONNECTED     13597    
+unix  3      [ ]         STREAM     CONNECTED     1704     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     6682     @7428f1705191beb1/bus/systemd/bunetstat: no support for `AF IPX' on this system.
+netstat: no support for `AF AX25' on this system.
+netstat: no support for `AF X25' on this system.
+netstat: no support for `AF NETROM' on this system.
+netstat: no support for `BTPROTO L2CAP' on this system.
+netstat: no support for `BTPROTO RFCOMM' on this system.
+s-api-system
+unix  3      [ ]         STREAM     CONNECTED     10366    @c56e77034e30590a/bus/dbus-broker-lau/system
+unix  3      [ ]         STREAM     CONNECTED     13915    @59192f356cdc7/bus/systemd/bus-system
+unix  3      [ ]         STREAM     CONNECTED     14520    @11c88cfe88798941/bus/systemd-logind/system
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel

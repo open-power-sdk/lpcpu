@@ -1,0 +1,14 @@
+Filesystem     512-blocks      Used  Available Capacity iused       ifree %iused  Mounted on
+/dev/disk3s1s1 3896808080  24549680 3716884344     1%  458725  4294044478    0%   /
+devfs                 701       701          0   100%    1214           0  100%   /dev
+/dev/disk3s6   3896808080        40 3716884344     1%       0 18584421720    0%   /System/Volumes/VM
+/dev/disk3s2   3896808080  17753736 3716884344     1%    1422 18584421720    0%   /System/Volumes/Preboot
+/dev/disk3s4   3896808080      5952 3716884344     1%      63 18584421720    0%   /System/Volumes/Update
+/dev/disk1s2      1126400     12328    1086744     2%       1     5433720    0%   /System/Volumes/xarts
+/dev/disk1s1      1126400     12000    1086744     2%      31     5433720    0%   /System/Volumes/iSCPreboot
+/dev/disk1s3      1126400      5520    1086744     1%     108     5433720    0%   /System/Volumes/Hardware
+/dev/disk3s5   3896808080 133833456 3716884344     4%  821365 18584421720    0%   /System/Volumes/Data
+map auto_home           0         0          0   100%       0           0     -   /System/Volumes/Data/home
+/dev/disk4s1      2322352   1721192     601160    75%   23796  4294943483    0%   /Volumes/Cursor Installer
+/dev/disk5s1       891744    885856       5888   100%     850  4294966429    0%   /Volumes/Wireshark 4.6.6
+/dev/disk6s1       522752    516352       6400    99%       7  4294967272    0%   /Volumes/OpenVPN Connect

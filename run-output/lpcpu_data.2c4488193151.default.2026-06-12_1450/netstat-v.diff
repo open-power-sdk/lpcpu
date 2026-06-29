@@ -1,0 +1,4 @@
+1c1
+< ./lpcpu.sh: line 1162: netstat: command not found
+---
+> ./lpcpu.sh: line 1222: netstat: command not found

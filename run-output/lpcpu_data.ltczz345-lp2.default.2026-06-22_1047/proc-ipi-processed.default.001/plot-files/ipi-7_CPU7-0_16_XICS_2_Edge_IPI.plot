@@ -1,0 +1,6 @@
+#LABEL:IPI 16 XICS 2 Edge IPI
+5 0
+10 1
+15 0
+20 1.2
+25 0

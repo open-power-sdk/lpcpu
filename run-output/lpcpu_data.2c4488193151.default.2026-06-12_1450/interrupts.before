@@ -1,0 +1,38 @@
+           CPU0       CPU1       
+ 10:      30449      31714     GICv3  27 Level     arch_timer
+ 13:          0          0 ARMH0061:00   6 Edge      ACPI:Event
+ 23:          0          0       MSI 196608 Edge      virtio8-config
+ 24:          0          0       MSI 196609 Edge      virtio8-inflate
+ 25:          0          0       MSI 196610 Edge      virtio8-deflate
+ 26:          0          0       MSI 81920 Edge      virtio1-config
+ 27:          0          0       MSI 81921 Edge      virtio1-input
+ 28:          8          0       MSI 81922 Edge      virtio1-output
+ 29:          0          0       MSI 98304 Edge      virtio2-config
+ 30:       8549          0       MSI 98305 Edge      virtio2-req.0
+ 31:          0          0       MSI 114688 Edge      virtio3-config
+ 32:      40219          0       MSI 114689 Edge      virtio3-req.0
+ 33:          0          0       MSI 131072 Edge      virtio4-config
+ 34:        332          0       MSI 131073 Edge      virtio4-req.0
+ 35:          0          0       MSI 16384 Edge      virtio0-config
+ 36:      41180          0       MSI 16385 Edge      virtio0-input.0
+ 37:      17720          0       MSI 16386 Edge      virtio0-output.0
+ 38:          0          0     GICv3  23 Level     arm-pmu
+ 39:          0          0       MSI 180224 Edge      virtio7-config
+ 40:         16          0       MSI 180225 Edge      virtio7-input
+ 41:          0          0       MSI 163840 Edge      virtio6-config
+ 42:         52          0       MSI 163841 Edge      virtio6-rx
+ 43:        100          0       MSI 163842 Edge      virtio6-tx
+ 44:          0          0       MSI 163843 Edge      virtio6-event
+ 45:          0          0       MSI 147456 Edge      virtio5-config
+ 46:          0          0       MSI 147457 Edge      virtio5-hiprio
+ 47:       1264          0       MSI 147458 Edge      virtio5-requests.0
+ 49:         49          0       MSI 212992 Edge      xhci_hcd
+IPI0:      4137       5452       Rescheduling interrupts
+IPI1:     38594      67386       Function call interrupts
+IPI2:         0          0       CPU stop interrupts
+IPI3:         0          0       CPU stop NMIs
+IPI4:         0          0       Timer broadcast interrupts
+IPI5:        95         77       IRQ work interrupts
+IPI6:         0          0       CPU backtrace interrupts
+IPI7:         0          0       KGDB roundup interrupts
+Err:          0

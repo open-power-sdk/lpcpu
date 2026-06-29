@@ -1,0 +1,110 @@
+Ip:
+    Forwarding: 2
+    3644376 total packets received
+    12 with invalid headers
+    159 with invalid addresses
+    0 forwarded
+    0 incoming packets discarded
+    2892179 incoming packets delivered
+    1802529 requests sent out
+    28 dropped because of missing route
+    OutTransmits: 1802529
+Icmp:
+    1055037 ICMP messages received
+    1054690 input ICMP message failed
+    ICMP input histogram:
+        destination unreachable: 9
+        echo requests: 1054977
+        echo replies: 31
+        timestamp request: 5
+        address mask request: 15
+    2193 ICMP messages sent
+    0 ICMP messages failed
+    OutRateLimitHost: 244889
+    ICMP output histogram:
+        destination unreachable: 1833
+        echo requests: 68
+        echo replies: 292
+IcmpMsg:
+        InType0: 31
+        InType3: 9
+        InType8: 1054977
+        InType13: 5
+        InType17: 15
+        OutType0: 292
+        OutType3: 1833
+        OutType8: 68
+Tcp:
+    1209416 active connection openings
+    6555 passive connection openings
+    1208856 failed connection attempts
+    5712 connection resets received
+    2 connections established
+    3041485 segments received
+    14784819 segments sent out
+    9502 segments retransmitted
+    0 bad segments received
+    1210180 resets sent
+Udp:
+    4497 packets received
+    6 packets to unknown port received
+    0 packet receive errors
+    22691 packets sent
+    0 receive buffer errors
+    0 send buffer errors
+UdpLite:
+TcpExt:
+    6 resets received for embryonic SYN_RECV sockets
+    301 TCP sockets finished time wait in fast timer
+    5660 delayed acks sent
+    6 delayed acks further delayed because of locked socket
+    Quick ack mode was activated 168 times
+    179930 packet headers predicted
+    218998 acknowledgments not containing data payload received
+    81207 predicted acknowledgments
+    TCPSackRecovery: 111
+    Detected reordering 1 times using SACK
+    TCPDSACKUndo: 9
+    10 congestion windows recovered without slow start after partial ack
+    TCPLostRetransmit: 333
+    8710 fast retransmits
+    TCPTimeouts: 670
+    TCPLossProbes: 238
+    TCPLossProbeRecovery: 3
+    TCPBacklogCoalesce: 27543
+    TCPDSACKOldSent: 179
+    TCPDSACKRecv: 144
+    TCPDSACKOfoRecv: 10
+    394 connections reset due to unexpected data
+    19 connections reset due to early user close
+    52 connections aborted due to timeout
+    TCPDSACKIgnoredNoUndo: 70
+    TCPSackShifted: 404
+    TCPSackMerged: 1833
+    TCPSackShiftFallback: 741
+    TCPRcvCoalesce: 109678
+    TCPOFOQueue: 242
+    TCPChallengeACK: 8
+    TCPAutoCorking: 16511
+    TCPSynRetrans: 418
+    TCPOrigDataSent: 12215858
+    TCPHystartTrainDetect: 7
+    TCPHystartTrainCwnd: 1979
+    TCPHystartDelayDetect: 3
+    TCPHystartDelayCwnd: 168
+    TCPACKSkippedSeq: 141
+    TCPKeepAlive: 270
+    TCPDelivered: 12211739
+    TCPAckCompressed: 31
+    TcpTimeoutRehash: 414
+    TCPDSACKRecvSegs: 154
+IpExt:
+    InMcastPkts: 1054692
+    InBcastPkts: 505301
+    InOctets: 858006084
+    OutOctets: 17626572807
+    InMcastOctets: 88594024
+    InBcastOctets: 185334404
+    InCsumErrors: 10
+    InNoECTPkts: 3792076
+MPTcpExt:

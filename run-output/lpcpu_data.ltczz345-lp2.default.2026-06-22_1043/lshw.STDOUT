@@ -1,0 +1,186 @@
+ltczz345-lp2.ltc.tadn.ibm.com
+    description: pSeries LPAR
+    product: IBM,9009-42G
+    vendor: IBM
+    serial: IBM,0613C72AW
+    width: 64 bits
+    capabilities: smp
+    configuration: uuid=2b56c74a-61ce-4ba1-89dc-08abf8007d19
+  *-core
+       description: Motherboard
+       physical id: 0
+       clock: 2400MHz
+     *-firmware
+          product: IBM,FW950.80 (VL950_127)
+          physical id: 0
+          logical name: /proc/device-tree
+     *-cpu:0
+          description: POWER9 (architected), altivec supported
+          product: PowerPC,POWER9
+          physical id: 1
+          bus info: cpu@0
+          version: 2.3 (pvr 004e 0203)
+          size: 2900MHz
+          clock: 2400MHz
+          capabilities: performance-monitor
+          configuration: threads=8
+        *-cache:0
+             description: L1 Cache (instruction)
+             physical id: 0
+             size: 32KiB
+        *-cache:1
+             description: L1 Cache (data)
+             physical id: 1
+             size: 32KiB
+     *-cpu:1
+          description: POWER9 (architected), altivec supported
+          product: PowerPC,POWER9
+          physical id: 16
+          bus info: cpu@1
+          version: 2.3 (pvr 004e 0203)
+          size: 2900MHz
+          clock: 2400MHz
+          capabilities: performance-monitor
+          configuration: threads=8
+        *-cache:0
+             description: L1 Cache (instruction)
+             physical id: 0
+             size: 32KiB
+        *-cache:1
+             description: L1 Cache (data)
+             physical id: 1
+             size: 32KiB
+     *-cpu:2
+          description: POWER9 (architected), altivec supported
+          product: PowerPC,POWER9
+          physical id: 8
+          bus info: cpu@2
+          version: 2.3 (pvr 004e 0203)
+          size: 2900MHz
+          clock: 2400MHz
+          capabilities: performance-monitor
+          configuration: threads=8
+        *-cache:0
+             description: L1 Cache (instruction)
+             physical id: 0
+             size: 32KiB
+        *-cache:1
+             description: L1 Cache (data)
+             physical id: 1
+             size: 32KiB
+     *-memory
+          description: System memory
+          physical id: 2
+          size: 32GiB
+     *-network:0
+          description: Ethernet interface
+          product: MT28800 Family [ConnectX-5 Ex]
+          vendor: Mellanox Technologies
+          physical id: 3
+          bus info: pci@0018:01:00.0
+          logical name: enP24p1s0f0np0
+          version: 00
+          serial: ec:0d:9a:ca:b6:a4
+          slot: U78D2.001.WZS0P6Z-P1-C8-T1
+          size: 100Gbit/s
+          capacity: 100Gbit/s
+          width: 64 bits
+          clock: 33MHz
+          capabilities: pciexpress vpd msix pm bus_master cap_list rom ethernet physical fibre 1000bx-fd 10000bx-fd 25000bx-fd 40000bx-fd 100000bx-fd autonegotiation
+          configuration: autonegotiation=on broadcast=yes driver=mlx5_core driverversion=6.12.0-211.7.1.el10_2.ppc64le duplex=full firmware=16.35.3006 (IBM0000000020) ip=192.12.0.2 latency=0 link=yes multicast=yes port=fibre speed=100Gbit/s
+          resources: irq:18 memory:40020000000-4003fffffff memory:40040100000-400401fffff
+     *-network:1
+          description: Ethernet interface
+          product: MT28800 Family [ConnectX-5 Ex]
+          vendor: Mellanox Technologies
+          physical id: 0.1
+          bus info: pci@0018:01:00.1
+          logical name: enP24p1s0f1np1
+          version: 00
+          serial: ec:0d:9a:ca:b6:a5
+          slot: U78D2.001.WZS0P6Z-P1-C8-T2
+          size: 100Gbit/s
+          capacity: 100Gbit/s
+          width: 64 bits
+          clock: 33MHz
+          capabilities: pciexpress vpd msix pm bus_master cap_list rom ethernet physical fibre 1000bx-fd 10000bx-fd 25000bx-fd 40000bx-fd 100000bx-fd autonegotiation
+          configuration: autonegotiation=on broadcast=yes driver=mlx5_core driverversion=6.12.0-211.7.1.el10_2.ppc64le duplex=full firmware=16.35.3006 (IBM0000000020) ip=192.13.0.2 latency=0 link=yes multicast=yes port=fibre speed=100Gbit/s
+          resources: irq:19 memory:40000000000-4001fffffff memory:40040000000-400400fffff
+  *-vty
+       description: Virtual I/O device (vty)
+       physical id: 1
+       bus info: vio@30000000
+       logical name: /proc/device-tree/vdevice/vty@30000000
+       configuration: driver=hvc_console
+  *-l-lan
+       description: Ethernet interface
+       physical id: 2
+       bus info: vio@30000004
+       logical name: /proc/device-tree/vdevice/l-lan@30000004
+       logical name: en0
+       serial: 3a:ed:0b:4b:4c:04
+       size: 1Gbit/s
+       capabilities: ethernet physical
+       configuration: autonegotiation=off broadcast=yes driver=ibmveth driverversion=1.06 duplex=full ip=10.48.32.142 link=yes multicast=yes speed=1Gbit/s
+  *-v-scsi
+       description: Virtual I/O device (v-scsi)
+       physical id: 3
+       bus info: vio@30000066
+       logical name: /proc/device-tree/vdevice/v-scsi@30000066
+       logical name: scsi0
+       configuration: driver=ibmvscsi
+     *-disk
+          description: SCSI Disk
+          product: VDASD
+          vendor: AIX
+          physical id: 0.1.0
+          bus info: scsi@0:0.1.0
+          logical name: /dev/sda
+          version: 0001
+          serial: 00fac72a00004b000000018807535fab.2
+          size: 350GiB (375GB)
+          capabilities: partitioned partitioned:dos
+          configuration: ansiversion=3 logicalsectorsize=4096 sectorsize=4096
+        *-volume UNCLAIMED
+             description: EFI GPT partition
+             physical id: 1
+             bus info: scsi@0:0.1.0,1
+             capacity: 43GiB
+             capabilities: primary bootable nofs
+  *-ibm_sp
+       description: Virtual I/O device (IBM,sp)
+       physical id: 4
+       bus info: vio@4000
+       logical name: /proc/device-tree/vdevice/IBM,sp@4000
+  *-rtc
+       description: Virtual I/O device (rtc)
+       physical id: 5
+       bus info: vio@4001
+       logical name: /proc/device-tree/vdevice/rtc@4001
+  *-nvram
+       description: Virtual I/O device (nvram)
+       physical id: 6
+       bus info: vio@4002
+       logical name: /proc/device-tree/vdevice/nvram@4002
+  *-gscsi
+       description: Virtual I/O device (gscsi)
+       physical id: 7
+       bus info: vio@4004
+       logical name: /proc/device-tree/vdevice/gscsi@4004
+  *-ibm_compression-v1
+       description: Virtual I/O device (ibm,compression-v1)
+       physical id: 8
+       bus info: vio@ibm,compression-v1
+       logical name: /proc/device-tree/ibm,platform-facilities/ibm,compression-v1
+       configuration: driver=nx_compress_pseries
+  *-ibm_random-v1
+       description: Virtual I/O device (ibm,random-v1)
+       physical id: 9
+       bus info: vio@ibm,random-v1
+       logical name: /proc/device-tree/ibm,platform-facilities/ibm,random-v1
+       configuration: driver=pseries_rng
+  *-ibm_sym-encryption-v1
+       description: Virtual I/O device (ibm,sym-encryption-v1)
+       physical id: a
+       bus info: vio@ibm,sym-encryption-v1
+       logical name: /proc/device-tree/ibm,platform-facilities/ibm,sym-encryption-v1

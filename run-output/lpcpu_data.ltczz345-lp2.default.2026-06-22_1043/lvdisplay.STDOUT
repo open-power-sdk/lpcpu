@@ -1,0 +1,72 @@
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/swap
+  LV Name                swap
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                uy5iz1-QScx-aGTj-QGvn-Qjul-EOEH-CegPep
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:49 -0500
+  LV Status              available
+  # open                 1
+  LV Size                <15.97 GiB
+  Current LE             4088
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+   
+  --- Segments ---
+  Logical extents 0 to 4087:
+    Type		linear
+    Physical volume	/dev/sda3
+    Physical extents	0 to 4087
+   
+   
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/home
+  LV Name                home
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                62phAt-Avbe-GquJ-V2tI-ZH94-Etey-84r8w2
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:50 -0500
+  LV Status              available
+  # open                 1
+  LV Size                262.02 GiB
+  Current LE             67078
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Segments ---
+  Logical extents 0 to 67077:
+    Type		linear
+    Physical volume	/dev/sda3
+    Physical extents	4088 to 71165
+   
+   
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/root
+  LV Name                root
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                RL4BiH-q2vH-a4Rp-jcgO-BklZ-Lv0Q-kNk681
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:50 -0500
+  LV Status              available
+  # open                 1
+  LV Size                70.00 GiB
+  Current LE             17920
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+   
+  --- Segments ---
+  Logical extents 0 to 17919:
+    Type		linear
+    Physical volume	/dev/sda3
+    Physical extents	71166 to 89085
+   
+   

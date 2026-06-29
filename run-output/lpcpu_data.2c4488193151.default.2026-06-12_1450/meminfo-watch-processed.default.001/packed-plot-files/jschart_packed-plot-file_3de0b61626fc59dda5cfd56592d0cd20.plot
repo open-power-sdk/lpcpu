@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.MemFree
+0 2753028
+5 2829796
+10 2869716
+15 2890336
+20 2902568
+25 2914728

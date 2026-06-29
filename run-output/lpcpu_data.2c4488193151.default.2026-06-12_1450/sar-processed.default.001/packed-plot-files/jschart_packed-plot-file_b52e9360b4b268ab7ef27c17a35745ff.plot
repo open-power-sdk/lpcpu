@@ -1,0 +1,32 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:Memory Used for Buffers
+5 82516
+10 82524
+15 82524
+20 82536
+25 82544
+30 82552
+--- JSChart Packed Plot File V1 ---
+#LABEL:Memory Used for Cache
+5 763112
+10 763120
+15 763132
+20 763136
+25 763152
+30 763152
+--- JSChart Packed Plot File V1 ---
+#LABEL:Other Used Memory
+5 -622308
+10 -658004
+15 -677076
+20 -694808
+25 -706536
+30 -720528
+--- JSChart Packed Plot File V1 ---
+#LABEL:Free Memory
+5 3572884
+10 3608560
+15 3627620
+20 3645324
+25 3657072
+30 3671036

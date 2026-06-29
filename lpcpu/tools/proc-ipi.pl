@@ -16,6 +16,10 @@
 # The output, sent to stdout, shows IPI deltas in a format similar to
 # /proc/interrupts but with only IPI lines and delta values.
 #
+# Supports two /proc/interrupts formats:
+# 1. Linux x86: "IPI0:  123  456  789  ..."
+# 2. POWER/XICS: "16:  123  456  789  ... XICS 2 Edge IPI"
+#
 # Arguments:  [interval]
 
 use strict;
@@ -50,17 +54,41 @@ $cpu_count = @headers;
 
 # Extract only IPI lines from the initial snapshot
 for ($i = 1; $i < @lines; $i++) {
-	# Only process lines that start with IPI
-	if ($lines[$i] =~ /^\s*IPI/) {
+	# Process lines that contain IPI (case-insensitive word boundary match)
+	# Supports two formats:
+	# 1. Linux x86: "IPI0:  123  456  789  ..."
+	# 2. POWER/XICS: "16:  123  456  789  ... XICS 2 Edge IPI"
+	if ($lines[$i] =~ /\bIPI\b/i) {
 		my @fields = ();
-		@fields = split(" ", $lines[$i], $cpu_count + 1);
-		# Parse the description out of the last field.
-		# The description was purposely not parsed in the previous split
-		# because we want to preserve any leading spaces before the
-		# description.
-		$fields[$#fields] =~ /([0-9]*)(.*)/;
-		$fields[$#fields] = $1;
-		push @fields, $2;
+		my $line = $lines[$i];
+		
+		# Check if line starts with interrupt number (POWER format)
+		if ($line =~ /^\s*(\d+):/) {
+			# POWER format: skip the interrupt number, extract IPI name from end
+			$line =~ s/^\s*\d+:\s*//;  # Remove interrupt number
+			@fields = split(" ", $line);
+			
+			# Find where CPU counts end (before text description like "XICS")
+			my $ipi_name = "IPI";
+			my @cpu_counts;
+			for (my $k = 0; $k < @fields; $k++) {
+				if ($fields[$k] =~ /^\d+$/ && $k < $cpu_count) {
+					push @cpu_counts, $fields[$k];
+				} else {
+					# Rest is description, extract IPI name
+					$ipi_name = join(" ", @fields[$k..$#fields]);
+					last;
+				}
+			}
+			@fields = ($ipi_name, @cpu_counts, "");
+		} else {
+			# Linux x86 format: IPI name at start
+			@fields = split(" ", $line, $cpu_count + 1);
+			# Parse the description out of the last field
+			$fields[$#fields] =~ /([0-9]*)(.*)/;
+			$fields[$#fields] = $1;
+			push @fields, $2;
+		}
 		push @ipi_data_prev, \@fields;
 	}
 }
@@ -75,17 +103,41 @@ while (1) {
 	
 	# Extract only IPI lines from the current snapshot
 	for ($i = 1; $i < @lines; $i++) {
-		# Only process lines that start with IPI
-		if ($lines[$i] =~ /^\s*IPI/) {
+		# Process lines that contain IPI (case-insensitive word boundary match)
+		# Supports two formats:
+		# 1. Linux x86: "IPI0:  123  456  789  ..."
+		# 2. POWER/XICS: "16:  123  456  789  ... XICS 2 Edge IPI"
+		if ($lines[$i] =~ /\bIPI\b/i) {
 			my @fields = ();
-			@fields = split(" ", $lines[$i], $cpu_count + 1);
-			# Parse the description out of the last field.
-			# The description was purposely not parsed in the previous split
-			# because we want to preserve any leading spaces before the
-			# description.
-			$fields[$#fields] =~ /([0-9]*)(.*)/;
-			$fields[$#fields] = $1;
-			push @fields, $2;
+			my $line = $lines[$i];
+			
+			# Check if line starts with interrupt number (POWER format)
+			if ($line =~ /^\s*(\d+):/) {
+				# POWER format: skip the interrupt number, extract IPI name from end
+				$line =~ s/^\s*\d+:\s*//;  # Remove interrupt number
+				@fields = split(" ", $line);
+				
+				# Find where CPU counts end (before text description like "XICS")
+				my $ipi_name = "IPI";
+				my @cpu_counts;
+				for (my $k = 0; $k < @fields; $k++) {
+					if ($fields[$k] =~ /^\d+$/ && $k < $cpu_count) {
+						push @cpu_counts, $fields[$k];
+					} else {
+						# Rest is description, extract IPI name
+						$ipi_name = join(" ", @fields[$k..$#fields]);
+						last;
+					}
+				}
+				@fields = ($ipi_name, @cpu_counts, "");
+			} else {
+				# Linux x86 format: IPI name at start
+				@fields = split(" ", $line, $cpu_count + 1);
+				# Parse the description out of the last field
+				$fields[$#fields] =~ /([0-9]*)(.*)/;
+				$fields[$#fields] = $1;
+				push @fields, $2;
+			}
 			push @ipi_data_curr, \@fields;
 		}
 	}

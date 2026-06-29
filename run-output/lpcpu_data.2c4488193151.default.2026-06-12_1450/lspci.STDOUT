@@ -1,0 +1,205 @@
+00:00.0 Host bridge: Apple Inc. Device 1a05
+	Control: I/O- Mem- BusMaster- SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+	Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+
+00:01.0 Ethernet controller: Red Hat, Inc. Virtio network device (rev 01)
+	Subsystem: Red Hat, Inc. Device 0041
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 14
+	Region 0: Memory at 180000000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001500 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000008 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=00000011
+	Capabilities: [84] MSI-X: Enable+ Count=3 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000030
+	Kernel driver in use: virtio-pci
+
+00:05.0 Communication controller: Red Hat, Inc. Virtio console (rev 01)
+	Subsystem: Red Hat, Inc. Device 0043
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 15
+	Region 0: Memory at 180010000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001400 (32-bit, non-prefetchable) [size=128]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000010 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=0000000c
+	Capabilities: [84] MSI-X: Enable+ Count=5 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000050
+	Kernel driver in use: virtio-pci
+
+00:06.0 Mass storage controller: Red Hat, Inc. Virtio block device (rev 01)
+	Subsystem: Red Hat, Inc. Device 0042
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 16
+	Region 0: Memory at 180020000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001540 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000004 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=0000003c
+	Capabilities: [84] MSI-X: Enable+ Count=2 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000020
+	Kernel driver in use: virtio-pci
+
+00:07.0 Mass storage controller: Red Hat, Inc. Virtio block device (rev 01)
+	Subsystem: Red Hat, Inc. Device 0042
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 17
+	Region 0: Memory at 180030000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001580 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000004 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=0000003c
+	Capabilities: [84] MSI-X: Enable+ Count=2 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000020
+	Kernel driver in use: virtio-pci
+
+00:08.0 Mass storage controller: Red Hat, Inc. Virtio block device (rev 01)
+	Subsystem: Red Hat, Inc. Device 0042
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 18
+	Region 0: Memory at 180040000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 500015c0 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000004 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=0000003c
+	Capabilities: [84] MSI-X: Enable+ Count=2 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000020
+	Kernel driver in use: virtio-pci
+
+00:09.0 Mass storage controller: Red Hat, Inc. Virtio file system (rev 01)
+	Subsystem: Red Hat, Inc. Device 005a
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 19
+	Region 0: Memory at 180050000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001600 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000008 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=00000028
+	Capabilities: [84] MSI-X: Enable+ Count=3 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000030
+	Kernel driver in use: virtio-pci
+
+00:0a.0 Communication controller: Red Hat, Inc. Virtio socket (rev 01)
+	Subsystem: Red Hat, Inc. Device 0053
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 20
+	Region 0: Memory at 180060000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001480 (32-bit, non-prefetchable) [size=128]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=0000000c multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=00000008
+	Capabilities: [84] MSI-X: Enable+ Count=4 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000040
+	Kernel driver in use: virtio-pci
+
+00:0b.0 Network and computing encryption device: Red Hat, Inc. Virtio RNG (rev 01)
+	Subsystem: Red Hat, Inc. Device 0044
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 21
+	Region 0: Memory at 180080000 (64-bit, non-prefetchable) [size=32K]
+	Region 2: Memory at 50001640 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000004 multiplier=00000004
+	Capabilities: [74] MSI-X: Enable+ Count=2 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000020
+	Kernel driver in use: virtio-pci
+
+00:0c.0 Memory controller: Red Hat, Inc. Virtio memory balloon (rev 01)
+	Subsystem: Red Hat, Inc. Device 0045
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64
+	Interrupt: pin A routed to IRQ 22
+	Region 0: Memory at 180070000 (64-bit, non-prefetchable) [size=64K]
+	Region 2: Memory at 50001680 (32-bit, non-prefetchable) [size=64]
+	Capabilities: [40] Vendor Specific Information: VirtIO: CommonCfg
+		BAR=0 offset=00000000 size=00000038
+	Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+		BAR=0 offset=00001000 size=00000001
+	Capabilities: [60] Vendor Specific Information: VirtIO: Notify
+		BAR=0 offset=00004000 size=00000008 multiplier=00000004
+	Capabilities: [74] Vendor Specific Information: VirtIO: DeviceCfg
+		BAR=0 offset=00008000 size=00000008
+	Capabilities: [84] MSI-X: Enable+ Count=3 Masked-
+		Vector table: BAR=2 offset=00000000
+		PBA: BAR=2 offset=00000030
+	Kernel driver in use: virtio-pci
+
+00:0d.0 USB controller: Apple Inc. Device 1a06 (prog-if 30 [XHCI])
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 64, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 48
+	Region 0: Memory at 50000000 (32-bit, non-prefetchable) [size=4K]
+	Region 1: Memory at 50001000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: [40] MSI-X: Enable+ Count=32 Masked-
+		Vector table: BAR=1 offset=00000000
+		PBA: BAR=1 offset=00000200
+	Capabilities: [4c] MSI: Enable- Count=1/32 Maskable- 64bit+
+		Address: 0000000000000000  Data: 0000
+	Kernel driver in use: xhci_hcd
+

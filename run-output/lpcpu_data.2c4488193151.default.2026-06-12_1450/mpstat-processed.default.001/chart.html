@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>mpstat charts</title>
+<link rel="stylesheet" href="../jschart.pm/jschart.css"/>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/queue.v1.min.js" charset="utf-8"></script>
+<script src="../jschart.pm/jschart.js" charset="utf-8"></script>
+<a href='#cpu_section'>Generic CPU Utilization</a><br/>
+<a href='#numa_section'>Per NUMA Node CPU Utilization</a><br/>
+<a name='cpu_section'></a><hr/><div align='center'><h1>Generic CPU Utilization</h1></div><hr/>
+<hr id='chart_nav_cpu_all'/>
+<a onclick='navigate_to_chart("chart_nav_cpu_0");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_eed017ab6768d14789fe3c174269331d_chart'>
+      <script>
+        create_graph(1, "jschart_eed017ab6768d14789fe3c174269331d", "1. CPU all", "Time (secs.)", "CPU Utilization", { y_max: 100, y_min: 0, packed: 10, plotfile: "packed-plot-files/jschart_packed-plot-file_d642d0d98a318ce7e9e1f67ee2090110.plot", raw_data_sources: ["..//mpstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_eed017ab6768d14789fe3c174269331d_table'>
+        <tr class='header'><th colspan='4'>1. CPU all</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_cpu_0'/>
+<a onclick='navigate_to_chart("chart_nav_cpu_all");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_cpu_1");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_7c636f71b0905d3ca2ad787c52cc53b9_chart'>
+      <script>
+        create_graph(1, "jschart_7c636f71b0905d3ca2ad787c52cc53b9", "2. CPU 0", "Time (secs.)", "CPU Utilization", { y_max: 100, y_min: 0, packed: 10, plotfile: "packed-plot-files/jschart_packed-plot-file_1c90c595da2d8a5e01a9a5813166840d.plot", raw_data_sources: ["..//mpstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_7c636f71b0905d3ca2ad787c52cc53b9_table'>
+        <tr class='header'><th colspan='4'>2. CPU 0</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_cpu_1'/>
+<a onclick='navigate_to_chart("chart_nav_cpu_0");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_numa_0");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_5b224bacedfdb7387958a6f66b7dab8f_chart'>
+      <script>
+        create_graph(1, "jschart_5b224bacedfdb7387958a6f66b7dab8f", "3. CPU 1", "Time (secs.)", "CPU Utilization", { y_max: 100, y_min: 0, packed: 10, plotfile: "packed-plot-files/jschart_packed-plot-file_5aa910f357b397ccabe56cdf6f181e78.plot", raw_data_sources: ["..//mpstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_5b224bacedfdb7387958a6f66b7dab8f_table'>
+        <tr class='header'><th colspan='4'>3. CPU 1</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<a name='numa_section'></a><hr/><div align='center'><h1>Per NUMA Node CPU Utilization</h1></div><hr/>
+<hr id='chart_nav_numa_0'/>
+<a onclick='navigate_to_chart("chart_nav_cpu_1");'>Previous Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_57a1e078dc72876733dbfb869c5bd3b5_chart'>
+      <script>
+        create_graph(1, "jschart_57a1e078dc72876733dbfb869c5bd3b5", "4. NUMA Node 0", "Time (secs.)", "CPU Utilization", { y_max: 100, y_min: 0, packed: 10, plotfile: "packed-plot-files/jschart_packed-plot-file_1112a4e1f5c34429479cdbff00f75b53.plot" });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_57a1e078dc72876733dbfb869c5bd3b5_table'>
+        <tr class='header'><th colspan='4'>4. NUMA Node 0</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+
+<script>finish_page()</script>
+
+</body>
+</html>

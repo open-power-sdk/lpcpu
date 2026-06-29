@@ -534,6 +534,211 @@ if (@recommendations == 0) {
     }
 }
 
+# ============================================================================
+# 4. THREAD-TO-CPU CORRELATION ANALYSIS
+# ============================================================================
+
+# Check if cpu-affinity data file exists
+my $affinity_file;
+if (@ARGV > 2) {
+    $affinity_file = "$working_directory/proc-cpu-affinity.$invocation_id.$identifier";
+} else {
+    $affinity_file = "$working_directory/proc-cpu-affinity.$identifier";
+}
+
+if (-e $affinity_file && @hot_cpus) {
+    print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+    print "-" x 80 . "\n";
+    print "Analyzing which threads were observed on hot CPUs during collection...\n\n";
+    
+    # Parse the affinity data file
+    my %thread_observations;  # cpu -> tid -> {count, pid, comm, pcpu_sum, pcpu_count}
+    my %thread_migrations;    # tid -> {cpus -> count}
+    my %cpu_sample_counts;    # cpu -> total sample count
+    
+    if (open(AFFINITY, "<$affinity_file")) {
+        while (<AFFINITY>) {
+            next if /^#/;  # Skip header lines
+            chomp;
+            
+            # Format: Timestamp PID TID PSR PCPU COMM
+            my @fields = split /\s+/, $_, 6;
+            next unless @fields >= 6;
+            
+            my ($timestamp, $pid, $tid, $psr, $pcpu, $comm) = @fields;
+            my $cpu_name = "CPU$psr";
+            
+            # Track observations per CPU
+            if (!exists $thread_observations{$cpu_name}{$tid}) {
+                $thread_observations{$cpu_name}{$tid} = {
+                    count => 0,
+                    pid => $pid,
+                    comm => $comm,
+                    pcpu_sum => 0,
+                    pcpu_count => 0
+                };
+            }
+            
+            $thread_observations{$cpu_name}{$tid}{count}++;
+            $thread_observations{$cpu_name}{$tid}{pcpu_sum} += $pcpu;
+            # Count all samples for average calculation, not just non-zero
+            $thread_observations{$cpu_name}{$tid}{pcpu_count}++;
+            
+            # Track migrations
+            $thread_migrations{$tid}{$cpu_name}++;
+            
+            # Track total samples per CPU
+            $cpu_sample_counts{$cpu_name}++;
+        }
+        close AFFINITY;
+        
+        # Analyze each hot CPU
+        foreach my $cpu (sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus) {
+            next unless exists $thread_observations{$cpu};
+            
+            my $ipi_multiplier = $cpu_totals{$cpu} / $avg_per_cpu;
+            printf "\n%s (%.1fx average IPI rate)\n", $cpu, $ipi_multiplier;
+            print "-" x 60 . "\n";
+            
+            # Get total samples for this CPU
+            my $cpu_total_samples = $cpu_sample_counts{$cpu} || 0;
+            
+            if ($cpu_total_samples == 0) {
+                print "No thread observations recorded for this CPU.\n";
+                next;
+            }
+            
+            print "Threads observed on $cpu during the collection period:\n\n";
+            printf "%-6s %-6s %-6s %-12s %-11s %-6s  %s\n",
+                   "Rank", "PID", "TID", "Observations", "%Observed", "%CPU", "COMMAND";
+            print "-" x 60 . "\n";
+            
+            # Sort threads by observation count (primary) and average %CPU (secondary)
+            my @sorted_tids = sort {
+                my $count_cmp = $thread_observations{$cpu}{$b}{count} <=> $thread_observations{$cpu}{$a}{count};
+                return $count_cmp if $count_cmp != 0;
+                
+                # Secondary sort by average %CPU (across all samples, not just non-zero)
+                my $avg_pcpu_a = $thread_observations{$cpu}{$a}{count} > 0 ?
+                                $thread_observations{$cpu}{$a}{pcpu_sum} / $thread_observations{$cpu}{$a}{count} : 0;
+                my $avg_pcpu_b = $thread_observations{$cpu}{$b}{count} > 0 ?
+                                $thread_observations{$cpu}{$b}{pcpu_sum} / $thread_observations{$cpu}{$b}{count} : 0;
+                return $avg_pcpu_b <=> $avg_pcpu_a;
+            } keys %{$thread_observations{$cpu}};
+            
+            my $rank = 1;
+            my $displayed = 0;
+            my $max_display = 10;
+            
+            foreach my $tid (@sorted_tids) {
+                my $obs = $thread_observations{$cpu}{$tid};
+                my $pct_observed = ($obs->{count} / $cpu_total_samples) * 100;
+                # Calculate average %CPU across ALL samples (including zeros)
+                my $avg_pcpu = $obs->{count} > 0 ?
+                              $obs->{pcpu_sum} / $obs->{count} : 0;
+                
+                if ($displayed < $max_display) {
+                    printf "%-6d %-6d %-6d %-12d %-11.1f%% %-6.1f  %s\n",
+                           $rank, $obs->{pid}, $tid, $obs->{count},
+                           $pct_observed, $avg_pcpu, $obs->{comm};
+                    $displayed++;
+                }
+                $rank++;
+            }
+            
+            # Show omitted count
+            if (@sorted_tids > $max_display) {
+                printf "\n+ %d more threads omitted\n", scalar(@sorted_tids) - $max_display;
+            }
+            
+            # Process-level aggregation
+            my %process_obs;  # pid -> {count, comm}
+            foreach my $tid (keys %{$thread_observations{$cpu}}) {
+                my $obs = $thread_observations{$cpu}{$tid};
+                my $pid = $obs->{pid};
+                
+                if (!exists $process_obs{$pid}) {
+                    $process_obs{$pid} = {
+                        count => 0,
+                        comm => $obs->{comm}
+                    };
+                }
+                $process_obs{$pid}{count} += $obs->{count};
+            }
+            
+            # Show process summary for top processes
+            my @top_processes = sort { $process_obs{$b}{count} <=> $process_obs{$a}{count} }
+                               keys %process_obs;
+            
+            if (@top_processes > 0 && @top_processes != @sorted_tids) {
+                print "\nProcess summary (top processes by total observations):\n";
+                my $proc_count = 0;
+                foreach my $pid (@top_processes) {
+                    last if $proc_count >= 5;  # Show top 5 processes
+                    printf "- %s (PID %d): Observed in %d samples\n",
+                           $process_obs{$pid}{comm}, $pid, $process_obs{$pid}{count};
+                    $proc_count++;
+                }
+            }
+            
+            # Migration analysis for top threads
+            print "\nThread migration patterns:\n";
+            my $migration_shown = 0;
+            foreach my $tid (@sorted_tids[0..4]) {  # Top 5 threads
+                last unless defined $tid;
+                my @cpus_visited = keys %{$thread_migrations{$tid}};
+                
+                if (@cpus_visited > 1) {
+                    my $obs = $thread_observations{$cpu}{$tid};
+                    print "- Thread $tid ($obs->{comm}) was observed on: ";
+                    
+                    my @sorted_cpus = sort {
+                        $thread_migrations{$tid}{$b} <=> $thread_migrations{$tid}{$a}
+                    } @cpus_visited;
+                    
+                    my @cpu_details;
+                    foreach my $visited_cpu (@sorted_cpus[0..2]) {  # Top 3 CPUs
+                        last unless defined $visited_cpu;
+                        push @cpu_details, sprintf("%s (%d samples)",
+                                                  $visited_cpu,
+                                                  $thread_migrations{$tid}{$visited_cpu});
+                    }
+                    print join(", ", @cpu_details);
+                    if (@sorted_cpus > 3) {
+                        printf " (+%d more CPUs)", scalar(@sorted_cpus) - 3;
+                    }
+                    print "\n";
+                    $migration_shown++;
+                }
+            }
+            
+            if ($migration_shown == 0) {
+                print "- Top threads showed minimal migration between CPUs\n";
+            }
+        }
+        
+        # Disclaimer
+        print "\n" . "-" x 80 . "\n";
+        print "NOTE: These threads were observed on the hot CPUs during the collection\n";
+        print "period. This does not prove they caused the high IPI activity, but provides\n";
+        print "useful context for further investigation. The PSR field indicates the last\n";
+        print "CPU the thread executed on, not necessarily the current CPU at that instant.\n";
+        
+    } else {
+        # File open failed
+        print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+        print "-" x 80 . "\n";
+        print "Failed to open CPU affinity data file: $affinity_file\n";
+    }
+} elsif (!-e $affinity_file && @hot_cpus) {
+    # File doesn't exist but we have hot CPUs
+    print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+    print "-" x 80 . "\n";
+    print "Thread-to-CPU correlation skipped: CPU affinity data not collected.\n";
+    print "To enable this analysis, run with: profilers=\"ipi cpu-affinity\"\n";
+}
+
+
 # Summary statistics file
 if (open(SUMMARY, ">$output_directory/ipi-analysis-summary.txt")) {
     print SUMMARY "IPI Analysis Summary\n";

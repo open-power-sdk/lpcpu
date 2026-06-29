@@ -1,0 +1,15 @@
+Running Linux Performance Customer Profiler Utility version 356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -0500
+Importing CLI variable : profilers=ipi
+Importing CLI variable : duration=30
+
+Starting Time: Mon Jun 22 10:43:59 AM CDT 2026
+Setting up IPI monitoring.
+Profilers start at: Mon Jun 22 10:43:59 AM CDT 2026
+Starting IPI monitoring.default [5]
+Waiting for 30 seconds.
+Stopping IPI monitoring.
+Profilers stop at: Mon Jun 22 10:44:29 AM CDT 2026
+Processing IPI data.
+Setting up postprocess.sh
+Gathering system information
+Finishing time: Mon Jun 22 10:44:37 AM CDT 2026

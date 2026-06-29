@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>vmstat charts</title>
+<link rel="stylesheet" href="../jschart.pm/jschart.css"/>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/queue.v1.min.js" charset="utf-8"></script>
+<script src="../jschart.pm/jschart.js" charset="utf-8"></script>
+<hr id='chart_nav_processes'/>
+<a onclick='navigate_to_chart("chart_nav_memory");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_530968b205d33b3869aa32e2933fbfad_chart'>
+      <script>
+        create_graph(0, "jschart_530968b205d33b3869aa32e2933fbfad", "1. Processes", "Time (secs.)", "Processes", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_b192fd78ffdc2477c4ad4bd14882fe6f.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_530968b205d33b3869aa32e2933fbfad_table'>
+        <tr class='header'><th colspan='4'>1. Processes</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_memory'/>
+<a onclick='navigate_to_chart("chart_nav_processes");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_swap");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_cd69b4957f06cd818d7bf3d61980e291_chart'>
+      <script>
+        create_graph(1, "jschart_cd69b4957f06cd818d7bf3d61980e291", "2. Memory", "Time (secs.)", "Memory (KBytes)", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_f6f23b8be7b558d01f699efe616d3cc1.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_cd69b4957f06cd818d7bf3d61980e291_table'>
+        <tr class='header'><th colspan='4'>2. Memory</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_swap'/>
+<a onclick='navigate_to_chart("chart_nav_memory");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_blockio");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_f0a1dfdc675b0a14a64099f7ac1cee83_chart'>
+      <script>
+        create_graph(0, "jschart_f0a1dfdc675b0a14a64099f7ac1cee83", "3. Swap Activity", "Time (secs.)", "Throughput (KBytes/sec.)", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_4a9d34f13485d80baa515b0144350b92.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_f0a1dfdc675b0a14a64099f7ac1cee83_table'>
+        <tr class='header'><th colspan='4'>3. Swap Activity</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_blockio'/>
+<a onclick='navigate_to_chart("chart_nav_swap");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_interrupts");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_98f4150e8059d2a3b93623b3893e15c1_chart'>
+      <script>
+        create_graph(0, "jschart_98f4150e8059d2a3b93623b3893e15c1", "4. Block IO Activity", "Time (secs.)", "Throughput (KBytes/sec.)", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_62ee0c46b95ecb9a1b5cbe9411c2d888.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_98f4150e8059d2a3b93623b3893e15c1_table'>
+        <tr class='header'><th colspan='4'>4. Block IO Activity</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_interrupts'/>
+<a onclick='navigate_to_chart("chart_nav_blockio");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_ctxswitches");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_d5881bb0d29376e42e024b908fcc9706_chart'>
+      <script>
+        create_graph(0, "jschart_d5881bb0d29376e42e024b908fcc9706", "5. Interrupt Activity", "Time (secs.)", "Interrupts/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_030041d7cd7176f065a00dff32a818d8.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_d5881bb0d29376e42e024b908fcc9706_table'>
+        <tr class='header'><th colspan='4'>5. Interrupt Activity</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_ctxswitches'/>
+<a onclick='navigate_to_chart("chart_nav_interrupts");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_cpu");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_783afd7e8d27bf12b83fe65cccc6d2f8_chart'>
+      <script>
+        create_graph(0, "jschart_783afd7e8d27bf12b83fe65cccc6d2f8", "6. Context Switches", "Time (secs.)", "Context Switches/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_32013c50fe273171ff785e1fd2bb3406.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_783afd7e8d27bf12b83fe65cccc6d2f8_table'>
+        <tr class='header'><th colspan='4'>6. Context Switches</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_cpu'/>
+<a onclick='navigate_to_chart("chart_nav_ctxswitches");'>Previous Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_d9747e2da342bdb995f6389533ad1a3d_chart'>
+      <script>
+        create_graph(1, "jschart_d9747e2da342bdb995f6389533ad1a3d", "7. CPU Utilization", "Time (secs.)", "CPU % Utilization", { y_max: 100, y_min: 0, packed: 5, plotfile: "packed-plot-files/jschart_packed-plot-file_6a243c06438c7d20c8b63851adcc3493.plot", raw_data_sources: ["..//vmstat.default.001" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_d9747e2da342bdb995f6389533ad1a3d_table'>
+        <tr class='header'><th colspan='4'>7. CPU Utilization</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+
+<script>finish_page()</script>
+
+</body>
+</html>

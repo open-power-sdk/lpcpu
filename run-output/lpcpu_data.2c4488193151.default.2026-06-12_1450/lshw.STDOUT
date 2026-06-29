@@ -1,0 +1,300 @@
+2c4488193151
+    description: Desktop Computer
+    product: Apple Virtualization Generic Platform
+    vendor: Apple Inc.
+    version: 1
+    serial: Virtualization-e0301a5f-6531-4547-9f1d-614d7164db4d
+    width: 64 bits
+    capabilities: smbios-3.3.0 dmi-3.3.0 smp cp15_barrier swp tagged_addr_disabled
+    configuration: boot=normal chassis=desktop uuid=5f1a30e0-3165-4745-9f1d-614d7164db4d
+  *-core
+       description: Motherboard
+       physical id: 0
+     *-cpu
+          description: CPU
+          product: ARMv8
+          vendor: Apple Inc.
+          physical id: 2
+          bus info: cpu@0
+          slot: Socket 0
+          capabilities: lm
+          configuration: cores=2 enabledcores=2 threads=2
+     *-memory
+          description: System Memory
+          physical id: 3
+          slot: System board or motherboard
+          size: 4GiB
+        *-bank
+             description: DIMM DRAM
+             physical id: 0
+             slot: DIMM 0
+             size: 4GiB
+             width: 64 bits
+     *-firmware
+          description: BIOS
+          vendor: Apple Inc.
+          physical id: 5
+          version: 2103.100.6.0.0
+          date: 04/18/2026
+          size: 1MiB
+          capacity: 1MiB
+          capabilities: pci upgrade shadowing cdboot bootselect uefi virtualmachine
+     *-pci
+          description: Host bridge
+          product: Apple Inc.
+          vendor: Apple Inc.
+          physical id: 100
+          bus info: pci@0000:00:00.0
+          version: 00
+          width: 32 bits
+          clock: 33MHz
+        *-network
+             description: Ethernet controller
+             product: Virtio network device
+             vendor: Red Hat, Inc.
+             physical id: 1
+             bus info: pci@0000:00:01.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:14 memory:180000000-18000ffff memory:50001500-5000153f
+           *-virtio0 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@0
+                configuration: driver=virtio_net
+        *-communication:0
+             description: Communication controller
+             product: Virtio console
+             vendor: Red Hat, Inc.
+             physical id: 5
+             bus info: pci@0000:00:05.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:15 memory:180010000-18001ffff memory:50001400-5000147f
+           *-virtio1 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@1
+                configuration: driver=virtio_console
+        *-storage:0
+             description: Mass storage controller
+             product: Virtio block device
+             vendor: Red Hat, Inc.
+             physical id: 6
+             bus info: pci@0000:00:06.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: storage msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:16 memory:180020000-18002ffff memory:50001540-5000157f
+           *-virtio2
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@2
+                logical name: /dev/vda
+                size: 20GiB (21GB)
+                capabilities: gpt-1.00 partitioned partitioned:gpt
+                configuration: driver=virtio_blk guid=1b6be3fa-a43b-410f-923c-e1abd1dd7fbe logicalsectorsize=512 sectorsize=512
+              *-volume:0
+                   description: EXT4 volume
+                   vendor: Linux
+                   physical id: 1
+                   bus info: virtio@2,1
+                   logical name: /dev/vda1
+                   version: 1.0
+                   serial: fa7c4d0c-8766-404e-88e9-d9385ac9734c
+                   size: 2558MiB
+                   capacity: 18GiB
+                   capabilities: journaled extended_attributes large_files huge_files dir_nlink recover 64bit extents ext4 ext2 initialized
+                   configuration: created=2026-05-21 11:26:58 filesystem=ext4 label=cloudimg-rootfs lastmountpoint=/ modified=2026-06-03 12:03:23 mounted=2026-06-12 14:46:37 state=clean
+              *-volume:1 UNCLAIMED
+                   description: Windows FAT volume
+                   vendor: mkfs.fat
+                   physical id: f
+                   bus info: virtio@2,15
+                   version: FAT32
+                   serial: c12a-2448
+                   size: 97MiB
+                   capacity: 99MiB
+                   capabilities: boot fat initialized
+                   configuration: FATs=2 filesystem=fat label=UEFI
+              *-volume:2
+                   description: EXT4 volume
+                   vendor: Linux
+                   physical id: 10
+                   bus info: virtio@2,16
+                   logical name: /dev/vda16
+                   version: 1.0
+                   serial: 40bbbb89-65b4-41f0-ad66-b2637a3d87a1
+                   size: 923MiB
+                   capacity: 923MiB
+                   capabilities: journaled extended_attributes large_files huge_files dir_nlink recover 64bit extents ext4 ext2 initialized
+                   configuration: created=2026-05-21 11:27:14 filesystem=ext4 label=BOOT lastmountpoint=/boot modified=2026-06-12 14:46:37 mounted=2026-06-12 14:46:37 state=clean
+        *-storage:1
+             description: Mass storage controller
+             product: Virtio block device
+             vendor: Red Hat, Inc.
+             physical id: 7
+             bus info: pci@0000:00:07.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: storage msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:17 memory:180030000-18003ffff memory:50001580-500015bf
+           *-virtio3
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@3
+                logical name: /dev/vdb
+                size: 20GiB (21GB)
+                capabilities: gpt-1.00 partitioned partitioned:gpt
+                configuration: driver=virtio_blk guid=c1fedd4b-9369-4c19-9c2d-597b24d169d3 logicalsectorsize=512 sectorsize=512
+              *-volume
+                   description: EXT4 volume
+                   vendor: Linux
+                   physical id: 1
+                   bus info: virtio@3,1
+                   logical name: /dev/vdb1
+                   logical name: /etc/resolv.conf
+                   logical name: /etc/hostname
+                   logical name: /etc/hosts
+                   version: 1.0
+                   serial: db378807-04ae-4bd5-bd08-aebb2dc4690d
+                   size: 19GiB
+                   capabilities: journaled extended_attributes large_files huge_files dir_nlink recover 64bit extents ext4 ext2 initialized
+                   configuration: created=2026-06-12 14:46:41 filesystem=ext4 label=lima-colima modified=2026-06-12 14:46:41 mount.fstype=ext4 mount.options=rw,relatime mounted=2026-06-12 14:46:41 state=mounted
+        *-storage:2
+             description: Mass storage controller
+             product: Virtio block device
+             vendor: Red Hat, Inc.
+             physical id: 8
+             bus info: pci@0000:00:08.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: storage msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:18 memory:180040000-18004ffff memory:500015c0-500015ff
+           *-virtio4
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@4
+                logical name: /dev/vdc
+                size: 18MiB (19MB)
+                configuration: driver=virtio_blk logicalsectorsize=512 sectorsize=512
+        *-storage:3
+             description: Mass storage controller
+             product: Virtio file system
+             vendor: Red Hat, Inc.
+             physical id: 9
+             bus info: pci@0000:00:09.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: storage msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:19 memory:180050000-18005ffff memory:50001600-5000163f
+           *-virtio5 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@5
+                configuration: driver=virtiofs
+        *-communication:1
+             description: Communication controller
+             product: Virtio socket
+             vendor: Red Hat, Inc.
+             physical id: a
+             bus info: pci@0000:00:0a.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:20 memory:180060000-18006ffff memory:50001480-500014ff
+           *-virtio6 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@6
+                configuration: driver=vmw_vsock_virtio_transport
+        *-generic
+             description: Network and computing encryption device
+             product: Virtio RNG
+             vendor: Red Hat, Inc.
+             physical id: b
+             bus info: pci@0000:00:0b.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz
+             capabilities: msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:21 memory:180080000-180087fff memory:50001640-5000167f
+           *-virtio7 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@7
+                configuration: driver=virtio_rng
+        *-memory
+             description: Memory controller
+             product: Virtio memory balloon
+             vendor: Red Hat, Inc.
+             physical id: c
+             bus info: pci@0000:00:0c.0
+             version: 01
+             width: 64 bits
+             clock: 33MHz (30.3ns)
+             capabilities: msix bus_master cap_list
+             configuration: driver=virtio-pci latency=64
+             resources: iomemory:10-f irq:22 memory:180070000-18007ffff memory:50001680-500016bf
+           *-virtio8 UNCLAIMED
+                description: Virtual I/O device
+                physical id: 0
+                bus info: virtio@8
+                configuration: driver=virtio_balloon
+        *-usb
+             description: USB controller
+             product: Apple Inc.
+             vendor: Apple Inc.
+             physical id: d
+             bus info: pci@0000:00:0d.0
+             version: 00
+             width: 32 bits
+             clock: 33MHz
+             capabilities: msix msi xhci bus_master cap_list
+             configuration: driver=xhci_hcd latency=64
+             resources: irq:48 memory:50000000-50000fff memory:50001000-500013ff
+     *-pnp00:00
+          product: PnP device PNP0c02
+          physical id: 0
+          capabilities: pnp
+          configuration: driver=system
+  *-input:0
+       product: Power Button
+       physical id: 1
+       logical name: input0
+       logical name: /dev/input/event0
+       capabilities: platform
+  *-input:1
+       product: Apple Inc. Virtual USB Keyboard
+       physical id: 2
+       logical name: input1
+       logical name: /dev/input/event1
+       logical name: input1::capslock
+       logical name: input1::numlock
+       logical name: input1::scrolllock
+       capabilities: usb
+  *-input:2
+       product: Apple Inc. Virtual USB Digitizer
+       physical id: 3
+       logical name: input2
+       logical name: /dev/input/event2
+       logical name: /dev/input/js0
+       logical name: /dev/input/mouse0
+       capabilities: usb

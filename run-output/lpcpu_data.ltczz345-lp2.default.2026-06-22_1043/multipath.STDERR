@@ -1,0 +1,5 @@
+1730830.711402 | /etc/multipath.conf does not exist, blacklisting all devices.
+1730830.711428 | You can run "/sbin/mpathconf --enable" to create
+1730830.711437 | /etc/multipath.conf. See man mpathconf(8) for more details
+1730830.712460 | _check_bindings_file: failed to read header from /etc/multipath/bindings
+1730830.712885 | updated bindings file /etc/multipath/bindings

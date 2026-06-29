@@ -1,0 +1,65 @@
+Running Linux Performance Customer Profiler Utility version 356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -0500
+Importing CLI variable : duration=30
+Importing CLI variable : interval=5
+Importing CLI variable : output_dir=/lpcpu/run-output
+Importing CLI variable : package_results=no
+Importing CLI variable : profilers=sar iostat mpstat vmstat top meminfo interrupts
+Importing CLI variable : extra_profilers=slabtop schedstat proc_vmstat cpu_vulnerabilities
+
+Starting Time: Fri Jun 12 14:50:22 UTC 2026
+Setting up sar.
+Setting up iostat.
+Setting up mpstat.
+Setting up vmstat.
+Setting up top.
+Setting up meminfo.
+Setting up proc-interrupts.
+Setting up slabtop.
+Setting up schedstat.
+Setting up proc_vmstat.
+Setting up cpu_vulnerabilities.
+Profilers start at: Fri Jun 12 14:50:22 UTC 2026
+Starting sar.default [5]
+Starting iostat.default [5] [mode=disks]
+Starting mpstat.default [5]
+Starting vmstat.default [5]
+Starting top.
+Starting meminfo.default [5] 
+Starting proc-interrupts.default [5]
+Starting slabtop.
+Starting schedstat.
+Error opening terminal: unknown.
+Starting proc_vmstat.
+Starting cpu_vulnerabilities.
+Waiting for 30 seconds.
+Stopping sar.
+Stopping iostat.
+Stopping mpstat.
+Stopping vmstat.
+Stopping top.
+Stopping meminfo.
+Stopping interrupts.
+Stopping slabtop.
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+Stopping schedstat.
+Stopping proc_vmstat.
+./lpcpu.sh: line 1214: stop_cpu_vulnerabilities: command not found
+Profilers stop at: Fri Jun 12 14:50:52 UTC 2026
+Processing sar data.
+Processing iostat data.
+Processing mpstat data.
+Processing vmstat data.
+Processing top data.
+Processing meminfo data.
+Processing interrupts data.
+./lpcpu.sh: line 1243: report_slabtop: command not found
+./lpcpu.sh: line 1243: report_schedstat: command not found
+./lpcpu.sh: line 1243: report_proc_vmstat: command not found
+./lpcpu.sh: line 1243: report_cpu_vulnerabilities: command not found
+Setting up postprocess.sh
+./lpcpu.sh: line 1267: setup_postprocess_slabtop: command not found
+./lpcpu.sh: line 1267: setup_postprocess_schedstat: command not found
+./lpcpu.sh: line 1267: setup_postprocess_proc_vmstat: command not found
+./lpcpu.sh: line 1267: setup_postprocess_cpu_vulnerabilities: command not found
+Gathering system information
+Finishing time: Fri Jun 12 14:50:53 UTC 2026

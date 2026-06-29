@@ -711,6 +711,36 @@ function report_ipi() {
 function setup_postprocess_ipi() {
     echo '${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id"
 }
+## CPU-AFFINITY (Thread-to-CPU correlation) ######################################################
+function setup_cpu-affinity() {
+	echo "Setting up CPU affinity monitoring."
+	if [ ! -e "${LPCPUDIR}/tools/proc-cpu-affinity.pl" ]; then
+	    echo "ERROR: proc-cpu-affinity.pl is not available.  To correct this problem ensure that you have the entire LPCPU distribution or disable the cpu-affinity profiler."
+	    exit 1
+	fi
+}
+
+function start_cpu-affinity() {
+	echo "Starting CPU-AFFINITY."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	${LPCPUDIR}/tools/proc-cpu-affinity.pl $interval > $LOGDIR/proc-cpu-affinity.$id.$RUN_NUMBER &
+	CPU_AFFINITY_PID=$!
+	disown $CPU_AFFINITY_PID
+}
+
+function stop_cpu-affinity() {
+	echo "Stopping CPU-AFFINITY."
+	kill $CPU_AFFINITY_PID
+}
+
+function report_cpu-affinity() {
+	echo "Processing CPU affinity data."
+}
+
+function setup_postprocess_cpu-affinity() {
+    # CPU affinity data is processed by postprocess-ipi, not separately
+    echo ""
+}
+
 
 ## KVM ###############################################################################################
 function setup_kvm() {

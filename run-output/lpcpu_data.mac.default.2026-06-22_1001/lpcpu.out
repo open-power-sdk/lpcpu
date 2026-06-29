@@ -1,0 +1,35 @@
+Running Linux Performance Customer Profiler Utility version 356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -0500
+Importing CLI variable : profilers=ipi
+Importing CLI variable : duration=30
+Importing CLI variable : output_dir=../run-output
+
+Starting Time: Mon Jun 22 10:01:16 CDT 2026
+Setting up IPI monitoring.
+cat: /proc/net/netstat: No such file or directory
+cat: /proc/interrupts: No such file or directory
+cat: /proc/meminfo: No such file or directory
+cat: /proc/net/snmp: No such file or directory
+Profilers start at: Mon Jun 22 10:01:17 CDT 2026
+Starting IPI monitoring.default [5]
+Waiting for 30 seconds.
+ERROR: Could not open /proc/interrupts
+Stopping IPI monitoring.
+./lpcpu.sh: line 662: kill: (90464) - No such process
+Profilers stop at: Mon Jun 22 10:01:47 CDT 2026
+cat: /proc/net/netstat: No such file or directory
+cat: /proc/interrupts: No such file or directory
+cat: /proc/meminfo: No such file or directory
+cat: /proc/net/snmp: No such file or directory
+Processing IPI data.
+Setting up postprocess.sh
+Gathering system information
+cat: /proc/swaps: No such file or directory
+cat: /proc/sys/vm/swappiness: No such file or directory
+cat: /proc/version: No such file or directory
+cat: /proc/cmdline: No such file or directory
+cat: /proc/partitions: No such file or directory
+cat: /proc/cpuinfo: No such file or directory
+cat: /proc/mounts: No such file or directory
+cat: /proc/net/softnet_stat: No such file or directory
+cp: /etc/sysctl.conf: No such file or directory
+Finishing time: Mon Jun 22 10:01:48 CDT 2026

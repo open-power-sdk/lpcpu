@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Committed_AS
+0 573164
+5 572092
+10 572092
+15 572092
+20 572092
+25 572092

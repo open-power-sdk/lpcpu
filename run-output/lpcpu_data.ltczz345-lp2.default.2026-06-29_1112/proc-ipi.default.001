@@ -1,0 +1,236 @@
+11:12:03 / 1782749523
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         2         1         0         0         0         0         0         1         1        11         0         0         0        21         0         0         1         1         2
+
+11:12:04 / 1782749524
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         1         0         0         0         9         0         0         0        21         0         0         0         0         0
+
+11:12:05 / 1782749525
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         2         0         0         0        14         0         0         0        27         0         0         0         0         0
+
+11:12:06 / 1782749526
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         1         0         0         0        15         0         0         0        36         0         0         0         0         0
+
+11:12:07 / 1782749527
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         2         0         1         0         0         0        12         0         0         0        33         0         0         0         0         0
+
+11:12:08 / 1782749528
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         1         0         0         0         0         0        15         0         0         0        39         0         0         0         0         1
+
+11:12:09 / 1782749529
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         5         0         0         0         1         0         0         0         3         2         2         0         0         0        13         6         0         0        34         0         0         2         0         0
+
+11:12:10 / 1782749530
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         1         0         0         0         0         0         0         1         0         2         0         0         0        13         0         0         0        31         0         0         0         0         0
+
+11:12:11 / 1782749531
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         1         0         0         0        11         0         0         0        23         0         0         0         0         0
+
+11:12:12 / 1782749532
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         2         0         0         0         0         0         0         0         0         0         1         0         0         0        15         0         0         0        28         0         0         0         0         0
+
+11:12:13 / 1782749533
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         2         0         0         0        11         0         0         0        23         0         0         0         0         0
+
+11:12:14 / 1782749534
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         3         0         0         0         0         0         0         0         0         0         2         3         0         0         8         0         0         0        27         0         0         0         0         1
+
+11:12:15 / 1782749535
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         2         0         0         0         0         0         0         0         0         0         1         7         0         0         0         0         0         0        18         0         0         0         0         0
+
+11:12:16 / 1782749536
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         2        14         0         0         0         0         0         0        39         0         0         0         0         0
+
+11:12:17 / 1782749537
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         2        13         0         0         0         0         0         0        25         0         0         0         0         0
+
+11:12:18 / 1782749538
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         1        15         0         0         0         0         0         0        39         0         0         0         0         0
+
+11:12:19 / 1782749539
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI        19         0         0         0         0         0         0         0         3         3        12         6         0         0         1        16         0         0         4        38         9         0         0         1
+
+11:12:20 / 1782749540
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         2        16         0         0         0         0         0         0        17        18         0         0         0         0
+
+11:12:21 / 1782749541
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         2        13         0         0         0         0         0         0         0        31         0         1         0         0
+
+11:12:22 / 1782749542
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         1         0         0         0         0         0         0         0         0         2        10         0         0         0         0         0         0         0        20         0         0         0         0
+
+11:12:23 / 1782749543
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         2         0         0         0         0         0         0         0         0         0         1        16         0         0         0         0         0         0         0        32         0         0         0         0
+
+11:12:24 / 1782749544
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         2         0         2         8         0         0         0         0         0         0         0        27         0         0         0         1
+
+11:12:25 / 1782749545
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         1         0         0        10         0         0         0         0         0         0         0        37         0         0         0         0
+
+11:12:26 / 1782749546
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         1        12         0         0         0         0         0         0         6        16         0         0         0         0
+
+11:12:27 / 1782749547
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         1        10         0         0         0         0         0         0        19         0         0         0         0         0
+
+11:12:28 / 1782749548
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         2         0         0         0         0         0         0         0         0         0         0         7         1         0         0         0         0         0        22         1         0         0         0         0
+
+11:12:29 / 1782749549
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         3         0         0         0         0         0         0         0         3         3         0        11         0         0         1         6         0         0        26         0         0         0         0         1
+
+11:12:30 / 1782749550
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0        12         2         0         0         0         0         0        23         0         0         0         0         0
+
+11:12:31 / 1782749551
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         0        15         1         0         0         0         0         0        44         0         0         0         0         0
+
+11:12:32 / 1782749552
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0        12         1         0         0         0         0         0        33         0         0         0         0         0
+
+11:12:33 / 1782749553
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0        10         2         0         0         0         0         0        25         0         0         0         0         0
+
+11:12:34 / 1782749554
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         1         0         0         0         0         0         0         0         0         0        11         2         0         0         0         0         3        26         0         0         0         0         1
+
+11:12:35 / 1782749555
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0        16         2         0         0         0         0         0        48         0         0         0         0         0
+
+11:12:36 / 1782749556
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         1         0         0         0        15         2         0         0         0         0         0        33         0         0         0         0         0
+
+11:12:37 / 1782749557
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         0        12         2         0         0         0         0         0        33         0         0         0         0         0
+
+11:12:38 / 1782749558
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         1         0         0         0         0         0         0         1         0         0        12         2         0        10         0         0         0        23         0         0         0         0         0
+
+11:12:39 / 1782749559
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         3         0         0         9         0         0         0         0         3         3        11         8         1         0        11        13         0         0        52         0         0         3         0         0
+
+11:12:40 / 1782749560
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         1         0        14         0         0         0        33         0         0         0         0         1
+
+11:12:41 / 1782749561
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         1         0        13         0         0         0        25         0         0         0         0         0
+
+11:12:42 / 1782749562
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         2         0         0         0         0         0         0         0         0         0         0         0         0        14         0         0         0        33         0         1         0         0         0
+
+11:12:43 / 1782749563
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         2         0        14         0         0         0        35         0         0         0         0         0
+
+11:12:44 / 1782749564
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         0         0         1         0        16         0         0         2        29         0         0         0         0         0
+
+11:12:45 / 1782749565
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         2         0        10         0         0         0        29         0         0         0         0         1
+
+11:12:46 / 1782749566
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         1         0         0         0         2         0        16         0         0         0        37         0         0         0         0         0
+
+11:12:47 / 1782749567
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         1         0        14         0         0         0        37         0         0         0         0         0
+
+11:12:48 / 1782749568
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         1         0        10         0         0         0        23         0         0         0         0         0
+
+11:12:49 / 1782749569
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         1         0         1         0         0         3         3         0         0         1         0        11         6         0         3        25         0         0         0         0         0
+
+11:12:50 / 1782749570
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         1         0         0         0         0         0         1         1         0         0         0         1         0        15         0         0         0        30         8         0         0         0         1
+
+11:12:51 / 1782749571
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         0         0        10         0         0         0         0        24         0         0         0         0
+
+11:12:52 / 1782749572
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         0         0        11         0         0         0         0        23         0         0         0         0
+
+11:12:53 / 1782749573
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         2         0         6         0         0         0         0        16         0         0         0         0
+
+11:12:54 / 1782749574
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         1         0         0         0         0         2         0        11         0         0         0         0        30         0         0         0         0
+
+11:12:55 / 1782749575
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         0         0         2         0        14         0         0         0         0        36         0         0         0         1
+
+11:12:56 / 1782749576
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         1         0        16         0         0         0         0        51         0         0         0         0
+
+11:12:57 / 1782749577
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         0         0         0         0         0         2         0        15         0         0         0         0        42         0         0         0         0
+
+11:12:58 / 1782749578
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         0         0         0         0         0         0         0         1         0         0         0         0         0         0        13         0         0         0         0        30         0         0         0         0
+
+11:12:59 / 1782749579
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         9        12         0         0         0         0         0         0         3         2        16         0         2         0        13        13         0         0         0        64         0         0         0         0
+
+11:13:00 / 1782749580
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         1         0         0         0         0         0         0         0         0         0         0         0         2         0        13         0         0         0         0        33         0         0         0         1
+
+11:13:01 / 1782749581
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+XICS 2 Edge IPI         2         0         0         0         0         0         0         1         0         0         0         0         0         0        12         0         0         0         0        21         0         0         0         0
+

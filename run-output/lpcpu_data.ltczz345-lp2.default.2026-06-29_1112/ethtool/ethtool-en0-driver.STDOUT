@@ -1,0 +1,10 @@
+driver: ibmveth
+version: 1.06
+firmware-version: 
+expansion-rom-version: 
+bus-info: 30000004
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no

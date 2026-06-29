@@ -1,0 +1,22 @@
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               rhel_ltczz345-lp2
+  PV Size               347.99 GiB / not usable 2.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              89086
+  Free PE               0
+  Allocated PE          89086
+  PV UUID               xur5a2-gs32-fPQU-iZqn-dLZj-1Jp6-s7tdgR
+   
+  --- Physical Segments ---
+  Physical extent 0 to 4087:
+    Logical volume	/dev/rhel_ltczz345-lp2/swap
+    Logical extents	0 to 4087
+  Physical extent 4088 to 71165:
+    Logical volume	/dev/rhel_ltczz345-lp2/home
+    Logical extents	0 to 67077
+  Physical extent 71166 to 89085:
+    Logical volume	/dev/rhel_ltczz345-lp2/root
+    Logical extents	0 to 17919
+   

@@ -1,0 +1,57 @@
+Number of Online Processors:                 2
+Number of Offline Processors:                0
+List of Online Processors:                   0 1 
+List of Offline Processors:                  
+
+The system is NUMA aware
+
+Number of NUMA nodes:                        1
+List of NUMA nodes:                          0 
+Total Memory:                                3904 MB
+
+Per Node Information:
+	Node 0
+		Online Processor Count:      2
+		Offline Processor Count:     0
+		Online Processor List:       0 1 
+		Offline Processor List:      
+		Memory Size:                 3904 MB
+		Distance:                    Node 0:10  
+
+System Processor Topology
+
+Processor sockets:                           1
+Processor cores:                             2
+Hardware Threading Enabled:                  no
+
+Per Socket Information (these are logical sockets, not physical sockets)
+	Socket
+		Threads:                     0 1 
+
+Per Core Information
+	Core 0
+		Threads:                     0 
+	Core 1
+		Threads:                     1 
+
+Per Core Sibling Information:
+	CPU 0
+		Core Level Siblings:         1
+		Thread Level Siblings:       0
+	CPU 1
+		Core Level Siblings:         1
+		Thread Level Siblings:       0
+
+Cache Level Information:
+	Cache Level: 1
+		Cache Type [size]:           Data []
+		Cache Type [size]:           Instruction []
+	Cache Level: 2
+		Cache Type [size]:           Unified []
+
+Threads that share a given cache level:
+	Cache Level: 1
+			Share Set 0:                 0 
+			Share Set 1:                 1 
+	Cache Level: 2
+			Share Set 0:                 0 1 

@@ -1,0 +1,78 @@
+  --- Volume group ---
+  VG Name               rhel_ltczz345-lp2
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  4
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                3
+  Open LV               3
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               347.99 GiB
+  PE Size               4.00 MiB
+  Total PE              89086
+  Alloc PE / Size       89086 / 347.99 GiB
+  Free  PE / Size       0 / 0   
+  VG UUID               kbyCSF-uaSJ-Wcwh-30aN-E93q-lKCr-WA78cZ
+   
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/swap
+  LV Name                swap
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                uy5iz1-QScx-aGTj-QGvn-Qjul-EOEH-CegPep
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:49 -0500
+  LV Status              available
+  # open                 1
+  LV Size                <15.97 GiB
+  Current LE             4088
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+   
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/home
+  LV Name                home
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                62phAt-Avbe-GquJ-V2tI-ZH94-Etey-84r8w2
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:50 -0500
+  LV Status              available
+  # open                 1
+  LV Size                262.02 GiB
+  Current LE             67078
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Logical volume ---
+  LV Path                /dev/rhel_ltczz345-lp2/root
+  LV Name                root
+  VG Name                rhel_ltczz345-lp2
+  LV UUID                RL4BiH-q2vH-a4Rp-jcgO-BklZ-Lv0Q-kNk681
+  LV Write Access        read/write
+  LV Creation host, time ltczz345-lp2.ltc.tadn.ibm.com, 2026-06-01 15:05:50 -0500
+  LV Status              available
+  # open                 1
+  LV Size                70.00 GiB
+  Current LE             17920
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+   
+  --- Physical volumes ---
+  PV Name               /dev/sda3     
+  PV UUID               xur5a2-gs32-fPQU-iZqn-dLZj-1Jp6-s7tdgR
+  PV Status             allocatable
+  Total PE / Free PE    89086 / 0
+   

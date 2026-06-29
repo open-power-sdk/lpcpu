@@ -1,0 +1,2 @@
+route: illegal option -- e
+usage: route [-dnqtv] command [[modifiers] args]

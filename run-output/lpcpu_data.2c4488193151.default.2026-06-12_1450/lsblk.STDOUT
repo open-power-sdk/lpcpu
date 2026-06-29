@@ -1,0 +1,10 @@
+NAME    FSTYPE FSVER LABEL UUID FSAVAIL FSUSE% MOUNTPOINTS      ALIGNMENT MIN-IO OPT-IO PHY-SEC LOG-SEC ROTA SCHED       RQ-SIZE  RA WSAME  SIZE OWNER GROUP MODE
+vda                                                                     0    512      0     512     512    1 mq-deadline     256 128    0B   20G root  disk  brw-rw----
+|-vda1                                                                  0    512      0     512     512    1 mq-deadline     256 128    0B   19G root  disk  brw-rw----
+|-vda15                                                                 0    512      0     512     512    1 mq-deadline     256 128    0B   99M root  disk  brw-rw----
+`-vda16                                                                 0    512      0     512     512    1 mq-deadline     256 128    0B  923M root  disk  brw-rw----
+vdb                                                                     0    512      0     512     512    1 mq-deadline     256 128    0B   20G root  disk  brw-rw----
+`-vdb1                            18.2G     2% /etc/hosts               0    512      0     512     512    1 mq-deadline     256 128    0B   20G root  disk  brw-rw----
+                                               /etc/hostname                                                                                                 
+                                               /etc/resolv.conf                                                                                              
+vdc                                                                     0    512      0     512     512    1 mq-deadline     256 128    0B 18.9M root  disk  brw-rw----
