@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
 IPI Demo Runner - Automated IPI Analysis Workflow
-Runs lpcpu with IPI profiler and displays all results in one go.
+Runs lpcpu with IPI and cpu-affinity profilers and displays all results in one
+go, including thread-to-CPU correlation for hot CPUs as the final highlight.
 
 Usage:
     python3 ipi-demo-runner.py [duration] [interval]
-    
+
 Examples:
-    python3 ipi-demo-runner.py           # 30 seconds, 5 second intervals (default)
-    python3 ipi-demo-runner.py 60 10     # 60 seconds, 10 second intervals
+    python3 ipi-demo-runner.py           # 60 seconds, 1 second interval (default)
+    python3 ipi-demo-runner.py 60 1      # 60 seconds, 1 second interval
+    python3 ipi-demo-runner.py 30 5      # 30 seconds, 5 second intervals
 """
 
 import subprocess
@@ -37,8 +39,8 @@ def run_command(cmd, cwd=None, capture=True):
 
 def main():
     # Parse arguments
-    duration = int(sys.argv[1]) if len(sys.argv) > 1 else 30
-    interval = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+    duration = int(sys.argv[1]) if len(sys.argv) > 1 else 60
+    interval = int(sys.argv[2]) if len(sys.argv) > 2 else 1
     
     print(f"""
 ╔════════════════════════════════════════════════════════════════════════════╗
@@ -59,7 +61,7 @@ Starting in 3 seconds...
     print("STEP 1: COLLECTING IPI DATA")
     print("="*80)
     
-    lpcpu_cmd = f'cd /tmp/lpcpu && ./lpcpu.sh extra_profilers="ipi" duration={duration} interval={interval}'
+    lpcpu_cmd = f'cd /tmp/lpcpu && ./lpcpu.sh profilers="ipi cpu-affinity" duration={duration} interval={interval}'
     run_command(lpcpu_cmd, capture=False)
     
     print("\n✓ Data collection complete!")
@@ -125,16 +127,63 @@ Starting in 3 seconds...
     sample_plot = run_command('head -15 ipi-processed.default.001/plot-files/CPU0.plot')
     print(sample_plot)
     
-    # Step 6: Show analysis summary
+    # Step 6: IPI analysis summary (assessment + top CPUs)
     print("\n" + "="*80)
     print("STEP 6: IPI ANALYSIS SUMMARY")
     print("="*80)
-    print("Complete analysis with rates, imbalance detection, hot/cold CPUs, and recommendations")
+    print("Assessment, top CPUs by IPI activity, and recommendations")
     print("-" * 80 + "\n")
-    
+
     summary = run_command('cat ipi-processed.default.001/ipi-analysis-summary.txt')
     print(summary)
-    
+
+    # Phase 7: Thread-to-CPU Correlation — final highlight
+    print("\n" + "="*80)
+    print("PHASE 7: THREAD-TO-CPU CORRELATION FOR HOT CPUS  ← NEW FEATURE")
+    print("="*80)
+    print("""
+SPEAKING NOTE:
+  "Before, the IPI demo could show which CPUs were hot, but not what was
+  running on them. With this new cpu-affinity profiler, we can now correlate
+  hot CPUs with the threads and processes observed on those CPUs during
+  collection. This gives performance engineers a starting point for
+  investigation before digging deeper into kernel-level tracing."
+""")
+    print("What this demonstrates:")
+    print("  1. LPCPU identifies hot CPUs from IPI data")
+    print("  2. The new cpu-affinity profiler records which threads ran on which CPUs")
+    print("  3. postprocess-ipi correlates hot CPUs with observed threads/processes")
+    print("  4. Output uses 'observed' wording — correlation, not causation")
+    print("-" * 80 + "\n")
+
+    print("Both raw data files were collected:")
+    run_command('ls -lh proc-ipi.default.001 proc-cpu-affinity.default.001')
+
+    print("\nSample cpu-affinity data (Timestamp  PID  TID  PSR  %CPU  COMMAND):")
+    print("-" * 80)
+    affinity_sample = run_command('head -20 proc-cpu-affinity.default.001')
+    print(affinity_sample)
+
+    print("\nThe full thread-to-CPU correlation was printed above in Step 4 during")
+    print("postprocessing. The summary file below shows the executive assessment:")
+    print("-" * 80)
+    assessment = run_command(
+        'grep -A 2 "ASSESSMENT" ipi-processed.default.001/ipi-analysis-summary.txt'
+    )
+    if assessment and assessment.strip():
+        print(assessment)
+
+    print("\nTop CPUs by IPI activity (from summary):")
+    print("-" * 80)
+    top_cpus = run_command(
+        'grep -A 8 "Top 5 CPUs by IPI Activity" ipi-processed.default.001/ipi-analysis-summary.txt'
+    )
+    if top_cpus and top_cpus.strip():
+        print(top_cpus)
+
+    print("\nInteractive chart:")
+    run_command('ls -lh ipi-processed.default.001/chart.html')
+
     # Final summary
     print("\n" + "="*80)
     print("DEMO COMPLETE!")
@@ -143,14 +192,15 @@ Starting in 3 seconds...
 Output Location: /tmp/{output_dir}
 
 Files Generated:
-  • Raw data:        proc-ipi.default.001
-  • Plot files:      ipi-processed.default.001/plot-files/
-  • HTML chart:      ipi-processed.default.001/chart.html
-  • Analysis:        ipi-processed.default.001/ipi-analysis-summary.txt
- 
+  • Raw IPI data:        proc-ipi.default.001
+  • Raw affinity data:   proc-cpu-affinity.default.001
+  • Plot files:          ipi-processed.default.001/plot-files/
+  • HTML chart:          ipi-processed.default.001/chart.html
+  • Analysis summary:    ipi-processed.default.001/ipi-analysis-summary.txt
+
 To view the interactive chart:
   firefox ipi-processed.default.001/chart.html
-  
+
 To re-run analysis:
   PERL5LIB=/tmp/lpcpu/perl /tmp/lpcpu/postprocess/postprocess-ipi . 001 default
 """)

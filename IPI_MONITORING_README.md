@@ -66,14 +66,56 @@ python3 ipi-demo-runner.py 15 3     # 15 seconds, 3 second intervals
 ```
 
 **What it does:**
-1. Runs lpcpu with IPI profiler
+1. Runs lpcpu with both `ipi` and `cpu-affinity` profilers
 2. Extracts and navigates to output directory
 3. Shows raw IPI data
 4. Runs postprocessing and analysis
 5. Shows parsed data (plot files)
 6. Shows complete analysis summary with recommendations
+7. **Phase 6: Demonstrates thread-to-CPU correlation for hot CPUs** *(new)*
 
 All output is displayed in the terminal with clear section labels.
+
+### Phase 6: Thread-to-CPU Correlation for Hot CPUs
+
+This phase demonstrates the new `cpu-affinity` profiler integrated into the IPI demo flow.
+
+**Commands shown in this phase:**
+
+```bash
+# 1. Run LPCPU with both profilers enabled
+./lpcpu.sh profilers="ipi cpu-affinity" duration=60 interval=1
+
+# 2. Verify both raw files were created
+ls -lh lpcpu_data.*/proc-ipi.*
+ls -lh lpcpu_data.*/proc-cpu-affinity.*
+
+# 3. Sample of the new cpu-affinity data
+head -30 lpcpu_data.*/proc-cpu-affinity.*
+
+# 4. Run postprocessing (unchanged — postprocess-ipi handles both files)
+cd lpcpu_data.*
+../lpcpu/postprocess/postprocess-ipi . 001 default
+
+# 5. Show the thread-to-CPU correlation output
+grep -A 120 "THREAD-TO-CPU CORRELATION" ipi-processed.*/ipi-analysis-summary.txt
+
+# 6. Show the hot CPU IPI imbalance summary
+grep -A 30 "IPI IMBALANCE" ipi-processed.*/ipi-analysis-summary.txt
+
+# 7. Confirm the chart was generated
+ls -lh ipi-processed.*/chart.html
+```
+
+**What this demonstrates:**
+- LPCPU identifies hot CPUs from IPI data
+- The new `cpu-affinity` profiler collects which threads ran on which CPUs
+- `postprocess-ipi` correlates hot CPUs with observed threads/processes
+- Output uses "observed" wording and does not claim causation
+
+**Speaking note:**
+
+> "Before, the IPI demo could show which CPUs were hot, but not what was running on them. With this new cpu-affinity profiler, we can now correlate hot CPUs with the threads and processes observed on those CPUs during collection. This gives performance engineers a starting point for investigation before digging deeper into kernel-level tracing."
 
 ### Alternative: Generate HTML Report
 

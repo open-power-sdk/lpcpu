@@ -609,7 +609,7 @@ if (-e $affinity_file && @hot_cpus) {
             }
             
             print "Threads observed on $cpu during the collection period:\n\n";
-            printf "%-6s %-6s %-6s %-12s %-11s %-6s  %s\n",
+            printf "%-6s %-6s %-6s %-12s %-12s %-6s  %s\n",
                    "Rank", "PID", "TID", "Observations", "%Observed", "%CPU", "COMMAND";
             print "-" x 60 . "\n";
             
@@ -638,9 +638,9 @@ if (-e $affinity_file && @hot_cpus) {
                               $obs->{pcpu_sum} / $obs->{count} : 0;
                 
                 if ($displayed < $max_display) {
-                    printf "%-6d %-6d %-6d %-12d %-11.1f%% %-6.1f  %s\n",
+                    printf "%-6d %-6d %-6d %-12d %-12s %-6.1f  %s\n",
                            $rank, $obs->{pid}, $tid, $obs->{count},
-                           $pct_observed, $avg_pcpu, $obs->{comm};
+                           sprintf("%.1f%%", $pct_observed), $avg_pcpu, $obs->{comm};
                     $displayed++;
                 }
                 $rank++;

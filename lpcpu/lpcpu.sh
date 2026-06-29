@@ -694,7 +694,7 @@ function setup_ipi() {
 
 function start_ipi() {
 	echo "Starting IPI."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
-	${LPCPUDIR}/tools/proc-ipi.pl $interval > $LOGDIR/ipi.$id.$RUN_NUMBER &
+	${LPCPUDIR}/tools/proc-ipi.pl $interval > $LOGDIR/proc-ipi.$id.$RUN_NUMBER &
 	IPI_PID=$!
 	disown $IPI_PID
 }
