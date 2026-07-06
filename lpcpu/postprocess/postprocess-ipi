@@ -83,6 +83,7 @@ my $prev_time = 0;
 my $line;
 my @fields;
 my $i;
+my @samples;  # raw per-sample data for the readable summary report
 
 while (<INPUT>) {
 	$line = $_;
@@ -90,9 +91,12 @@ while (<INPUT>) {
 
 	if ($line =~ /[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/) {
 		my $curr_time;
+		my $timestamp_str = $line;
 		if ($line =~ / \/ /) {
 		    $line =~ m/.*\/ ([0-9]+)/;
 		    $curr_time = $1;
+		    $timestamp_str =~ s/\s*\/.*$//;
+		    $timestamp_str =~ s/^\s+|\s+$//g;
 		} else {
 		    $curr_time = time_in_seconds($line);
 		}
@@ -105,11 +109,21 @@ while (<INPUT>) {
 
 		@cpus = split " ", <INPUT>;
 
+		# Start a new sample record for the summary report
+		my $sample = { timestamp => $timestamp_str, cpus => [@cpus], rows => [] };
+
 		my $index = 0;
 		while (1) {
 			$line = <INPUT>;
 			chomp $line;
 			last if (! $line);
+
+			# Extract full IPI label by stripping all trailing numeric columns.
+			# The label is all leading non-purely-numeric tokens.
+			# e.g. "XIVE-IPI 0 Edge IPI-0   21  1  0 ..." -> "XIVE-IPI 0 Edge IPI-0"
+			my $ipi_label = $line;
+			$ipi_label =~ s/\s+\d+(\s+\d+)*\s*$//;  # strip trailing numbers
+			$ipi_label =~ s/^\s+|\s+$//g;            # trim whitespace
 
 			@fields = ();
 			@fields	= split " ", $line, @cpus + 2;
@@ -120,17 +134,25 @@ while (<INPUT>) {
 			# of the plot file name.
 			$ipi =~ s/://;
 
+			# Compute raw counts: after shifting $ipi, fields[0..num_cpus-1] are
+			# the counts but there may be extra name tokens at the front.
+			# Find where numeric counts start by skipping non-numeric leading fields.
+			my @all_fields = @fields;
+			while (@all_fields && $all_fields[0] !~ /^\d+$/) {
+			    shift @all_fields;
+			}
+			my @raw_counts = @all_fields[0 .. $#cpus];
+
+			# Store raw counts for the summary report
+			push @{$sample->{rows}}, { ipi => $ipi_label, counts => [@raw_counts] };
+
 			# Prepend an index number so that we can
 			# sort the IPI plot files in the order seen
 			# in the output.
 			$ipi = prepend($index, 2) . "|" . $ipi;
 
-			# if the number of elements in @fields exceeds the elements in
-			# @cpus, there is a description of the IPI in the last field
 			if (@fields > @cpus) {
-			    # collapse multiple space fields to a single space
 			    $fields[@fields - 1] =~ s/\s+/ /g;
-			    # append the rest of the IPI descriptor
 			    $ipi .= " " . $fields[@fields - 1];
 			}
 
@@ -145,11 +167,245 @@ while (<INPUT>) {
 			}
 			$index++;
 		}
+
+		push @samples, $sample;
 	}
 
 }
 
 close INPUT;
+
+# ============================================================================
+# READABLE PER-SAMPLE IPI SUMMARY
+# Written to: $output_directory/proc-ipi-summary.txt
+# Also printed to stdout so it appears in lpcpu terminal output
+# ============================================================================
+
+my $summary_file = "$output_directory/proc-ipi-summary.txt";
+my $num_samples = scalar(@samples);
+
+open(SUMMARY_FILE, ">$summary_file") or print STDERR "postprocess-ipi: Could not create $summary_file\n";
+
+sub summary_print {
+    my ($line) = @_;
+    print $line . "\n";
+    print SUMMARY_FILE $line . "\n" if (fileno(SUMMARY_FILE));
+}
+
+summary_print("");
+summary_print("=" x 72);
+summary_print("  IPI PER-SAMPLE SUMMARY");
+summary_print("  File   : $input_file");
+summary_print("  Samples: $num_samples  (one per $interval-second interval)");
+summary_print("=" x 72);
+
+my $sample_num = 0;
+for my $s (@samples) {
+    $sample_num++;
+    my @sample_cpus = @{$s->{cpus}};
+    my $num_cpus = scalar(@sample_cpus);
+
+    summary_print("");
+    summary_print("  Sample $sample_num/$num_samples  [Timestamp: $s->{timestamp}]");
+    summary_print("  " . "-" x 60);
+
+    for my $row (@{$s->{rows}}) {
+        my $ipi_label = $row->{ipi};
+        my @counts    = @{$row->{counts}};
+
+        # Total for percentage calculation
+        my $row_total = 0;
+        for my $c (@counts) { $row_total += ($c || 0); }
+
+        summary_print("  IPI Type: $ipi_label");
+        summary_print(sprintf("    %-8s  %-12s  %-10s", "CPU", "IPI Count", "% of Total"));
+        summary_print("    " . "-" x 36);
+
+        # Print all CPUs in order (CPU0, CPU1, ...) — zeros included
+        for (my $ci = 0; $ci < $num_cpus; $ci++) {
+            my $cpu_name = $sample_cpus[$ci];
+            my $count    = $counts[$ci] || 0;
+            my $pct      = ($row_total > 0) ? ($count / $row_total * 100) : 0;
+            summary_print(sprintf("    %-8s  %-12d  %6.1f%%", $cpu_name, $count, $pct));
+        }
+        summary_print("");
+    }
+}
+
+# Overall totals across all samples
+my %cpu_grand_totals;
+for my $s (@samples) {
+    my @sample_cpus = @{$s->{cpus}};
+    for my $row (@{$s->{rows}}) {
+        my @counts = @{$row->{counts}};
+        for (my $ci = 0; $ci < scalar(@sample_cpus); $ci++) {
+            $cpu_grand_totals{$sample_cpus[$ci]} += ($counts[$ci] || 0);
+        }
+    }
+}
+
+my $grand_total = 0;
+for my $v (values %cpu_grand_totals) { $grand_total += $v; }
+
+summary_print("");
+summary_print("=" x 72);
+summary_print("  OVERALL TOTALS  (all samples combined)");
+summary_print("=" x 72);
+summary_print("");
+summary_print(sprintf("  Total IPIs across all samples: %d", $grand_total));
+summary_print("");
+summary_print(sprintf("  %-8s  %-12s  %-10s", "CPU", "Total IPIs", "% of Total"));
+summary_print("  " . "-" x 36);
+
+# Print all CPUs in order
+for my $cpu_name (sort { my ($na) = $a =~ /(\d+)/; my ($nb) = $b =~ /(\d+)/; $na <=> $nb } keys %cpu_grand_totals) {
+    my $total = $cpu_grand_totals{$cpu_name};
+    my $pct   = ($grand_total > 0) ? ($total / $grand_total * 100) : 0;
+    summary_print(sprintf("  %-8s  %-12d  %6.1f%%", $cpu_name, $total, $pct));
+}
+
+summary_print("");
+summary_print("=" x 72);
+summary_print("  Summary saved to: $summary_file");
+summary_print("=" x 72);
+summary_print("");
+
+close SUMMARY_FILE if (fileno(SUMMARY_FILE));
+
+# ============================================================================
+# SIMPLIFIED IPI TABLE FILE
+# Written to: $output_directory/proc-ipi-simplified.txt
+# One table per sample: IPI types as rows, CPUs as columns.
+# All data in one place, easy to read which IPI count belongs to which CPU.
+# ============================================================================
+
+my $simplified_file = "$output_directory/proc-ipi-simplified.txt";
+
+if (open(SIMP_FILE, ">$simplified_file")) {
+
+    my $num_samples = scalar(@samples);
+
+    print SIMP_FILE "IPI SIMPLIFIED DATA\n";
+    print SIMP_FILE "File   : $input_file\n";
+    print SIMP_FILE "Samples: $num_samples  (one per $interval-second interval)\n";
+    print SIMP_FILE "\n";
+
+    my $snum = 0;
+    for my $s (@samples) {
+        $snum++;
+        my @sc   = @{$s->{cpus}};
+        my $ncpu = scalar(@sc);
+
+        print SIMP_FILE "=" x 80 . "\n";
+        print SIMP_FILE "Sample $snum/$num_samples  Timestamp: $s->{timestamp}\n";
+        print SIMP_FILE "=" x 80 . "\n\n";
+
+        for my $row (@{$s->{rows}}) {
+            my $ipi_label = $row->{ipi};
+            my @counts    = @{$row->{counts}};
+            my $row_total = 0;
+            for my $c (@counts) { $row_total += ($c || 0); }
+
+            printf SIMP_FILE "  IPI Type : %s\n", $ipi_label;
+            printf SIMP_FILE "  Total    : %d\n\n", $row_total;
+
+            # Print in blocks of 8 CPUs per line for readability
+            my $block = 8;
+            for (my $ci = 0; $ci < $ncpu; $ci += $block) {
+                my $end = ($ci + $block - 1 < $ncpu - 1) ? $ci + $block - 1 : $ncpu - 1;
+
+                # CPU header line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    printf SIMP_FILE "  %-8s", $sc[$bi];
+                }
+                print SIMP_FILE "\n";
+
+                # Count line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    my $count = $counts[$bi] || 0;
+                    printf SIMP_FILE "  %-8d", $count;
+                }
+                print SIMP_FILE "\n";
+
+                # Percentage line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    my $count = $counts[$bi] || 0;
+                    my $pct   = ($row_total > 0) ? ($count / $row_total * 100) : 0;
+                    printf SIMP_FILE "  %-8s", sprintf("%.1f%%", $pct);
+                }
+                print SIMP_FILE "\n\n";
+            }
+        }
+    }
+
+    # Overall totals table
+    my %cpu_gt;
+    my %ipi_gt;
+    for my $s (@samples) {
+        my @sc = @{$s->{cpus}};
+        for my $row (@{$s->{rows}}) {
+            my @counts = @{$row->{counts}};
+            for (my $ci = 0; $ci < scalar(@sc); $ci++) {
+                $cpu_gt{$sc[$ci]}             += ($counts[$ci] || 0);
+                $ipi_gt{$row->{ipi}}{$sc[$ci]} += ($counts[$ci] || 0);
+            }
+        }
+    }
+
+    my $grand_total = 0;
+    for my $v (values %cpu_gt) { $grand_total += $v; }
+
+    print SIMP_FILE "=" x 80 . "\n";
+    print SIMP_FILE "OVERALL TOTALS  (all $num_samples samples combined)\n";
+    print SIMP_FILE "=" x 80 . "\n\n";
+    printf SIMP_FILE "  Grand Total: %d IPIs\n\n", $grand_total;
+
+    # One overall table per IPI type
+    for my $ipi_label (sort keys %ipi_gt) {
+        my $ipi_total = 0;
+        for my $v (values %{$ipi_gt{$ipi_label}}) { $ipi_total += $v; }
+
+        printf SIMP_FILE "  IPI Type : %s  (total: %d)\n\n", $ipi_label, $ipi_total;
+
+        # Get sorted CPU list
+        my @all_cpus = sort { my ($na) = $a =~ /(\d+)/; my ($nb) = $b =~ /(\d+)/; $na <=> $nb } keys %{$ipi_gt{$ipi_label}};
+        my $block    = 8;
+        for (my $ci = 0; $ci < scalar(@all_cpus); $ci += $block) {
+            my $end = ($ci + $block - 1 < scalar(@all_cpus) - 1) ? $ci + $block - 1 : scalar(@all_cpus) - 1;
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                printf SIMP_FILE "  %-8s", $all_cpus[$bi];
+            }
+            print SIMP_FILE "\n";
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                printf SIMP_FILE "  %-8d", ($ipi_gt{$ipi_label}{$all_cpus[$bi]} || 0);
+            }
+            print SIMP_FILE "\n";
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                my $t   = $ipi_gt{$ipi_label}{$all_cpus[$bi]} || 0;
+                my $pct = ($ipi_total > 0) ? ($t / $ipi_total * 100) : 0;
+                printf SIMP_FILE "  %-8s", sprintf("%.1f%%", $pct);
+            }
+            print SIMP_FILE "\n\n";
+        }
+    }
+
+    printf SIMP_FILE "Simplified data saved to: %s\n", $simplified_file;
+    close SIMP_FILE;
+
+    print "\nSimplified IPI table saved to: $simplified_file\n";
+
+} else {
+    print STDERR "postprocess-ipi: Could not create $simplified_file\n";
+}
 
 my $ipi;
 my $cpu;
