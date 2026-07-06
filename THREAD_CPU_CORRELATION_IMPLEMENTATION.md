@@ -136,25 +136,24 @@ CPU the thread executed on, not necessarily the current CPU at that instant.
 - `perl -I lpcpu/perl -c lpcpu/postprocess/postprocess-ipi` → OK
 - `bash -n lpcpu/lpcpu.sh` → OK
 
-⏳ **Runtime Validation** (to be performed on LPAR):
-```bash
-# 1. Run collection
-./lpcpu.sh profilers="ipi cpu-affinity" duration=30 interval=1
-
-# 2. Verify output files exist
-ls -lh lpcpu_data.*/proc-cpu-affinity.*
-ls -lh lpcpu_data.*/ipi.*
-
-# 3. Check affinity data format
-head -20 lpcpu_data.*/proc-cpu-affinity.*
-
-# 4. Run postprocessing
-cd lpcpu_data.*/
-../lpcpu/postprocess/postprocess-ipi . 001 default
-
-# 5. Verify correlation section appears
-grep -A 20 "THREAD-TO-CPU CORRELATION" ipi-processed.*/ipi-analysis-summary.txt
+✅ **End-to-End Runtime Validation** (completed 2026-06-29 on `ltczz345-lp2.ltc.tadn.ibm.com`, ppc64le):
 ```
+System:   Linux 6.12.0-211.7.1.el10_2.ppc64le (IBM Power LPAR, 24 CPUs)
+Workload: generate-cpu-load.sh (8 CPU-bound bash threads)
+Command:  python3 ipi-demo-runner.py 60 1
+```
+
+**Results**:
+- `proc-ipi.default.001` collected — 60 samples at 1s interval, ppc64le XICS IPI format
+- `proc-cpu-affinity.default.001` collected — thread-to-CPU snapshots for all PIDs/TIDs
+- Imbalance detected: Gini 0.828, CPU0/CPU3/CPU1 handling 83% of all IPIs
+- Thread correlation: `bash` (PID 2502716) observed on **CPU3 at 96.4% CPU** — the known hot workload
+- Chart generated: `ipi-processed.default.001/chart.html`
+- Full demo flow ran cleanly via `ipi-demo-runner.py`
+
+**Bug fixed during validation**:
+- `start_ipi()` in `lpcpu.sh` wrote output to `ipi.$id.$RUN_NUMBER`, but `postprocess-ipi`
+  expected `proc-ipi.$id.$RUN_NUMBER`. Fixed by renaming the output path in `start_ipi()`.
 
 ## Design Decisions
 
@@ -204,11 +203,11 @@ grep -A 20 "THREAD-TO-CPU CORRELATION" ipi-processed.*/ipi-analysis-summary.txt
 
 ## Testing Notes
 
-- Tested syntax validation on macOS (development environment)
-- Runtime validation requires Linux LPAR with /proc filesystem
-- Recommended test duration: 30-60 seconds
-- Recommended test interval: 1-5 seconds
-- Test with workload that creates hot CPUs (e.g., CPU-intensive application)
+- Syntax validation performed on macOS (development environment)
+- Runtime validation completed on Linux LPAR (ppc64le) — see Validation Checklist above
+- Recommended test duration: 60 seconds
+- Recommended test interval: 1 second (better temporal correlation than 5s)
+- Test with active CPU-intensive workload to generate hot CPUs and trigger correlation output
 
 ## References
 
@@ -224,4 +223,37 @@ Based on design feedback from Thinh and user requirements
 ## Status
 ✅ Implementation complete
 ✅ Syntax validation passed
-⏳ Runtime validation pending (requires Linux LPAR)
+✅ Runtime validation complete (2026-06-29, ppc64le LPAR)
+
+---
+
+## IPI Summary & Auto-Postprocess Enhancements (2026-07-06)
+
+### Additional Files Changed
+
+#### **lpcpu/postprocess/postprocess-ipi** (commit `191fe27`)
+Added two new output files generated automatically on every run:
+
+- **`proc-ipi-summary.txt`** — Per-sample table listing every IPI type with per-CPU counts and % of total, across all CPUs (zeros included). Also printed to the terminal during the run.
+- **`proc-ipi-simplified.txt`** — 8-CPUs-per-block aligned table: for each sample and in overall totals, shows each IPI type's counts and percentages across CPUs in readable rows. Replaces the raw wide-format `proc-ipi.default.001` file for human inspection.
+
+#### **lpcpu/lpcpu.sh** (commit `939ccf1`)
+Added automatic postprocess.sh invocation at the end of every lpcpu run:
+```bash
+echo "Running postprocess.sh"
+PERL5LIB=${LPCPUDIR}/perl ${LOGDIR}/postprocess.sh ${LPCPUDIR} 2>&1 | tee -a ${LOGDIR}/lpcpu.out || true
+```
+This means all three IPI output files appear in the tarball without any manual postprocessing step.
+
+#### **lpcpu/tools/ndiff.py** (commit `eab5e6c`)
+Changed shebang from `#!/usr/bin/python` to `#!/usr/bin/env python3` for compatibility with SLES 15 SP7 which only ships `/usr/bin/python3`.
+
+### Validated On (2026-07-06)
+Tested with iperf3 network workload (8 parallel streams) on both LPARs simultaneously:
+
+| LPAR | OS | CPUs | IPI Rate | Hot CPUs |
+|------|-----|------|----------|----------|
+| ltcrain65-lp1 | RHEL 10.3 Beta | 64 | 32,338 IPIs/sec | 15 CPUs (96.2% of IPIs) |
+| ltcrain65-lp2 | SLES 15 SP7 | 32 | 1,728 IPIs/sec | 7 CPUs (92.1% of IPIs) |
+
+Both tarballs contained `ipi-processed.default.001/proc-ipi-summary.txt`, `proc-ipi-simplified.txt`, and `ipi-analysis-summary.txt` with no errors.
