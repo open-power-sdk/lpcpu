@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 #
 # LPCPU (Linux Performance Customer Profiler Utility): ./tools/ndiff.py
