@@ -1392,6 +1392,11 @@ function sigint_running_trap() {
 
     chmod +x $LOGDIR/postprocess.sh
 
+    # Run postprocessing automatically so parsed output (including IPI summary
+    # and simplified tables) is available in the tarball without a separate step.
+    echo "Running postprocess.sh"
+    PERL5LIB=${LPCPUDIR}/perl ${LOGDIR}/postprocess.sh ${LPCPUDIR} 2>&1 | tee -a ${LOGDIR}/lpcpu.out || true
+
     # capture system info and config data
     echo "Gathering system information"
     dmesg > $LOGDIR/dmesg.STDOUT 2> $LOGDIR/dmesg.STDERR
