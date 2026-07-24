@@ -1138,6 +1138,12 @@ function sigint_running_trap() {
 
 ####################################################################################################
 
+## ss helper functions #############################################################################
+
+function has_ss() { command -v ss > /dev/null 2>&1; }
+
+####################################################################################################
+
 # main block, used to log all output
 {
     trap sigint_normal_trap SIGINT
@@ -1161,6 +1167,9 @@ function sigint_running_trap() {
     netstat -in > $LOGDIR/netstat-in.before 2>&1
     netstat -v > $LOGDIR/netstat-v.before 2>&1
     netstat -s > $LOGDIR/netstat-s.before 2>&1
+    if has_ss; then
+        ss -lt > $LOGDIR/ss-sockets.before 2>&1
+    fi
     cat /proc/interrupts > $LOGDIR/interrupts.before
     cat /proc/meminfo > $LOGDIR/meminfo.before
     if (( depth > 1 )); then
@@ -1221,6 +1230,9 @@ function sigint_running_trap() {
     netstat -in > $LOGDIR/netstat-in.after 2>&1
     netstat -v > $LOGDIR/netstat-v.after 2>&1
     netstat -s > $LOGDIR/netstat-s.after 2>&1
+    if has_ss; then
+        ss -lt > $LOGDIR/ss-sockets.after 2>&1
+    fi
     cat /proc/interrupts > $LOGDIR/interrupts.after
     cat /proc/meminfo > $LOGDIR/meminfo.after
     if (( depth > 1 )); then
@@ -1283,6 +1295,8 @@ function sigint_running_trap() {
     echo 'if [ -x ${NDIFF} -a -e ip-statistics.before -a -e ip-statistics.after ]; then ${NDIFF} ip-statistics.before ip-statistics.after > ip-statistics.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e ifconfig.before -a -e ifconfig.after ]; then ${NDIFF} ifconfig.before ifconfig.after > ifconfig.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e snmp.before -a -e snmp.after ]; then ${NDIFF} snmp.before snmp.after > snmp.diff; fi' >> $LOGDIR/postprocess.sh
+    echo 'SSDIFF="${LPCPUDIR}/tools/ss-diff.py"' >> $LOGDIR/postprocess.sh
+    echo 'if [ -x ${SSDIFF} -a -e ss-sockets.before -a -e ss-sockets.after ]; then python3 ${SSDIFF} ss-sockets.before ss-sockets.after > ss-sockets.diff; fi' >> $LOGDIR/postprocess.sh
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
         IF=$(basename $IF)
