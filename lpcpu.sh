@@ -1138,6 +1138,55 @@ function sigint_running_trap() {
 
 ####################################################################################################
 
+## Network statistics helper functions #############################################################
+
+function has_netstat() { command -v netstat > /dev/null 2>&1; }
+function has_ss()      { command -v ss > /dev/null 2>&1; }
+function has_nstat()   { command -v nstat > /dev/null 2>&1; }
+function has_iproute2() { command -v ip > /dev/null 2>&1 && ip -V > /dev/null 2>&1; }
+
+# Collect active socket statistics (netstat -v preferred; ss fallback)
+function collect_active_socket_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -v > "$output_file" 2>&1
+    elif has_ss; then
+        ss > "$output_file" 2>&1
+    else
+        echo "netstat nor ss not available" > "$output_file"
+    fi
+}
+
+# Collect kernel network protocol statistics (netstat -s preferred; nstat fallback)
+function kernel_network_protocol_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -s > "$output_file" 2>&1
+    elif has_nstat; then
+        nstat -az > "$output_file" 2>&1
+    else
+        echo "netstat nor nstat not available" > "$output_file"
+    fi
+}
+
+# Collect kernel interface table (netstat -in preferred; ip -s link fallback)
+function kernel_interface_table() {
+    local output_file="$1"
+    local formatting_script="${LPCPUDIR}/tools/ip_to_netstat.py"
+    local temp_file="${output_file}.tmp"
+    if has_netstat; then
+        netstat -in > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s link > "$temp_file" 2>&1
+        python3 "$formatting_script" "$temp_file" > "$output_file" 2>&1
+        rm -f "$temp_file"
+    else
+        echo "netstat nor ip not available" > "$output_file"
+    fi
+}
+
+####################################################################################################
+
 # main block, used to log all output
 {
     trap sigint_normal_trap SIGINT
@@ -1158,9 +1207,9 @@ function sigint_running_trap() {
     done
 
     cat /proc/net/netstat > $LOGDIR/netstat.before
-    netstat -in > $LOGDIR/netstat-in.before 2>&1
-    netstat -v > $LOGDIR/netstat-v.before 2>&1
-    netstat -s > $LOGDIR/netstat-s.before 2>&1
+    kernel_interface_table            "$LOGDIR/netstat-in.before"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.before"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.before"
     cat /proc/interrupts > $LOGDIR/interrupts.before
     cat /proc/meminfo > $LOGDIR/meminfo.before
     if (( depth > 1 )); then
@@ -1218,9 +1267,9 @@ function sigint_running_trap() {
     trap sigint_normal_trap SIGINT
 
     cat /proc/net/netstat > $LOGDIR/netstat.after
-    netstat -in > $LOGDIR/netstat-in.after 2>&1
-    netstat -v > $LOGDIR/netstat-v.after 2>&1
-    netstat -s > $LOGDIR/netstat-s.after 2>&1
+    kernel_interface_table            "$LOGDIR/netstat-in.after"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.after"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.after"
     cat /proc/interrupts > $LOGDIR/interrupts.after
     cat /proc/meminfo > $LOGDIR/meminfo.after
     if (( depth > 1 )); then
