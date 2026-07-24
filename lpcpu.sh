@@ -1138,6 +1138,25 @@ function sigint_running_trap() {
 
 ####################################################################################################
 
+## Network interface helper functions ##############################################################
+
+function has_ifconfig() { command -v ifconfig > /dev/null 2>&1; }
+function has_iproute2() { command -v ip > /dev/null 2>&1 && ip -V > /dev/null 2>&1; }
+
+# Collect network interface statistics (ifconfig preferred; ip fallback)
+function collect_network_stats() {
+    local output_file="$1"
+    if has_ifconfig; then
+        ifconfig -a > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s -s link show > "$output_file" 2>&1
+    else
+        echo "# Network interface tools (ip/ifconfig) not available" > "$output_file"
+    fi
+}
+
+####################################################################################################
+
 # main block, used to log all output
 {
     trap sigint_normal_trap SIGINT
@@ -1169,7 +1188,7 @@ function sigint_running_trap() {
     fi
 	df -a > $LOGDIR/df.before 2>&1
     ip -s link > $LOGDIR/ip-statistics.before 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.before 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.before"
     cat /proc/net/snmp > $LOGDIR/snmp.before
     mkdir $LOGDIR/ethtool
     for IF in /sys/class/net/*; do
@@ -1229,7 +1248,7 @@ function sigint_running_trap() {
 	fi
     df -a > $LOGDIR/df.after 2>&1
     ip -s link > $LOGDIR/ip-statistics.after 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.after 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.after"
     cat /proc/net/snmp > $LOGDIR/snmp.after
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
