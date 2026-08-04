@@ -1,0 +1,10 @@
+driver: mlx5_core
+version: 6.12.0-211.7.1.el10_2.ppc64le
+firmware-version: 16.35.3006 (IBM0000000020)
+expansion-rom-version: 
+bus-info: 0018:01:00.1
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: yes

@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Mapped
+0 135356
+5 135296
+10 135296
+15 135296
+20 135296
+25 135296

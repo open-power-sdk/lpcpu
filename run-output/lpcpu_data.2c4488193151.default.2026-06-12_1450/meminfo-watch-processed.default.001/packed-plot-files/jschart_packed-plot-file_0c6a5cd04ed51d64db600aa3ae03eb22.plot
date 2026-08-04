@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.CmaTotal
+0 32768
+5 32768
+10 32768
+15 32768
+20 32768
+25 32768

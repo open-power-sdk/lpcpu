@@ -1,0 +1,115 @@
+$VAR1 = {
+          'loop0' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop1' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop2' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop3' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop4' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop5' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop6' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'loop7' => {
+                       'add_random' => '0',
+                       'hw_sector_size' => '512',
+                       'minimum_io_size' => '512',
+                       'nr_requests' => '128',
+                       'read_ahead_kb' => '128',
+                       'rotational' => '1',
+                       'scheduler' => '[none] mq-deadline ',
+                       'size' => '0'
+                     },
+          'vda' => {
+                     'add_random' => '0',
+                     'cache_type' => 'write back',
+                     'hw_sector_size' => '512',
+                     'minimum_io_size' => '512',
+                     'nr_requests' => '256',
+                     'read_ahead_kb' => '128',
+                     'rotational' => '1',
+                     'scheduler' => 'none [mq-deadline] ',
+                     'size' => '41943040'
+                   },
+          'vdb' => {
+                     'add_random' => '0',
+                     'cache_type' => 'write back',
+                     'hw_sector_size' => '512',
+                     'minimum_io_size' => '512',
+                     'nr_requests' => '256',
+                     'read_ahead_kb' => '128',
+                     'rotational' => '1',
+                     'scheduler' => 'none [mq-deadline] ',
+                     'size' => '41943040'
+                   },
+          'vdc' => {
+                     'add_random' => '0',
+                     'cache_type' => 'write back',
+                     'hw_sector_size' => '512',
+                     'minimum_io_size' => '512',
+                     'nr_requests' => '256',
+                     'read_ahead_kb' => '128',
+                     'rotational' => '1',
+                     'scheduler' => 'none [mq-deadline] ',
+                     'size' => '38668'
+                   }
+        };

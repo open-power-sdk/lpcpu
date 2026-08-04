@@ -1,0 +1,16 @@
+Current SAR version does not provide power mgmt data by default
+Processing Directory : sar.breakout.default.001
+SAR run queue data contains information on blocked processes
+SAR memory data contains information on dirtymem
+Loaded block device hierarchy data from block-device-hierarchy.dat
+Processing File : iostat.default.001
+Processing iostat data file with broken out read/write wait times
+Processing File : mpstat.default.001
+Using guest nice mode
+postprocess-mpstat: Loading topology archive from ./system-topology.dump
+Processing File : vmstat.default.001
+Discovered vmstat has embedded timestamps
+Processing File : meminfo-watch.default.001
+Processing File : proc-interrupts.default.001
+postprocess-proc-interrupts: Loading topology archive from ./system-topology.dump
+    MTJP : No jobs to process, returning

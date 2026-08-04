@@ -1,0 +1,33 @@
+Node Name                                    : ltczz345-lp2.ltc.tadn.ibm.com
+Partition Name                               : ltczz345-lp2
+Partition Number                             : 2
+Type                                         : Dedicated
+Mode                                         : Capped
+Entitled Capacity                            : 3.00
+Partition Group-ID                           : 32770
+Online Virtual CPUs                          : 3
+Maximum Virtual CPUs                         : 4
+Minimum Virtual CPUs                         : 2
+Online Memory                                : 32306368 kB
+Minimum Memory                               : 8192
+Desired Memory                               : 32768
+Maximum Memory                               : 33554432000
+Minimum Capacity                             : 2.00
+Maximum Capacity                             : 4.00
+Capacity Increment                           : 1.00
+Active Physical CPUs in system               : 20
+Active CPUs in Pool                          : 0
+Shared Physical CPUS in system               : 0
+Maximum Capacity of Pool                     : 0.00
+Entitled Capacity of Pool                    : 0
+Unallocated Processor Capacity               : 0
+Physical CPU Percentage                      : 100
+Unallocated Weight                           : 0
+Memory Mode                                  : Dedicated
+Total I/O Memory Entitlement                 : 34359738368
+Variable Memory Capacity Weight              : 0
+Memory Pool ID                               : 65535
+Unallocated Variable Memory Capacity Weight  : 0
+Unallocated I/O Memory Entitlement           : 0
+Memory Group ID of LPAR                      : 32770
+Desired Variable Capacity Weight             : 0

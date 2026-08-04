@@ -1,0 +1,2 @@
+# Python testing dependencies for LPCPU
+pytest>=7.4.0

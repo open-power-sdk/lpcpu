@@ -1,0 +1,63 @@
+Architecture:                            ppc64le
+Byte Order:                              Little Endian
+CPU(s):                                  24
+On-line CPU(s) list:                     0-23
+Model name:                              POWER9 (architected), altivec supported
+Model:                                   2.3 (pvr 004e 0203)
+Thread(s) per core:                      8
+Core(s) per socket:                      3
+Socket(s):                               1
+Physical sockets:                        2
+Physical chips:                          1
+Physical cores/chip:                     10
+Hypervisor vendor:                       pHyp
+Virtualization type:                     para
+L1d cache:                               192 KiB (6 instances)
+L1i cache:                               192 KiB (6 instances)
+L2 cache:                                1.5 MiB (3 instances)
+L3 cache:                                30 MiB (3 instances)
+NUMA node(s):                            1
+NUMA node0 CPU(s):                       0-23
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Mitigation; RFI Flush, L1D private per thread
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Mitigation; RFI Flush, L1D private per thread
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Mitigation; Kernel entry/exit barrier (eieio)
+Vulnerability Spectre v1:                Mitigation; __user pointer sanitization, ori31 speculation barrier enabled
+Vulnerability Spectre v2:                Mitigation; Software count cache flush (hardware accelerated), Software link stack flush
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Not affected
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+  0    0      0    0 0:0:0:0          yes
+  1    0      0    0 1:1:0:0          yes
+  2    0      0    0 0:0:0:0          yes
+  3    0      0    0 1:1:0:0          yes
+  4    0      0    0 0:0:0:0          yes
+  5    0      0    0 1:1:0:0          yes
+  6    0      0    0 0:0:0:0          yes
+  7    0      0    0 1:1:0:0          yes
+  8    0      0    1 2:2:1:1          yes
+  9    0      0    1 3:3:1:1          yes
+ 10    0      0    1 2:2:1:1          yes
+ 11    0      0    1 3:3:1:1          yes
+ 12    0      0    1 2:2:1:1          yes
+ 13    0      0    1 3:3:1:1          yes
+ 14    0      0    1 2:2:1:1          yes
+ 15    0      0    1 3:3:1:1          yes
+ 16    0      0    2 4:4:2:2          yes
+ 17    0      0    2 5:5:2:2          yes
+ 18    0      0    2 4:4:2:2          yes
+ 19    0      0    2 5:5:2:2          yes
+ 20    0      0    2 4:4:2:2          yes
+ 21    0      0    2 5:5:2:2          yes
+ 22    0      0    2 4:4:2:2          yes
+ 23    0      0    2 5:5:2:2          yes

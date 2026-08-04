@@ -1,0 +1,37 @@
+Settings for enP24p1s0f0np0:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseKX/Full
+	                        10000baseKR/Full
+	                        40000baseKR4/Full
+	                        40000baseCR4/Full
+	                        40000baseSR4/Full
+	                        40000baseLR4/Full
+	                        25000baseCR/Full
+	                        25000baseKR/Full
+	                        25000baseSR/Full
+	                        50000baseCR2/Full
+	                        50000baseKR2/Full
+	                        100000baseKR4/Full
+	                        100000baseSR4/Full
+	                        100000baseCR4/Full
+	                        100000baseLR4_ER4/Full
+	Supported pause frame use: Symmetric
+	Supports auto-negotiation: Yes
+	Supported FEC modes: None	 RS	 BASER
+	Advertised link modes:  100000baseKR4/Full
+	                        100000baseSR4/Full
+	                        100000baseCR4/Full
+	                        100000baseLR4_ER4/Full
+	Advertised pause frame use: Symmetric
+	Advertised auto-negotiation: Yes
+	Advertised FEC modes: RS
+	Speed: 100000Mb/s
+	Lanes: 4
+	Duplex: Full
+	Auto-negotiation: on
+	Port: FIBRE
+	PHYAD: 0
+	Transceiver: internal
+	Supports Wake-on: d
+	Wake-on: d
+	Link detected: yes

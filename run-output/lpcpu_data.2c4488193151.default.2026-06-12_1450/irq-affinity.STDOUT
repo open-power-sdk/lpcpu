@@ -1,0 +1,37 @@
+IRQ                                                          Mask  List  Description
+10                                                           3     0-1   arch_timer
+13                                                           3     0-1   13:          0          0 ARMH0061:00   6 Edge      ACPI:Event
+23                                                           3     0-1   23:          0          0       MSI 196608 Edge      virtio8-config
+24                                                           3     0-1   24:          0          0       MSI 196609 Edge      virtio8-inflate
+25                                                           3     0-1   25:          0          0       MSI 196610 Edge      virtio8-deflate
+26                                                           3     0-1   26:          0          0       MSI 81920 Edge      virtio1-config
+27                                                           3     0-1   27:          0          0       MSI 81921 Edge      virtio1-input
+28                                                           3     0-1   28:          8          0       MSI 81922 Edge      virtio1-output
+29                                                           3     0-1   29:          0          0       MSI 98304 Edge      virtio2-config
+30                                                           3     0-1   30:       8556          0       MSI 98305 Edge      virtio2-req.0
+31                                                           3     0-1   31:          0          0       MSI 114688 Edge      virtio3-config
+32                                                           3     0-1   32:      40530          0       MSI 114689 Edge      virtio3-req.0
+33                                                           3     0-1   33:          0          0       MSI 131072 Edge      virtio4-config
+34                                                           3     0-1   34:        334          0       MSI 131073 Edge      virtio4-req.0
+35                                                           3     0-1   35:          0          0       MSI 16384 Edge      virtio0-config
+36                                                           3     0-1   36:      41213          0       MSI 16385 Edge      virtio0-input.0
+37                                                           3     0-1   37:      17753          0       MSI 16386 Edge      virtio0-output.0
+38                                                           3     0-1   arm-pmu
+39                                                           3     0-1   39:          0          0       MSI 180224 Edge      virtio7-config
+40                                                           3     0-1   40:         16          0       MSI 180225 Edge      virtio7-input
+41                                                           3     0-1   41:          0          0       MSI 163840 Edge      virtio6-config
+42                                                           3     0-1   42:         58          0       MSI 163841 Edge      virtio6-rx
+43                                                           3     0-1   43:        112          0       MSI 163842 Edge      virtio6-tx
+44                                                           3     0-1   44:          0          0       MSI 163843 Edge      virtio6-event
+45                                                           3     0-1   45:          0          0       MSI 147456 Edge      virtio5-config
+46                                                           3     0-1   46:          0          0       MSI 147457 Edge      virtio5-hiprio
+47                                                           3     0-1   47:       8179          0       MSI 147458 Edge      virtio5-requests.0
+49                                                           3     0-1   49:         49          0       MSI 212992 Edge      xhci_hcd
+IPI0:      4330       5990       Rescheduling interrupts                 IPI0:      4330       5990       Rescheduling interrupts
+IPI1:     39336      73235       Function call interrupts                IPI1:     39336      73235       Function call interrupts
+IPI2:         0          0       CPU stop interrupts                     IPI2:         0          0       CPU stop interrupts
+IPI3:         0          0       CPU stop NMIs                           IPI3:         0          0       CPU stop NMIs
+IPI4:         0          0       Timer broadcast interrupts              IPI4:         0          0       Timer broadcast interrupts
+IPI5:        96         91       IRQ work interrupts                     IPI5:        96         91       IRQ work interrupts
+IPI6:         0          0       CPU backtrace interrupts                IPI6:         0          0       CPU backtrace interrupts
+IPI7:         0          0       KGDB roundup interrupts                 IPI7:         0          0       KGDB roundup interrupts

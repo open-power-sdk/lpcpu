@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.SUnreclaim
+0 42144
+5 42232
+10 42264
+15 42264
+20 42264
+25 42264

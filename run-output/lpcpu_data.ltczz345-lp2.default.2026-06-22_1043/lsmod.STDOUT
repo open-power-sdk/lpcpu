@@ -1,0 +1,73 @@
+Module                  Size  Used by
+binfmt_misc           262144  1
+vsock_diag            196608  0
+bonding               393216  0
+rfkill                262144  1
+nft_fib_inet          196608  1
+nft_fib_ipv4          196608  1 nft_fib_inet
+nft_fib_ipv6          196608  1 nft_fib_inet
+nft_fib               196608  3 nft_fib_ipv6,nft_fib_ipv4,nft_fib_inet
+nft_reject_inet       196608  10
+nf_reject_ipv4        196608  1 nft_reject_inet
+nf_reject_ipv6        262144  1 nft_reject_inet
+nft_reject            196608  1 nft_reject_inet
+nft_ct                196608  8
+nft_chain_nat         196608  3
+nf_nat                262144  1 nft_chain_nat
+nf_conntrack          327680  2 nf_nat,nft_ct
+nf_defrag_ipv6        262144  1 nf_conntrack
+nf_defrag_ipv4        196608  1 nf_conntrack
+nf_tables             524288  289 nft_ct,nft_reject_inet,nft_fib_ipv6,nft_fib_ipv4,nft_chain_nat,nft_reject,nft_fib,nft_fib_inet
+pseries_rng           196608  0
+mlx5_ib               655360  0
+ib_uverbs             393216  1 mlx5_ib
+macsec                262144  1 mlx5_ib
+ib_core               655360  2 ib_uverbs,mlx5_ib
+vmx_crypto            196608  0
+mlx5_fwctl            262144  0
+fwctl                 262144  1 mlx5_fwctl
+sg                    262144  0
+fuse                  393216  1
+loop                  196608  0
+vsock_loopback        196608  0
+vmw_vsock_virtio_transport_common   262144  1 vsock_loopback
+vsock                 262144  5 vmw_vsock_virtio_transport_common,vsock_loopback,vsock_diag
+xfs                  3145728  3
+nvme_tcp              262144  0
+mlx5_core            3145728  2 mlx5_fwctl,mlx5_ib
+nvme_fabrics          262144  1 nvme_tcp
+sd_mod                196608  4
+nvme_core             458752  2 nvme_tcp,nvme_fabrics
+8021q                 196608  0
+garp                  196608  1 8021q
+stp                   196608  1 garp
+llc                   196608  2 stp,garp
+nvme_keyring          262144  3 nvme_tcp,nvme_core,nvme_fabrics
+mrp                   196608  1 8021q
+nvme_auth             262144  1 nvme_core
+ibmvscsi              196608  4
+ibmveth               262144  0
+scsi_transport_srp    262144  1 ibmvscsi
+mlxfw                 262144  1 mlx5_core
+psample               262144  1 mlx5_core
+sunrpc               1048576  1
+dm_mirror             196608  0
+dm_region_hash        196608  1 dm_mirror
+dm_log                196608  2 dm_region_hash,dm_mirror
+be2iscsi              262144  0
+iscsi_boot_sysfs      196608  1 be2iscsi
+bnx2i                 262144  0
+cnic                  262144  1 bnx2i
+uio                   262144  1 cnic
+cxgb4i                196608  0
+cxgb4                 851968  1 cxgb4i
+tls                   327680  3 cxgb4,bonding,mlx5_core
+libcxgbi              262144  1 cxgb4i
+libcxgb               262144  1 libcxgbi
+iscsi_tcp             262144  0
+libiscsi_tcp          262144  3 libcxgbi,iscsi_tcp,cxgb4i
+libiscsi              262144  6 be2iscsi,libiscsi_tcp,bnx2i,libcxgbi,iscsi_tcp,cxgb4i
+scsi_transport_iscsi   393216  6 be2iscsi,libiscsi_tcp,bnx2i,libcxgbi,iscsi_tcp,libiscsi
+dm_multipath          262144  0
+dm_mod                393216  13 dm_multipath,dm_log,dm_mirror
+nfnetlink             196608  3 nf_tables

@@ -1,0 +1,13 @@
+Filesystem             1K-blocks     Used  Available Use% Mounted on
+overlay                        0       16        -16   2% /
+proc                           0        0          0    - /proc
+tmpfs                          0        0          0   0% /dev
+devpts                         0        0          0    - /dev/pts
+sysfs                          0        0          0    - /sys
+cgroup                         0        0          0    - /sys/fs/cgroup
+mqueue                         0        0          0    - /dev/mqueue
+shm                            0        0          0   0% /dev/shm
+lima-97d9918658e3608f          0    53680     -53680   5% /lpcpu
+/dev/vdb1                      0       16        -16   2% /etc/resolv.conf
+/dev/vdb1                      0       16        -16   2% /etc/hostname
+/dev/vdb1                      0       16        -16   2% /etc/hosts

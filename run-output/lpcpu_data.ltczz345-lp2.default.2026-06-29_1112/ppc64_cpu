@@ -1,0 +1,43 @@
+Number of cores present = 3
+Number of cores online = 3
+SMT=8
+Usage: ppc64_cpu [command] [options]
+ppc64_cpu --smt [-n]                # Get current SMT state. [-n] shows numeric output
+ppc64_cpu --smt={on|off}            # Turn SMT on/off
+ppc64_cpu --smt=X                   # Set SMT state to X
+
+ppc64_cpu --cores-present           # Get the number of cores present
+ppc64_cpu --cores-on                # Get the number of cores currently online
+ppc64_cpu --cores-on=X              # Put exactly X cores online
+ppc64_cpu --cores-on=all            # Put all cores online
+
+ppc64_cpu --online-cores=X[,Y...]   # Put specified cores online
+
+ppc64_cpu --offline-cores=X[,Y,...] # Put specified cores offline
+
+ppc64_cpu --dscr                    # Get current DSCR system setting
+ppc64_cpu --dscr=<val>              # Change DSCR system setting
+ppc64_cpu --dscr [-p <pid>]         # Get DSCR setting for process <pid>
+ppc64_cpu --dscr=<val> [-p <pid>]   # Change DSCR setting for process <pid>
+
+ppc64_cpu --run-mode                # Get current diagnostics run mode
+ppc64_cpu --run-mode=<val>          # Set current diagnostics run mode
+
+ppc64_cpu --frequency [-t <time>]   # Determine cpu frequency for <time>
+                                    # seconds, default is 1 second.
+
+ppc64_cpu --subcores-per-core       # Get number of subcores per core
+ppc64_cpu --subcores-per-core=X     # Set subcores per core to X (1 or 4)
+ppc64_cpu --threads-per-core        # Get threads per core
+ppc64_cpu --info                    # Display system state information
+ppc64_cpu --version                 # Display version of ppc64-cpu
+Power Savings Mode: Static
+Tool Computed frequencies
+min	:	2.298 GHz (cpu 0)
+max	:	2.298 GHz (cpu 20)
+avg	:	2.298 GHz
+run-mode=0
+DSCR is 23
+Core   0:    0*    1*    2*    3*    4*    5*    6*    7* 
+Core   1:    8*    9*   10*   11*   12*   13*   14*   15* 
+Core   2:   16*   17*   18*   19*   20*   21*   22*   23* 

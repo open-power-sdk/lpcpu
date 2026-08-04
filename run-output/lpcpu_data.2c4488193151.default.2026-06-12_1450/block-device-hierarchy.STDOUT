@@ -1,0 +1,15 @@
+
+Layer	Devices
+    0	[3] vda vdb vdc 
+    1	[4] *vda1 *vda15 *vdb1 *vda16 
+
+Top Level Devices:
+[3] vda vdb vdc 
+
+HostID    	Type           	Devices
+
+HostID    	Description    
+
+Device              	Multipaths
+
+Device              	Components

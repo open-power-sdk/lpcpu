@@ -1,0 +1,492 @@
+<html>
+<head>
+<title>SAR Charts</title>
+<link rel="stylesheet" href="../jschart.pm/jschart.css"/>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/queue.v1.min.js" charset="utf-8"></script>
+<script src="../jschart.pm/jschart.js" charset="utf-8"></script>
+<a href='timestamps.txt'>Plot Interval to Timestamp Mapping</a><br/>
+<a href='../sar.text.default.001'>Full Sar Text Data</a><br/>
+<hr id='chart_nav_cpu'/>
+<a onclick='navigate_to_chart("chart_nav_networkthroughputbw");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_d9747e2da342bdb995f6389533ad1a3d_chart'>
+      <script>
+        create_graph(0, "jschart_d9747e2da342bdb995f6389533ad1a3d", "1. CPU Utilization", "Time (secs.)", "CPU Utilization", { y_max: 100, y_min: 0, packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_52480b3c60449ff9b4cc0e6cd67d016c.plot", raw_data_sources: ["../sar.breakout.default.001/sar.cpu_util_0", "../sar.breakout.default.001/sar.cpu_util_0.STDERR", "../sar.breakout.default.001/sar.cpu_util_1", "../sar.breakout.default.001/sar.cpu_util_1.STDERR" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_d9747e2da342bdb995f6389533ad1a3d_table'>
+        <tr class='header'><th colspan='4'>1. CPU Utilization</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkthroughputbw'/>
+<a onclick='navigate_to_chart("chart_nav_cpu");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkthroughputbps");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_5a0642ef75f4be7449107b4a86c62d47_chart'>
+      <script>
+        create_graph(0, "jschart_5a0642ef75f4be7449107b4a86c62d47", "2. Network Throughput (KBytes/sec.)", "Time (secs.)", "KBytes/sec.", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_54c78815f6bb70aa7d58236f0b221c5d.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_5a0642ef75f4be7449107b4a86c62d47_table'>
+        <tr class='header'><th colspan='4'>2. Network Throughput (KBytes/sec.)</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkthroughputbps'/>
+<a onclick='navigate_to_chart("chart_nav_networkthroughputbw");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkutilization");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_f98f84ae453f672f9acb6cc29b40cc39_chart'>
+      <script>
+        create_graph(0, "jschart_f98f84ae453f672f9acb6cc29b40cc39", "3. Network Throughput (MBits/sec.)", "Time (secs.)", "Mbits/sec.", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_dd744c41d90511759b3abd58ab2fa354.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_f98f84ae453f672f9acb6cc29b40cc39_table'>
+        <tr class='header'><th colspan='4'>3. Network Throughput (MBits/sec.)</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkutilization'/>
+<a onclick='navigate_to_chart("chart_nav_networkthroughputbps");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkpacketrate");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_dc53badc22f13a4c22774819e78cb5a0_chart'>
+      <script>
+        create_graph(0, "jschart_dc53badc22f13a4c22774819e78cb5a0", "4. Network Utilization", "Time (secs.)", "%", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_2471e186a5f1d96116ec49bad232d965.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_dc53badc22f13a4c22774819e78cb5a0_table'>
+        <tr class='header'><th colspan='4'>4. Network Utilization</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkpacketrate'/>
+<a onclick='navigate_to_chart("chart_nav_networkutilization");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkpacketsize");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_35271a7bead435a7fe31bd8ce0634295_chart'>
+      <script>
+        create_graph(0, "jschart_35271a7bead435a7fe31bd8ce0634295", "5. Network Packet Rate", "Time (secs.)", "Packets/sec.", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_706de860d2d5826c66c7e35e97115c43.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_35271a7bead435a7fe31bd8ce0634295_table'>
+        <tr class='header'><th colspan='4'>5. Network Packet Rate</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkpacketsize'/>
+<a onclick='navigate_to_chart("chart_nav_networkpacketrate");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkdrops");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_d4c548806e04f7b905ef1089a35c6165_chart'>
+      <script>
+        create_graph(0, "jschart_d4c548806e04f7b905ef1089a35c6165", "6. Network Packet Size", "Time (secs.)", "Bytes/packet", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_78cec07bbfd04b8f6e88891dff80b7b8.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_d4c548806e04f7b905ef1089a35c6165_table'>
+        <tr class='header'><th colspan='4'>6. Network Packet Size</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkdrops'/>
+<a onclick='navigate_to_chart("chart_nav_networkpacketsize");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_networkretransmits");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_3f07e4540186a43acdb8677c239bd5d3_chart'>
+      <script>
+        create_graph(0, "jschart_3f07e4540186a43acdb8677c239bd5d3", "7. Network Drops", "Time (secs.)", "Drops/sec.", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_c8b2e940458d5cb7943f675b14f991a7.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_3f07e4540186a43acdb8677c239bd5d3_table'>
+        <tr class='header'><th colspan='4'>7. Network Drops</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_networkretransmits'/>
+<a onclick='navigate_to_chart("chart_nav_networkdrops");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_ctxswitches");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_eeebc6cd1687b33060da33b28e74be1b_chart'>
+      <script>
+        create_graph(0, "jschart_eeebc6cd1687b33060da33b28e74be1b", "8. Network Retransmits", "Time (secs.)", "Retransmits/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_cae821eb0250009885569f891d1f083a.plot", raw_data_sources: ["../sar.breakout.default.001/sar.netdev" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_eeebc6cd1687b33060da33b28e74be1b_table'>
+        <tr class='header'><th colspan='4'>8. Network Retransmits</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_ctxswitches'/>
+<a onclick='navigate_to_chart("chart_nav_networkretransmits");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_interrupts");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_783afd7e8d27bf12b83fe65cccc6d2f8_chart'>
+      <script>
+        create_graph(0, "jschart_783afd7e8d27bf12b83fe65cccc6d2f8", "9. Context Switches", "Time (secs.)", "Context Switches/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_ad013575fc5b81ea310b8162b9a4159c.plot", raw_data_sources: ["../sar.breakout.default.001/sar.process_creation-context_switching" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_783afd7e8d27bf12b83fe65cccc6d2f8_table'>
+        <tr class='header'><th colspan='4'>9. Context Switches</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_interrupts'/>
+<a onclick='navigate_to_chart("chart_nav_ctxswitches");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_processcreation");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_d5881bb0d29376e42e024b908fcc9706_chart'>
+      <script>
+        create_graph(0, "jschart_d5881bb0d29376e42e024b908fcc9706", "10. Interrupts", "Time (secs.)", "Interrupts/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_030041d7cd7176f065a00dff32a818d8.plot", raw_data_sources: ["../sar.breakout.default.001/sar.irq_sum" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_d5881bb0d29376e42e024b908fcc9706_table'>
+        <tr class='header'><th colspan='4'>10. Interrupts</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_processcreation'/>
+<a onclick='navigate_to_chart("chart_nav_interrupts");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_memory");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_327e9192ea97f8fe0bd20a448092b17d_chart'>
+      <script>
+        create_graph(0, "jschart_327e9192ea97f8fe0bd20a448092b17d", "11. Process Creation", "Time (secs.)", "Processes Created/sec.", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_f1d420e47044dff3d4301d0070b3c0e5.plot", raw_data_sources: ["../sar.breakout.default.001/sar.process_creation-context_switching" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_327e9192ea97f8fe0bd20a448092b17d_table'>
+        <tr class='header'><th colspan='4'>11. Process Creation</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_memory'/>
+<a onclick='navigate_to_chart("chart_nav_processcreation");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_memorycommit");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_cd69b4957f06cd818d7bf3d61980e291_chart'>
+      <script>
+        create_graph(1, "jschart_cd69b4957f06cd818d7bf3d61980e291", "12. Memory", "Time (secs.)", "KB of Memory", { packed: 4, plotfile: "packed-plot-files/jschart_packed-plot-file_b52e9360b4b268ab7ef27c17a35745ff.plot", raw_data_sources: ["../sar.breakout.default.001/sar.memory" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_cd69b4957f06cd818d7bf3d61980e291_table'>
+        <tr class='header'><th colspan='4'>12. Memory</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_memorycommit'/>
+<a onclick='navigate_to_chart("chart_nav_memory");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_percentmemory");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_98f781e156d65a639a09ed62a089f8c2_chart'>
+      <script>
+        create_graph(0, "jschart_98f781e156d65a639a09ed62a089f8c2", "13. Memory Commit", "Time (secs.)", "KB of Commit", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_e2cc4a83bab6e579fb5afa72a29aca3f.plot", raw_data_sources: ["../sar.breakout.default.001/sar.memory" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_98f781e156d65a639a09ed62a089f8c2_table'>
+        <tr class='header'><th colspan='4'>13. Memory Commit</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_percentmemory'/>
+<a onclick='navigate_to_chart("chart_nav_memorycommit");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_dirtymemory");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_6ffc78f641c1c5d406300d6dc7f5dd23_chart'>
+      <script>
+        create_graph(0, "jschart_6ffc78f641c1c5d406300d6dc7f5dd23", "14. Percent Memory Used", "Time (secs.)", "Percent", { y_max: 100, y_min: 0, packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_2e65434323e34295fe1ca0b289eaf603.plot", raw_data_sources: ["../sar.breakout.default.001/sar.memory" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_6ffc78f641c1c5d406300d6dc7f5dd23_table'>
+        <tr class='header'><th colspan='4'>14. Percent Memory Used</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_dirtymemory'/>
+<a onclick='navigate_to_chart("chart_nav_percentmemory");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_swapping");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_38bd49fbcd5b6c1b698c2b9aff9f19d7_chart'>
+      <script>
+        create_graph(0, "jschart_38bd49fbcd5b6c1b698c2b9aff9f19d7", "15. Dirty Memory", "Time (secs.)", "KB of Dirty", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_ddaca5877f32b7287d54b80967fb1f4a.plot", raw_data_sources: ["../sar.breakout.default.001/sar.memory" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_38bd49fbcd5b6c1b698c2b9aff9f19d7_table'>
+        <tr class='header'><th colspan='4'>15. Dirty Memory</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_swapping'/>
+<a onclick='navigate_to_chart("chart_nav_dirtymemory");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_runnable");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_8a991dafbba2463e25ba0bc65307eb5e_chart'>
+      <script>
+        create_graph(0, "jschart_8a991dafbba2463e25ba0bc65307eb5e", "16. Swapping", "Time (secs.)", "Pages Swapped/sec.", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_ed9b309adb68e30a8b351cb6e82eac12.plot", raw_data_sources: ["../sar.breakout.default.001/sar.swapping" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_8a991dafbba2463e25ba0bc65307eb5e_table'>
+        <tr class='header'><th colspan='4'>16. Swapping</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_runnable'/>
+<a onclick='navigate_to_chart("chart_nav_swapping");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_totalprocesses");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_de335192a2d423b9b8aaf5c8d55137c4_chart'>
+      <script>
+        create_graph(0, "jschart_de335192a2d423b9b8aaf5c8d55137c4", "17. Runnable Processes", "Time (secs.)", "Processes in the Run Queue", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_c0b4bc6cb9f0d100ace7dae956d155e4.plot", raw_data_sources: ["../sar.breakout.default.001/sar.run_queue_loadavg" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_de335192a2d423b9b8aaf5c8d55137c4_table'>
+        <tr class='header'><th colspan='4'>17. Runnable Processes</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_totalprocesses'/>
+<a onclick='navigate_to_chart("chart_nav_runnable");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_loadaverages");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_e591610b064e4bdb6ae9db85e94b4673_chart'>
+      <script>
+        create_graph(0, "jschart_e591610b064e4bdb6ae9db85e94b4673", "18. Total Processes", "Time (secs.)", "Process List Size", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_dd2155fe7252a26592c6da93da5e5f45.plot", raw_data_sources: ["../sar.breakout.default.001/sar.run_queue_loadavg" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_e591610b064e4bdb6ae9db85e94b4673_table'>
+        <tr class='header'><th colspan='4'>18. Total Processes</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_loadaverages'/>
+<a onclick='navigate_to_chart("chart_nav_totalprocesses");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_blockedprocesses");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_c74268e7184304cd026c9427ec8bcdb0_chart'>
+      <script>
+        create_graph(0, "jschart_c74268e7184304cd026c9427ec8bcdb0", "19. Load Averages", "Time (secs.)", "Rolling Load Average", { packed: 3, plotfile: "packed-plot-files/jschart_packed-plot-file_0d6f53223bf70795a5b4a76ba0209420.plot", raw_data_sources: ["../sar.breakout.default.001/sar.run_queue_loadavg" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_c74268e7184304cd026c9427ec8bcdb0_table'>
+        <tr class='header'><th colspan='4'>19. Load Averages</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_blockedprocesses'/>
+<a onclick='navigate_to_chart("chart_nav_loadaverages");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_vmmpaging");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_4af5fc9ff6cbb0e4bbfdd2b766b95433_chart'>
+      <script>
+        create_graph(0, "jschart_4af5fc9ff6cbb0e4bbfdd2b766b95433", "20. Blocked Processes", "Time (secs.)", "Number of Blocked Processes", { packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_4cb77246190e87abd21983d7600f0787.plot", raw_data_sources: ["../sar.breakout.default.001/sar.run_queue_loadavg" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_4af5fc9ff6cbb0e4bbfdd2b766b95433_table'>
+        <tr class='header'><th colspan='4'>20. Blocked Processes</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_vmmpaging'/>
+<a onclick='navigate_to_chart("chart_nav_blockedprocesses");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_vmmfaults");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_0bbce6884e55ba792eca184788d8e7d3_chart'>
+      <script>
+        create_graph(0, "jschart_0bbce6884e55ba792eca184788d8e7d3", "21. VMM Paging", "Time (secs.)", "KB/sec.", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_9e314fc15766edf35fa37c9a5b72b1fa.plot", raw_data_sources: ["../sar.breakout.default.001/sar.paging_stats" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_0bbce6884e55ba792eca184788d8e7d3_table'>
+        <tr class='header'><th colspan='4'>21. VMM Paging</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_vmmfaults'/>
+<a onclick='navigate_to_chart("chart_nav_vmmpaging");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_vmmpagescanning");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_292f9fadec84c43113cca16e94e01b85_chart'>
+      <script>
+        create_graph(0, "jschart_292f9fadec84c43113cca16e94e01b85", "22. VMM Page Faults", "Time (secs.)", "Faults/sec.", { packed: 2, plotfile: "packed-plot-files/jschart_packed-plot-file_bf3475ff1b0f55fc0b7a0f0adf6b616e.plot", raw_data_sources: ["../sar.breakout.default.001/sar.paging_stats" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_292f9fadec84c43113cca16e94e01b85_table'>
+        <tr class='header'><th colspan='4'>22. VMM Page Faults</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_vmmpagescanning'/>
+<a onclick='navigate_to_chart("chart_nav_vmmfaults");'>Previous Chart</a>
+&nbsp;|&nbsp;
+<a onclick='navigate_to_chart("chart_nav_vmmefficiency");'>Next Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_ad150aee0628b6733d13b487f6670c64_chart'>
+      <script>
+        create_graph(0, "jschart_ad150aee0628b6733d13b487f6670c64", "23. VMM Page Scanning", "Time (secs.)", "Pages/sec.", { packed: 3, plotfile: "packed-plot-files/jschart_packed-plot-file_0c4bc49b1b0e51a948225320ab1d2f66.plot", raw_data_sources: ["../sar.breakout.default.001/sar.paging_stats" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_ad150aee0628b6733d13b487f6670c64_table'>
+        <tr class='header'><th colspan='4'>23. VMM Page Scanning</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+<hr id='chart_nav_vmmefficiency'/>
+<a onclick='navigate_to_chart("chart_nav_vmmpagescanning");'>Previous Chart</a>
+<br/>
+<table>
+  <tr valign='top'>
+    <td id='jschart_76fecc6cdf39bd58f5aed92b90458219_chart'>
+      <script>
+        create_graph(0, "jschart_76fecc6cdf39bd58f5aed92b90458219", "24. VMM Page Reclaim Efficiency", "Time (secs.)", "% of Scanned Pages Reaped", { y_max: 100, y_min: 0, packed: 1, plotfile: "packed-plot-files/jschart_packed-plot-file_123039ad39b84b801dc495f769a2bf1e.plot", legend_entries: [ "Note: Zero value datapoints resulting from no scan activity have been omitted." ], raw_data_sources: ["../sar.breakout.default.001/sar.paging_stats" ] });
+      </script>
+    </td>
+    <td>
+      <table class='chart' id='jschart_76fecc6cdf39bd58f5aed92b90458219_table'>
+        <tr class='header'><th colspan='4'>24. VMM Page Reclaim Efficiency</th></tr>
+        <tr class='header'><th align='left'>Data Sets</th><th align='right'>Data Set Average</th><th align='right'>Data Set Median</th><th>Samples</th></tr>
+      </table>
+    </td>
+   </tr>
+</table>
+
+<script>finish_page()</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+name: Test Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [fedora, rhel, sles]
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install Podman
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install podman
+    
+    - name: Build test container for ${{ matrix.distro }}
+      run: |
+        podman build \
+          -t lpcpu-test-${{ matrix.distro }} \
+          -f containers/Containerfile.${{ matrix.distro }} \
+          .
+    
+    - name: Run tests in ${{ matrix.distro }} container
+      run: |
+        podman run --rm \
+          --name lpcpu-test-${{ matrix.distro }}-${{ github.run_id }} \
+          lpcpu-test-${{ matrix.distro }}
+
+# Made with Bob

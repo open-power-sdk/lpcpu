@@ -1,0 +1,23 @@
+IPI Analysis Summary
+================================================================================
+
+**ASSESSMENT: Severe IPI imbalance detected - CPU21, CPU22, CPU17 (+1 more) handling 85% of all IPIs (Gini: 0.807).**
+
+--------------------------------------------------------------------------------
+
+Collection Duration: 63 seconds
+Total IPIs: 3007.8
+System IPI Rate: 47.74 IPIs/sec
+Number of CPUs: 24
+Imbalance Coefficient: 0.807
+
+Top 5 CPUs by IPI Activity:
+  CPU21   :   1217 IPIs (40.5% of total)
+  CPU22   :    598 IPIs (19.9% of total)
+  CPU17   :    442 IPIs (14.7% of total)
+  CPU14   :    294 IPIs (9.8% of total)
+  CPU0    :    116 IPIs (3.9% of total)
+
+Recommendations: 2 issue(s) identified
+  [HIGH] Significant IPI imbalance detected
+  [MEDIUM] IPI rate spikes detected (>2x average)

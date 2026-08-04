@@ -1,0 +1,22 @@
+NIC statistics:
+     peer_ifindex: 0
+     rx_queue_0_xdp_packets: 0
+     rx_queue_0_xdp_bytes: 0
+     rx_queue_0_drops: 0
+     rx_queue_0_xdp_redirect: 0
+     rx_queue_0_xdp_drops: 0
+     rx_queue_0_xdp_tx: 0
+     rx_queue_0_xdp_tx_errors: 0
+     tx_queue_0_xdp_xmit: 0
+     tx_queue_0_xdp_xmit_errors: 0
+     rx_pp_alloc_fast: 0
+     rx_pp_alloc_slow: 0
+     rx_pp_alloc_slow_ho: 0
+     rx_pp_alloc_empty: 0
+     rx_pp_alloc_refill: 0
+     rx_pp_alloc_waive: 0
+     rx_pp_recycle_cached: 0
+     rx_pp_recycle_cache_full: 0
+     rx_pp_recycle_ring: 0
+     rx_pp_recycle_ring_full: 0
+     rx_pp_recycle_released_ref: 0

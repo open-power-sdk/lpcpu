@@ -1,0 +1,36 @@
+$VAR1 = {
+          'dm-0' => {
+                      'add_random' => '0',
+                      'hw_sector_size' => '4096',
+                      'minimum_io_size' => '4096',
+                      'read_ahead_kb' => '4096',
+                      'rotational' => '0',
+                      'size' => '146800640'
+                    },
+          'dm-1' => {
+                      'add_random' => '0',
+                      'hw_sector_size' => '4096',
+                      'minimum_io_size' => '4096',
+                      'read_ahead_kb' => '4096',
+                      'rotational' => '0',
+                      'size' => '33488896'
+                    },
+          'dm-2' => {
+                      'add_random' => '0',
+                      'hw_sector_size' => '4096',
+                      'minimum_io_size' => '4096',
+                      'read_ahead_kb' => '4096',
+                      'rotational' => '0',
+                      'size' => '549502976'
+                    },
+          'sda' => {
+                     'add_random' => '0',
+                     'hw_sector_size' => '4096',
+                     'minimum_io_size' => '4096',
+                     'nr_requests' => '200',
+                     'read_ahead_kb' => '4096',
+                     'rotational' => '0',
+                     'scheduler' => 'none [mq-deadline] kyber bfq ',
+                     'size' => '734003200'
+                   }
+        };

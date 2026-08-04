@@ -1,0 +1,3 @@
+2337342.478875 | /etc/multipath.conf does not exist, blacklisting all devices.
+2337342.478903 | You can run "/sbin/mpathconf --enable" to create
+2337342.478912 | /etc/multipath.conf. See man mpathconf(8) for more details

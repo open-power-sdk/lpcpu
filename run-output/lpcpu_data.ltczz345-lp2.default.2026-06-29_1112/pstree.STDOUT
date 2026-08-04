@@ -1,0 +1,75 @@
+systemd,1 --switched-root --system --deserialize=43
+  |-systemd-journal,1075
+  |-systemd-userdbd,1113
+  |   |-systemd-userwor,2492204
+  |   |-systemd-userwor,2492205
+  |   `-systemd-userwor,2492301
+  |-systemd-udevd,1123
+  |-auditd,1433
+  |   |-{auditd},1434
+  |   |-sedispatch,1435
+  |   `-{auditd},1436
+  |-dbus-broker-lau,1468,dbus --scope system --audit
+  |   `-dbus-broker,1476 --log 4 --controller 9 --machine-id 0ade6c7a11e041e19e50a2352ea73547 --max-bytes 536870912 --max-fds 4096 --max-matches 131072 --audit
+  |-chronyd,1477,chrony -n -F 2
+  |-firewalld,1479 -sP /usr/sbin/firewalld --nofork --nopid
+  |   `-{firewalld},1598
+  |-irqbalance,1480
+  |   `-{irqbalance},1508
+  |-lsmd,1481,libstoragemgmt -d
+  |-systemd-logind,1485
+  |-rtas_errd,1530
+  |-NetworkManager,1578 --no-daemon
+  |   |-{NetworkManager},1580
+  |   |-{NetworkManager},1581
+  |   `-{NetworkManager},1582
+  |-polkitd,1579,polkitd --no-debug --log-level=err
+  |   |-{polkitd},1586
+  |   |-{polkitd},1587
+  |   `-{polkitd},1588
+  |-gssproxy,1618 -i
+  |   |-{gssproxy},1655
+  |   |-{gssproxy},1656
+  |   |-{gssproxy},1657
+  |   |-{gssproxy},1658
+  |   `-{gssproxy},1659
+  |-tuned,1627 -Es /usr/sbin/tuned -l -P
+  |   |-{tuned},1935
+  |   |-{tuned},1946
+  |   `-{tuned},1978
+  |-rhsmcertd,1631
+  |   `-{rhsmcertd},1632
+  |-rsyslogd,1941 -n
+  |   |-{rsyslogd},1980
+  |   `-{rsyslogd},1981
+  |-atd,1963 -f
+  |-crond,1969 -n
+  |-agetty,2045 -o -- \\u --noreset --noclear - linux
+  |-login,2050
+  |   `-bash,6358
+  |-pmcd,2182,pcp -A
+  |   `-pmdaroot,2195,root
+  |       |-pmdaproc,2204 -d 3
+  |       |-pmdaxfs,2210 -d 11
+  |       |-pmdalinux,2216
+  |       |-python3,2224 /var/lib/pcp/pmdas/nfsclient/pmdanfsclient.python
+  |       |-pmdakvm,2238 -d 95
+  |       |-pmdadm,2239 -d 129
+  |       |-python3,2240,pcp /var/lib/pcp/pmdas/openmetrics/pmdaopenmetrics.python
+  |       `-python3,2250 /var/lib/pcp/pmdas/opentelemetry/pmdaopentelemetry.python
+  |-pmie,3109,pcp -b -m pmie_check -F -P -l /var/log/pcp/pmie/ltczz345-lp2.ltc.tadn.ibm.com/pmie.log -c config.default
+  |-pmpause,3127,pcp
+  |-pmlogger,3249,pcp -N -P -d "/var/log/pcp/pmlogger/LOCALHOSTNAME" -r -T24h10m -c config.default -v 100mb -mreexec %Y%m%d.%H.%M
+  |-pmpause,3739,pcp
+  |-systemd,6251 --user
+  |   `-(sd-pam),6262
+  `-sshd,16047
+      |-sshd-session,2487561
+      |   `-sshd-session,2487564
+      |       `-bash,2487565
+      `-sshd-session,2492354
+          `-sshd-session,2492357
+              `-lpcpu.sh,2492358 ./lpcpu.sh profilers=ipi cpu-affinity duration=60 interval=1
+                  |-lpcpu.sh,2492388 ./lpcpu.sh profilers=ipi cpu-affinity duration=60 interval=1
+                  |   `-pstree,2492502 -a -A -l -n -p -u
+                  `-tee,2492389 -i /tmp/lpcpu_data.ltczz345-lp2.default.2026-06-29_1112/lpcpu.out

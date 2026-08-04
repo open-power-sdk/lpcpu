@@ -1,0 +1,10 @@
+Starting sar.default [5]
+Starting iostat.default [5] [mode=disks]
+Starting mpstat.default [5]
+Starting vmstat.default [5]
+Starting meminfo.default [5] 
+Starting proc-interrupts.default [5]
+Starting slabtop.
+Starting schedstat.
+Starting proc_vmstat.
+Starting cpu_vulnerabilities.

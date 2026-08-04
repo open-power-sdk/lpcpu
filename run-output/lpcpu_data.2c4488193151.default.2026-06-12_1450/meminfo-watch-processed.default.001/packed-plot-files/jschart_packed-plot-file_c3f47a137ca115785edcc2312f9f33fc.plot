@@ -1,0 +1,16 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Inactive
+0 510612
+5 510692
+10 510708
+15 510720
+20 510736
+25 510760
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Active
+0 426884
+5 427796
+10 428064
+15 428048
+20 428044
+25 417680

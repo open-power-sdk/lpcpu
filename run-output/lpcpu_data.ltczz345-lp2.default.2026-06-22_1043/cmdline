@@ -1,0 +1,1 @@
+BOOT_IMAGE=(ieee1275//vdevice/v-scsi@30000066/disk@8100000000000000,gpt2)/vmlinuz-6.12.0-211.7.1.el10_2.ppc64le root=/dev/mapper/rhel_ltczz345--lp2-root ro crashkernel=2G-4G:400M,4G-16G:528M,16G-64G:1040M,64G-128G:2064M,128G-:4112M rd.lvm.lv=rhel_ltczz345-lp2/root rd.lvm.lv=rhel_ltczz345-lp2/swap biosdevname=0

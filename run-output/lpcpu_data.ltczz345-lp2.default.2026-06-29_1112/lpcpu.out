@@ -1,0 +1,20 @@
+Running Linux Performance Customer Profiler Utility version 356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -0500
+Importing CLI variable : profilers=ipi cpu-affinity
+Importing CLI variable : duration=60
+Importing CLI variable : interval=1
+
+Starting Time: Mon Jun 29 11:12:02 AM CDT 2026
+Setting up IPI monitoring.
+Setting up CPU affinity monitoring.
+Profilers start at: Mon Jun 29 11:12:02 AM CDT 2026
+Starting IPI.default [1]
+Starting CPU-AFFINITY.default [1]
+Waiting for 60 seconds.
+Stopping IPI.
+Stopping CPU-AFFINITY.
+Profilers stop at: Mon Jun 29 11:13:02 AM CDT 2026
+Processing IPI data.
+Processing CPU affinity data.
+Setting up postprocess.sh
+Gathering system information
+Finishing time: Mon Jun 29 11:13:09 AM CDT 2026

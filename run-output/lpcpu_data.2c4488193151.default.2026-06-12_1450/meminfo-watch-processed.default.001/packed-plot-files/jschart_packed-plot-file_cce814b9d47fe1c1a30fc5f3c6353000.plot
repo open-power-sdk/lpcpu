@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Cached
+0 763048
+5 763112
+10 763120
+15 763132
+20 763136
+25 763152

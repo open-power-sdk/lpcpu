@@ -1,0 +1,71 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 1 0 0
+5 13
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 0 0 0
+5 0
+6 0
+7 0
+8 0
+9 0
+10 0
+11 0
+12 0
+13 7
+14 14
+15 13
+16 15
+17 16
+18 10
+19 16
+20 10
+21 12
+22 10
+23 7
+24 12
+25 15
+26 12
+27 10
+28 16
+29 15
+30 12
+31 12
+32 0
+33 0
+34 0
+35 0
+36 0
+37 0
+38 0
+39 0
+40 0
+41 0
+42 0
+43 0
+44 0
+45 0
+46 0
+47 0
+48 0
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 2 0 0
+5 0
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 1 1 2
+5 0
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 0 0 1
+5 0
+6 3
+7 6
+8 8
+9 11
+10 11
+11 0
+12 0
+13 0
+14 0
+15 0
+--- JSChart Packed Plot File V1 ---
+#LABEL:IPI XICS 3 0 0
+5 8

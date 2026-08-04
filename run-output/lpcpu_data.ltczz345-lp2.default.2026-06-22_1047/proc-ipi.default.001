@@ -1,0 +1,20 @@
+10:47:36 / 1782143256
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+   16:         3         0         1         0         0         0         0         0        60         0         9         0         0         1         1         0        96         0         0        43         2         1         1         0      XICS   2 Edge      IPI
+
+10:47:41 / 1782143261
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+   16:         2         2         0         0         6         0         0         5        59         0         8         0         0         0         1         0       119         0         0        12         0         0         3         2      XICS   2 Edge      IPI
+
+10:47:46 / 1782143266
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+   16:         4         1         0         0         0         0         0         0        61         0         7         0         0         0         0         0       123         0         0         5         0         0         0         0      XICS   2 Edge      IPI
+
+10:47:51 / 1782143271
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+   16:         4        13         0         0        11         0         0         6        84         0         7         0         0         0         1         0       102         0         0        31         5         0         0         0      XICS   2 Edge      IPI
+
+10:47:56 / 1782143276
+            CPU0      CPU1      CPU2      CPU3      CPU4      CPU5      CPU6      CPU7      CPU8      CPU9     CPU10     CPU11     CPU12     CPU13     CPU14     CPU15     CPU16     CPU17     CPU18     CPU19     CPU20     CPU21     CPU22     CPU23
+   16:         2         1         0         0         0         0         0         0        60         2         3         0         1         0         0         0         1         0         0         9         0         0         0         0      XICS   2 Edge      IPI
+

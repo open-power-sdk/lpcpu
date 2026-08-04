@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Slab
+0 98836
+5 98920
+10 98900
+15 98900
+20 98900
+25 98836

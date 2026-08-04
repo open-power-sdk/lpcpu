@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.MemTotal
+0 3998420
+5 3998420
+10 3998420
+15 3998420
+20 3998420
+25 3998420

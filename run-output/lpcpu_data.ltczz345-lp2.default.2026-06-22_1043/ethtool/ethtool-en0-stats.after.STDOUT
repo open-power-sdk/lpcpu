@@ -1,0 +1,14 @@
+NIC statistics:
+     replenish_task_cycles: 49026919
+     replenish_no_mem: 0
+     replenish_add_buff_failure: 0
+     replenish_add_buff_success: 47934495
+     rx_invalid_buffer: 0
+     rx_no_buffer: 0
+     tx_map_failed: 0
+     tx_send_failed: 0
+     fw_enabled_ipv4_csum: 1
+     fw_enabled_ipv6_csum: 1
+     tx_large_packets: 8203
+     rx_large_packets: 0
+     fw_enabled_large_send: 1

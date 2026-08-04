@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.CommitLimit
+0 1999208
+5 1999208
+10 1999208
+15 1999208
+20 1999208
+25 1999208

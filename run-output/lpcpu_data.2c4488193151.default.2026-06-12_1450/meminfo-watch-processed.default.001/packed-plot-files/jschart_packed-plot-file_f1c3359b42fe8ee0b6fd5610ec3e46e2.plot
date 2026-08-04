@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.MemAvailable
+0 3495284
+5 3572128
+10 3612040
+15 3632672
+20 3644920
+25 3657072

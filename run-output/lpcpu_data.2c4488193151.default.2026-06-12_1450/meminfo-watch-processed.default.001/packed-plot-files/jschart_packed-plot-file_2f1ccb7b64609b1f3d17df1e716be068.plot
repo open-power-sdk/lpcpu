@@ -1,0 +1,8 @@
+--- JSChart Packed Plot File V1 ---
+#LABEL:System.Dirty
+0 249636
+5 244216
+10 244260
+15 244260
+20 217028
+25 170664
