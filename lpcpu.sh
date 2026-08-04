@@ -2,7 +2,7 @@
 
 #
 # LPCPU (Linux Performance Customer Profiler Utility): ./lpcpu.sh
-#
+# hello
 # (C) Copyright IBM Corp. 2018
 #
 # This file is subject to the terms and conditions of the Eclipse
