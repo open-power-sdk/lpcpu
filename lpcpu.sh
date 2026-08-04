@@ -1138,9 +1138,65 @@ function sigint_running_trap() {
 
 ####################################################################################################
 
-## ss helper functions #############################################################################
+## Network interface helper functions ##############################################################
 
-function has_ss() { command -v ss > /dev/null 2>&1; }
+function has_ifconfig() { command -v ifconfig > /dev/null 2>&1; }
+
+# Collect network interface statistics (ifconfig preferred; ip fallback)
+function collect_network_stats() {
+    local output_file="$1"
+    if has_ifconfig; then
+        ifconfig -a > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s -s link show > "$output_file" 2>&1
+    else
+        echo "# Network interface tools (ip/ifconfig) not available" > "$output_file"
+## Network statistics helper functions #############################################################
+
+function has_netstat() { command -v netstat > /dev/null 2>&1; }
+function has_ss()      { command -v ss > /dev/null 2>&1; }
+function has_nstat()   { command -v nstat > /dev/null 2>&1; }
+function has_iproute2() { command -v ip > /dev/null 2>&1 && ip -V > /dev/null 2>&1; }
+
+# Collect active socket statistics (netstat -v preferred; ss fallback)
+function collect_active_socket_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -v > "$output_file" 2>&1
+    elif has_ss; then
+        ss > "$output_file" 2>&1
+    else
+        echo "netstat nor ss not available" > "$output_file"
+    fi
+}
+
+# Collect kernel network protocol statistics (netstat -s preferred; nstat fallback)
+function kernel_network_protocol_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -s > "$output_file" 2>&1
+    elif has_nstat; then
+        nstat -az > "$output_file" 2>&1
+    else
+        echo "netstat nor nstat not available" > "$output_file"
+    fi
+}
+
+# Collect kernel interface table (netstat -in preferred; ip -s link fallback)
+function kernel_interface_table() {
+    local output_file="$1"
+    local formatting_script="${LPCPUDIR}/tools/ip_to_netstat.py"
+    local temp_file="${output_file}.tmp"
+    if has_netstat; then
+        netstat -in > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s link > "$temp_file" 2>&1
+        python3 "$formatting_script" "$temp_file" > "$output_file" 2>&1
+        rm -f "$temp_file"
+    else
+        echo "netstat nor ip not available" > "$output_file"
+    fi
+}
 
 ####################################################################################################
 
@@ -1164,12 +1220,9 @@ function has_ss() { command -v ss > /dev/null 2>&1; }
     done
 
     cat /proc/net/netstat > $LOGDIR/netstat.before
-    netstat -in > $LOGDIR/netstat-in.before 2>&1
-    netstat -v > $LOGDIR/netstat-v.before 2>&1
-    netstat -s > $LOGDIR/netstat-s.before 2>&1
-    if has_ss; then
-        ss -lt > $LOGDIR/ss-sockets.before 2>&1
-    fi
+    kernel_interface_table            "$LOGDIR/netstat-in.before"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.before"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.before"
     cat /proc/interrupts > $LOGDIR/interrupts.before
     cat /proc/meminfo > $LOGDIR/meminfo.before
     if (( depth > 1 )); then
@@ -1178,7 +1231,7 @@ function has_ss() { command -v ss > /dev/null 2>&1; }
     fi
 	df -a > $LOGDIR/df.before 2>&1
     ip -s link > $LOGDIR/ip-statistics.before 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.before 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.before"
     cat /proc/net/snmp > $LOGDIR/snmp.before
     mkdir $LOGDIR/ethtool
     for IF in /sys/class/net/*; do
@@ -1227,12 +1280,9 @@ function has_ss() { command -v ss > /dev/null 2>&1; }
     trap sigint_normal_trap SIGINT
 
     cat /proc/net/netstat > $LOGDIR/netstat.after
-    netstat -in > $LOGDIR/netstat-in.after 2>&1
-    netstat -v > $LOGDIR/netstat-v.after 2>&1
-    netstat -s > $LOGDIR/netstat-s.after 2>&1
-    if has_ss; then
-        ss -lt > $LOGDIR/ss-sockets.after 2>&1
-    fi
+    kernel_interface_table            "$LOGDIR/netstat-in.after"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.after"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.after"
     cat /proc/interrupts > $LOGDIR/interrupts.after
     cat /proc/meminfo > $LOGDIR/meminfo.after
     if (( depth > 1 )); then
@@ -1241,7 +1291,7 @@ function has_ss() { command -v ss > /dev/null 2>&1; }
 	fi
     df -a > $LOGDIR/df.after 2>&1
     ip -s link > $LOGDIR/ip-statistics.after 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.after 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.after"
     cat /proc/net/snmp > $LOGDIR/snmp.after
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
