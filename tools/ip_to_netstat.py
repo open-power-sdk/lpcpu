@@ -1,136 +1,116 @@
 #!/usr/bin/env python3
 """
-ip_to_netstat.py
-Converts 'ip -s link' output to 'netstat -in' format
+ip_to_netstat.py — convert `ip -s link` output to netstat -in column layout.
+
+Usage: ip_to_netstat.py <ip-s-link-output-file>
+
+The script reads the file produced by `ip -s link` and prints a table that
+matches the column layout of `netstat -in`:
+
+  Iface  MTU  RX-OK  RX-ERR  RX-DRP  RX-OVR  TX-OK  TX-ERR  TX-DRP  TX-OVR  Flg
 """
 
-import sys
 import re
+import sys
 
-def parse_ip_link_output(lines):
-    """Parse ip -s link output and extract interface statistics."""
+
+def parse_ip_s_link(path):
+    """Parse `ip -s link` output and return a list of interface dicts."""
+    with open(path) as fh:
+        text = fh.read()
+
+    # Each interface block starts with a numbered line like:
+    #   1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 ...
+    blocks = re.split(r'(?=^\d+:)', text, flags=re.MULTILINE)
+
     interfaces = []
-    i = 0
-    
-    while i < len(lines):
-        line = lines[i].strip()
-        
-        # Look for interface line (starts with number and colon)
-        if re.match(r'^\d+:', line):
-            # Extract interface name
-            parts = line.split()
-            iface = parts[1].rstrip(':')
-            
-            # Extract MTU
-            mtu = 0
-            for j, part in enumerate(parts):
-                if part == 'mtu':
-                    mtu = int(parts[j + 1])
-                    break
-            
-            # Extract flags
-            flags = ""
-            if 'LOOPBACK' in line:
-                flags += "L"
-            if '<' in line and 'UP' in line:
-                flags += "RU"
-            if 'BROADCAST' in line:
-                flags += "B"
-            if 'MULTICAST' in line:
-                flags += "M"
-            
-            # Move to next line (link/ether or link/loopback)
-            i += 1
-            
-            # Move to RX: line
-            i += 1
-            
-            # Get RX stats (next line after RX:)
-            i += 1
-            if i < len(lines):
-                rx_line = lines[i].strip()
-                rx_parts = rx_line.split()
-                rx_packets = int(rx_parts[1]) if len(rx_parts) > 1 else 0
-                rx_errors = int(rx_parts[2]) if len(rx_parts) > 2 else 0
-                rx_dropped = int(rx_parts[3]) if len(rx_parts) > 3 else 0
-            
-            # Move to TX: line
-            i += 1
-            
-            # Get TX stats (next line after TX:)
-            i += 1
-            if i < len(lines):
-                tx_line = lines[i].strip()
-                tx_parts = tx_line.split()
-                tx_packets = int(tx_parts[1]) if len(tx_parts) > 1 else 0
-                tx_errors = int(tx_parts[2]) if len(tx_parts) > 2 else 0
-                tx_dropped = int(tx_parts[3]) if len(tx_parts) > 3 else 0
-            
-            interfaces.append({
-                'iface': iface,
-                'mtu': mtu,
-                'rx_packets': rx_packets,
-                'rx_errors': rx_errors,
-                'rx_dropped': rx_dropped,
-                'tx_packets': tx_packets,
-                'tx_errors': tx_errors,
-                'tx_dropped': tx_dropped,
-                'flags': flags
-            })
-        
-        i += 1
-    
+    for block in blocks:
+        block = block.strip()
+        if not block:
+            continue
+
+        # Header line: index, name, flags, mtu
+        header_m = re.match(
+            r'^\d+:\s+(\S+?)(?:@\S+)?:\s+<([^>]*)>\s+mtu\s+(\d+)',
+            block, re.MULTILINE
+        )
+        if not header_m:
+            continue
+
+        name  = header_m.group(1)
+        flags = header_m.group(2).split(',')
+        mtu   = header_m.group(3)
+
+        # RX stats line: "    RX:  bytes  packets  errors  dropped  missed  mcast"
+        # followed by values on the next line.
+        rx_m = re.search(
+            r'RX:\s+bytes\s+packets\s+errors\s+dropped.*?\n\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)',
+            block
+        )
+        # TX stats line
+        tx_m = re.search(
+            r'TX:\s+bytes\s+packets\s+errors\s+dropped.*?\n\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)',
+            block
+        )
+
+        rx_ok  = rx_m.group(2) if rx_m else '0'
+        rx_err = rx_m.group(3) if rx_m else '0'
+        rx_drp = rx_m.group(4) if rx_m else '0'
+
+        tx_ok  = tx_m.group(2) if tx_m else '0'
+        tx_err = tx_m.group(3) if tx_m else '0'
+        tx_drp = tx_m.group(4) if tx_m else '0'
+
+        # Build flags string similar to netstat (B=BROADCAST, L=LOOPBACK,
+        # M=MULTICAST, R=RUNNING, U=UP)
+        flg_map = {
+            'UP':          'U',
+            'LOOPBACK':    'L',
+            'BROADCAST':   'B',
+            'MULTICAST':   'M',
+            'RUNNING':     'R',
+            'POINTOPOINT': 'P',
+            'PROMISC':     'N',
+        }
+        flg = ''.join(flg_map[f] for f in flg_map if f in flags)
+
+        interfaces.append({
+            'name':   name,
+            'mtu':    mtu,
+            'rx_ok':  rx_ok,
+            'rx_err': rx_err,
+            'rx_drp': rx_drp,
+            'rx_ovr': '0',
+            'tx_ok':  tx_ok,
+            'tx_err': tx_err,
+            'tx_drp': tx_drp,
+            'tx_ovr': '0',
+            'flg':    flg or 'U',
+        })
+
     return interfaces
 
-def print_netstat_format(interfaces):
-    """Print interfaces in netstat -in format."""
-    print("Kernel Interface table")
-    print(f"{'Iface':<16} {'MTU':>5} {'RX-OK':>8} {'RX-ERR':>6} {'RX-DRP':>6} "
-          f"{'RX-OVR':>6} {'TX-OK':>8} {'TX-ERR':>6} {'TX-DRP':>6} {'TX-OVR':>6} Flg")
-    
-    for iface in interfaces:
-        print(f"{iface['iface']:<16} "
-              f"{iface['mtu']:>5} "
-              f"{iface['rx_packets']:>8} "
-              f"{iface['rx_errors']:>6} "
-              f"{iface['rx_dropped']:>6} "
-              f"{'0':>6} "
-              f"{iface['tx_packets']:>8} "
-              f"{iface['tx_errors']:>6} "
-              f"{iface['tx_dropped']:>6} "
-              f"{'0':>6} "
-              f"{iface['flags']}")
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python3 ip_to_netstat.py <input_file>", file=sys.stderr)
-        print("   or: ip -s link | python3 ip_to_netstat.py -", file=sys.stderr)
-        sys.exit(1)
-    
-    input_file = sys.argv[1]
-    
-    # Read input
-    if input_file == '-':
-        lines = sys.stdin.readlines()
-    else:
-        try:
-            with open(input_file, 'r') as f:
-                lines = f.readlines()
-        except FileNotFoundError:
-            print(f"Error: File '{input_file}' not found", file=sys.stderr)
-            sys.exit(1)
-        except Exception as e:
-            print(f"Error reading file: {e}", file=sys.stderr)
-            sys.exit(1)
-    
-    # Parse and print
-    interfaces = parse_ip_link_output(lines)
-    
-    if not interfaces:
-        print("Error: No interfaces found in input", file=sys.stderr)
-        sys.exit(1)
-    
-    print_netstat_format(interfaces)
+    if len(sys.argv) != 2:
+        sys.exit("Usage: ip_to_netstat.py <ip-s-link-output-file>")
+
+    interfaces = parse_ip_s_link(sys.argv[1])
+
+    header = (
+        f"{'Iface':<10} {'MTU':>6}  "
+        f"{'RX-OK':>10} {'RX-ERR':>8} {'RX-DRP':>8} {'RX-OVR':>8}  "
+        f"{'TX-OK':>10} {'TX-ERR':>8} {'TX-DRP':>8} {'TX-OVR':>8}  Flg"
+    )
+    print(header)
+
+    for i in interfaces:
+        print(
+            f"{i['name']:<10} {i['mtu']:>6}  "
+            f"{i['rx_ok']:>10} {i['rx_err']:>8} {i['rx_drp']:>8} {i['rx_ovr']:>8}  "
+            f"{i['tx_ok']:>10} {i['tx_err']:>8} {i['tx_drp']:>8} {i['tx_ovr']:>8}  {i['flg']}"
+        )
+
 
 if __name__ == '__main__':
     main()
