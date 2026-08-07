@@ -1384,6 +1384,8 @@ function kernel_interface_table() {
     echo 'if [ -x ${NDIFF} -a -e ip-statistics.before -a -e ip-statistics.after ]; then ${NDIFF} ip-statistics.before ip-statistics.after > ip-statistics.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e ifconfig.before -a -e ifconfig.after ]; then ${NDIFF} ifconfig.before ifconfig.after > ifconfig.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e snmp.before -a -e snmp.after ]; then ${NDIFF} snmp.before snmp.after > snmp.diff; fi' >> $LOGDIR/postprocess.sh
+    echo 'SSDIFF="${LPCPUDIR}/tools/ss-diff.py"' >> $LOGDIR/postprocess.sh
+    echo 'if [ -x ${SSDIFF} -a -e ss-sockets.before -a -e ss-sockets.after ]; then python3 ${SSDIFF} ss-sockets.before ss-sockets.after > ss-sockets.diff; fi' >> $LOGDIR/postprocess.sh
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
         IF=$(basename $IF)
