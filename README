@@ -241,6 +241,16 @@ tools or versions of tools that may be used for parts of the data collection.
 In that event there will be a small impact to the available data but overall
 there should be plenty of usable information.
 
+LPCPU collects network interface information using various ethtool subcommands,
+including Receive Flow Hash (RSS) indirection data via 'ethtool -x' when
+supported by the network device and driver. The collected data is stored in
+files such as ethtool/ethtool-<interface>-rxfh.STDOUT and
+ethtool/ethtool-<interface>-rxfh.STDERR. Note that some ethtool subcommands
+(including -x) are device and driver version dependent. If a subcommand is not
+supported by a particular network interface, only the STDERR file will contain
+data (typically an error message), which is expected behavior and does not
+indicate a problem with the data collection process.
+
 
 4. Viewing the results
 ======================
