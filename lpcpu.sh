@@ -431,6 +431,7 @@ function report_sar() {
 	printsar q run_queue_loadavg
 	printsar r memory
 	printsar u cpu_util
+	printsar "u ALL" cpu_util_all
 	printsar v fs_tables
 	printsar w context_switching
 	printsar y tty_device
