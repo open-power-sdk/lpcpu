@@ -35,7 +35,7 @@ VERSION_STRING="356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -05
 # oprofile: see README for additional options
 # perf: See README for additional options
 # The following are the default profilers to use
-profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts cpupower"
+profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts ipi cpupower"
 
 # list of profilers to add in addition to the defaults
 extra_profilers=""
@@ -641,6 +641,106 @@ function setup_postprocess_interrupts() {
     echo 'PROC_INTERRUPTS_NO_NUMA=1 ${LPCPUDIR}/postprocess/postprocess-proc-interrupts .'" $RUN_NUMBER $id"
     echo 'fi'
 }
+## IPI (Inter-Processor Interrupts) ##################################################################
+function setup_ipi() {
+	echo "Setting up IPI monitoring."
+	if [ ! -e "${LPCPUDIR}/tools/proc-ipi.pl" ]; then
+	    echo "ERROR: proc-ipi.pl is not available.  To correct this problem ensure that you have the entire LPCPU distribution or disable the ipi profiler."
+	    exit 1
+	fi
+}
+
+function start_ipi() {
+	echo "Starting IPI monitoring."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	${LPCPUDIR}/tools/proc-ipi.pl $interval > $LOGDIR/proc-ipi.$id.$RUN_NUMBER &
+	IPI_PID=$!
+	disown $IPI_PID
+}
+
+function stop_ipi() {
+	echo "Stopping IPI monitoring."
+	kill $IPI_PID
+}
+
+function report_ipi() {
+	echo "Processing IPI data."
+	# Process IPI data immediately to generate charts (like mpstat and sar do)
+	if [ -f "${LPCPUDIR}/postprocess/postprocess-ipi" ]; then
+		if [ -f ./system-topology.dump ]; then
+			PERL5LIB=${LPCPUDIR}/perl ${LPCPUDIR}/postprocess/postprocess-ipi . $RUN_NUMBER $id ./system-topology.dump
+		else
+			IPI_NO_NUMA=1 PERL5LIB=${LPCPUDIR}/perl ${LPCPUDIR}/postprocess/postprocess-ipi . $RUN_NUMBER $id
+		fi
+	fi
+}
+
+function setup_postprocess_ipi() {
+    echo 'if [ -f ./system-topology.dump ]; then'
+    echo '${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id ./system-topology.dump"
+    echo 'else'
+    echo 'IPI_NO_NUMA=1 ${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id"
+    echo 'fi'
+}
+
+
+## IPI (Inter-Process Interrupts) ##################################################################
+function setup_ipi() {
+	echo "Setting up IPI monitoring."
+	if [ ! -e "${LPCPUDIR}/tools/proc-ipi.pl" ]; then
+	    echo "ERROR: proc-ipi.pl is not available.  To correct this problem ensure that you have the entire LPCPU distribution or disable the ipi profiler."
+	    exit 1
+	fi
+}
+
+function start_ipi() {
+	echo "Starting IPI."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	${LPCPUDIR}/tools/proc-ipi.pl $interval > $LOGDIR/proc-ipi.$id.$RUN_NUMBER &
+	IPI_PID=$!
+	disown $IPI_PID
+}
+
+function stop_ipi() {
+	echo "Stopping IPI."
+	kill $IPI_PID
+}
+
+function report_ipi() {
+	echo "Processing IPI data."
+}
+
+function setup_postprocess_ipi() {
+    echo '${LPCPUDIR}/postprocess/postprocess-ipi .'" $RUN_NUMBER $id"
+}
+## CPU-AFFINITY (Thread-to-CPU correlation) ######################################################
+function setup_cpu-affinity() {
+	echo "Setting up CPU affinity monitoring."
+	if [ ! -e "${LPCPUDIR}/tools/proc-cpu-affinity.pl" ]; then
+	    echo "ERROR: proc-cpu-affinity.pl is not available.  To correct this problem ensure that you have the entire LPCPU distribution or disable the cpu-affinity profiler."
+	    exit 1
+	fi
+}
+
+function start_cpu-affinity() {
+	echo "Starting CPU-AFFINITY."$id" ["$interval"]" | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+	${LPCPUDIR}/tools/proc-cpu-affinity.pl $interval > $LOGDIR/proc-cpu-affinity.$id.$RUN_NUMBER &
+	CPU_AFFINITY_PID=$!
+	disown $CPU_AFFINITY_PID
+}
+
+function stop_cpu-affinity() {
+	echo "Stopping CPU-AFFINITY."
+	kill $CPU_AFFINITY_PID
+}
+
+function report_cpu-affinity() {
+	echo "Processing CPU affinity data."
+}
+
+function setup_postprocess_cpu-affinity() {
+    # CPU affinity data is processed by postprocess-ipi, not separately
+    echo ""
+}
+
 
 ## KVM ###############################################################################################
 function setup_kvm() {
