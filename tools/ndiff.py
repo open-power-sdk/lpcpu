@@ -26,10 +26,10 @@
 import sys;
 import re;
 
-whitespace = re.compile('\s*')
-blackspace = re.compile('\S*')
-integer = re.compile('^\d+$')
-decimal = re.compile('^\d*\.\d+$')
+whitespace = re.compile(r'\s*')
+blackspace = re.compile(r'\S*')
+integer = re.compile(r'^\d+$')
+decimal = re.compile(r'^\d*\.\d+$')
 
 B=sys.argv[1]
 A=sys.argv[2]
@@ -93,4 +93,3 @@ for lineB in fileB:
 
 		sys.stdout.write(whiteA)
 		sys.stdout.write(blackA)
-

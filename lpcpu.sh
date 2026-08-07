@@ -2,7 +2,7 @@
 
 #
 # LPCPU (Linux Performance Customer Profiler Utility): ./lpcpu.sh
-#
+# hello
 # (C) Copyright IBM Corp. 2018
 #
 # This file is subject to the terms and conditions of the Eclipse
@@ -35,7 +35,7 @@ VERSION_STRING="356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -05
 # oprofile: see README for additional options
 # perf: See README for additional options
 # The following are the default profilers to use
-profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts ipi cpupower"
+profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts cpupower ethtool ipi"
 
 # list of profilers to add in addition to the defaults
 extra_profilers=""
@@ -431,6 +431,7 @@ function report_sar() {
 	printsar q run_queue_loadavg
 	printsar r memory
 	printsar u cpu_util
+	printsar "u ALL" cpu_util_all
 	printsar v fs_tables
 	printsar w context_switching
 	printsar y tty_device
@@ -469,8 +470,34 @@ function report_sar() {
 function setup_postprocess_sar() {
     echo '${LPCPUDIR}/postprocess/postprocess-sar .'" $RUN_NUMBER $id"
 }
+## ethtool #########################################################################################
+
+function setup_postprocess_ethtool() {
+	echo '${LPCPUDIR}/postprocess/postprocess-ethtool .'
+}
+function setup_ethtool() {
+	echo "Setting up ethtool."
+	ETHTOOL=$(which ethtool)
+	if [ -z "$ETHTOOL" ]; then
+		echo "ERROR: ethtool is not installed."
+		exit 1
+	fi
+}
+
+function start_ethtool() {
+	echo "Starting ethtool." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+}
+
+function stop_ethtool() {
+	echo "Stopping ethtool."
+}
+
+function report_ethtool() {
+	echo "Processing ethtool data."
+}
 
 ## iostat ##########################################################################################
+
 function setup_iostat() {
 	echo "Setting up iostat."
 	IOSTAT=$(which iostat)
@@ -553,6 +580,14 @@ function start_cpupower() {
 function stop_cpupower() {
 	echo "Stopping cpupower."
 	kill $CPUPOWER_PID
+}
+
+function report_cpupower() {
+	echo "Processing cpupower data."
+}
+
+function setup_postprocess_cpupower() {
+	echo ""
 }
 
 ## cpu_vulnerabilities ##########################################################################################
@@ -851,6 +886,10 @@ function start_lparstat() {
 	lparstat $interval $samples| ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/lparstat.$id.$RUN_NUMBER &
 	LPARSTAT_PID=$!
 	disown $LPARSTAT_PID
+}
+
+function setup_postprocess_lparstat() {
+	echo ""
 }
 
 function stop_lparstat() {
@@ -1238,6 +1277,68 @@ function sigint_running_trap() {
 
 ####################################################################################################
 
+## Network interface helper functions ##############################################################
+
+function has_ifconfig() { command -v ifconfig > /dev/null 2>&1; }
+
+# Collect network interface statistics (ifconfig preferred; ip fallback)
+function collect_network_stats() {
+    local output_file="$1"
+    if has_ifconfig; then
+        ifconfig -a > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s -s link show > "$output_file" 2>&1
+    else
+        echo "# Network interface tools (ip/ifconfig) not available" > "$output_file"
+## Network statistics helper functions #############################################################
+
+function has_netstat() { command -v netstat > /dev/null 2>&1; }
+function has_ss()      { command -v ss > /dev/null 2>&1; }
+function has_nstat()   { command -v nstat > /dev/null 2>&1; }
+function has_iproute2() { command -v ip > /dev/null 2>&1 && ip -V > /dev/null 2>&1; }
+
+# Collect active socket statistics (netstat -v preferred; ss fallback)
+function collect_active_socket_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -v > "$output_file" 2>&1
+    elif has_ss; then
+        ss > "$output_file" 2>&1
+    else
+        echo "netstat nor ss not available" > "$output_file"
+    fi
+}
+
+# Collect kernel network protocol statistics (netstat -s preferred; nstat fallback)
+function kernel_network_protocol_statistics() {
+    local output_file="$1"
+    if has_netstat; then
+        netstat -s > "$output_file" 2>&1
+    elif has_nstat; then
+        nstat -az > "$output_file" 2>&1
+    else
+        echo "netstat nor nstat not available" > "$output_file"
+    fi
+}
+
+# Collect kernel interface table (netstat -in preferred; ip -s link fallback)
+function kernel_interface_table() {
+    local output_file="$1"
+    local formatting_script="${LPCPUDIR}/tools/ip_to_netstat.py"
+    local temp_file="${output_file}.tmp"
+    if has_netstat; then
+        netstat -in > "$output_file" 2>&1
+    elif has_iproute2; then
+        ip -s link > "$temp_file" 2>&1
+        python3 "$formatting_script" "$temp_file" > "$output_file" 2>&1
+        rm -f "$temp_file"
+    else
+        echo "netstat nor ip not available" > "$output_file"
+    fi
+}
+
+####################################################################################################
+
 # main block, used to log all output
 {
     trap sigint_normal_trap SIGINT
@@ -1258,9 +1359,9 @@ function sigint_running_trap() {
     done
 
     cat /proc/net/netstat > $LOGDIR/netstat.before
-    netstat -in > $LOGDIR/netstat-in.before 2>&1
-    netstat -v > $LOGDIR/netstat-v.before 2>&1
-    netstat -s > $LOGDIR/netstat-s.before 2>&1
+    kernel_interface_table            "$LOGDIR/netstat-in.before"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.before"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.before"
     cat /proc/interrupts > $LOGDIR/interrupts.before
     cat /proc/meminfo > $LOGDIR/meminfo.before
     if (( depth > 1 )); then
@@ -1269,7 +1370,7 @@ function sigint_running_trap() {
     fi
 	df -a > $LOGDIR/df.before 2>&1
     ip -s link > $LOGDIR/ip-statistics.before 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.before 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.before"
     cat /proc/net/snmp > $LOGDIR/snmp.before
     mkdir $LOGDIR/ethtool
     for IF in /sys/class/net/*; do
@@ -1318,9 +1419,9 @@ function sigint_running_trap() {
     trap sigint_normal_trap SIGINT
 
     cat /proc/net/netstat > $LOGDIR/netstat.after
-    netstat -in > $LOGDIR/netstat-in.after 2>&1
-    netstat -v > $LOGDIR/netstat-v.after 2>&1
-    netstat -s > $LOGDIR/netstat-s.after 2>&1
+    kernel_interface_table            "$LOGDIR/netstat-in.after"
+    collect_active_socket_statistics  "$LOGDIR/netstat-v.after"
+    kernel_network_protocol_statistics "$LOGDIR/netstat-s.after"
     cat /proc/interrupts > $LOGDIR/interrupts.after
     cat /proc/meminfo > $LOGDIR/meminfo.after
     if (( depth > 1 )); then
@@ -1329,7 +1430,7 @@ function sigint_running_trap() {
 	fi
     df -a > $LOGDIR/df.after 2>&1
     ip -s link > $LOGDIR/ip-statistics.after 2>&1
-    ifconfig -a > $LOGDIR/ifconfig.after 2>&1
+    collect_network_stats "$LOGDIR/ifconfig.after"
     cat /proc/net/snmp > $LOGDIR/snmp.after
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
@@ -1383,6 +1484,8 @@ function sigint_running_trap() {
     echo 'if [ -x ${NDIFF} -a -e ip-statistics.before -a -e ip-statistics.after ]; then ${NDIFF} ip-statistics.before ip-statistics.after > ip-statistics.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e ifconfig.before -a -e ifconfig.after ]; then ${NDIFF} ifconfig.before ifconfig.after > ifconfig.diff; fi' >> $LOGDIR/postprocess.sh
     echo 'if [ -x ${NDIFF} -a -e snmp.before -a -e snmp.after ]; then ${NDIFF} snmp.before snmp.after > snmp.diff; fi' >> $LOGDIR/postprocess.sh
+    echo 'SSDIFF="${LPCPUDIR}/tools/ss-diff.py"' >> $LOGDIR/postprocess.sh
+    echo 'if [ -x ${SSDIFF} -a -e ss-sockets.before -a -e ss-sockets.after ]; then python3 ${SSDIFF} ss-sockets.before ss-sockets.after > ss-sockets.diff; fi' >> $LOGDIR/postprocess.sh
     for IF in /sys/class/net/*; do
         [ -e "$IF" ]      || continue
         IF=$(basename $IF)
@@ -1428,14 +1531,15 @@ function sigint_running_trap() {
 	[ -e "$IF" ]      || continue
 	IF=$(basename $IF)
 	[ "$IF" == "lo" ] && continue
-	ethtool $IF    > $LOGDIR/ethtool/ethtool-$IF.STDOUT          2> $LOGDIR/ethtool/ethtool-$IF.STDERR
-	ethtool -i $IF > $LOGDIR/ethtool/ethtool-$IF-driver.STDOUT   2> $LOGDIR/ethtool/ethtool-$IF-driver.STDERR
-	ethtool -k $IF > $LOGDIR/ethtool/ethtool-$IF-offload.STDOUT  2> $LOGDIR/ethtool/ethtool-$IF-offload.STDERR
-	ethtool -c $IF > $LOGDIR/ethtool/ethtool-$IF-coalesce.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-coalesce.STDERR
-	ethtool -l $IF > $LOGDIR/ethtool/ethtool-$IF-channel.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-channel.STDERR
-	ethtool -g $IF > $LOGDIR/ethtool/ethtool-$IF-ring.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-ring.STDERR
-	ethtool -a $IF > $LOGDIR/ethtool/ethtool-$IF-pause.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-pause.STDERR
-    done
+		ethtool $IF    > $LOGDIR/ethtool/ethtool-$IF.STDOUT          2> $LOGDIR/ethtool/ethtool-$IF.STDERR
+		ethtool -i $IF > $LOGDIR/ethtool/ethtool-$IF-driver.STDOUT   2> $LOGDIR/ethtool/ethtool-$IF-driver.STDERR
+		ethtool -k $IF > $LOGDIR/ethtool/ethtool-$IF-offload.STDOUT  2> $LOGDIR/ethtool/ethtool-$IF-offload.STDERR
+		ethtool -c $IF > $LOGDIR/ethtool/ethtool-$IF-coalesce.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-coalesce.STDERR
+		ethtool -l $IF > $LOGDIR/ethtool/ethtool-$IF-channel.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-channel.STDERR
+		ethtool -g $IF > $LOGDIR/ethtool/ethtool-$IF-ring.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-ring.STDERR
+		ethtool -x $IF > $LOGDIR/ethtool/ethtool-$IF-rxfh.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-rxfh.STDERR
+		ethtool -a $IF > $LOGDIR/ethtool/ethtool-$IF-pause.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-pause.STDERR				       
+	done
     if which rpm &> /dev/null; then
 	rpm -qa | sort > $LOGDIR/rpm-qa.STDOUT 2> $LOGDIR/rpm-qa.STDERR
     fi
