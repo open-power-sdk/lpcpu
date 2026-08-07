@@ -2,7 +2,7 @@
 
 #
 # LPCPU (Linux Performance Customer Profiler Utility): ./lpcpu.sh
-#
+# hello
 # (C) Copyright IBM Corp. 2018
 #
 # This file is subject to the terms and conditions of the Eclipse
@@ -35,7 +35,7 @@ VERSION_STRING="356c8306d2c85f6af89dc2b85c151f4bbd9e9c63 2018-07-25 16:45:06 -05
 # oprofile: see README for additional options
 # perf: See README for additional options
 # The following are the default profilers to use
-profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts cpupower"
+profilers="sar iostat mpstat vmstat lparstat top meminfo interrupts cpupower ethtool"
 
 # list of profilers to add in addition to the defaults
 extra_profilers=""
@@ -431,6 +431,7 @@ function report_sar() {
 	printsar q run_queue_loadavg
 	printsar r memory
 	printsar u cpu_util
+	printsar "u ALL" cpu_util_all
 	printsar v fs_tables
 	printsar w context_switching
 	printsar y tty_device
@@ -469,8 +470,34 @@ function report_sar() {
 function setup_postprocess_sar() {
     echo '${LPCPUDIR}/postprocess/postprocess-sar .'" $RUN_NUMBER $id"
 }
+## ethtool #########################################################################################
+
+function setup_postprocess_ethtool() {
+	echo '${LPCPUDIR}/postprocess/postprocess-ethtool .'
+}
+function setup_ethtool() {
+	echo "Setting up ethtool."
+	ETHTOOL=$(which ethtool)
+	if [ -z "$ETHTOOL" ]; then
+		echo "ERROR: ethtool is not installed."
+		exit 1
+	fi
+}
+
+function start_ethtool() {
+	echo "Starting ethtool." | tee -a $LOGDIR/profile-log.$RUN_NUMBER
+}
+
+function stop_ethtool() {
+	echo "Stopping ethtool."
+}
+
+function report_ethtool() {
+	echo "Processing ethtool data."
+}
 
 ## iostat ##########################################################################################
+
 function setup_iostat() {
 	echo "Setting up iostat."
 	IOSTAT=$(which iostat)
@@ -553,6 +580,14 @@ function start_cpupower() {
 function stop_cpupower() {
 	echo "Stopping cpupower."
 	kill $CPUPOWER_PID
+}
+
+function report_cpupower() {
+	echo "Processing cpupower data."
+}
+
+function setup_postprocess_cpupower() {
+	echo ""
 }
 
 ## cpu_vulnerabilities ##########################################################################################
@@ -751,6 +786,10 @@ function start_lparstat() {
 	lparstat $interval $samples| ${LPCPUDIR}/tools/output-timestamp.pl > $LOGDIR/lparstat.$id.$RUN_NUMBER &
 	LPARSTAT_PID=$!
 	disown $LPARSTAT_PID
+}
+
+function setup_postprocess_lparstat() {
+	echo ""
 }
 
 function stop_lparstat() {
@@ -1390,14 +1429,15 @@ function kernel_interface_table() {
 	[ -e "$IF" ]      || continue
 	IF=$(basename $IF)
 	[ "$IF" == "lo" ] && continue
-	ethtool $IF    > $LOGDIR/ethtool/ethtool-$IF.STDOUT          2> $LOGDIR/ethtool/ethtool-$IF.STDERR
-	ethtool -i $IF > $LOGDIR/ethtool/ethtool-$IF-driver.STDOUT   2> $LOGDIR/ethtool/ethtool-$IF-driver.STDERR
-	ethtool -k $IF > $LOGDIR/ethtool/ethtool-$IF-offload.STDOUT  2> $LOGDIR/ethtool/ethtool-$IF-offload.STDERR
-	ethtool -c $IF > $LOGDIR/ethtool/ethtool-$IF-coalesce.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-coalesce.STDERR
-	ethtool -l $IF > $LOGDIR/ethtool/ethtool-$IF-channel.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-channel.STDERR
-	ethtool -g $IF > $LOGDIR/ethtool/ethtool-$IF-ring.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-ring.STDERR
-	ethtool -a $IF > $LOGDIR/ethtool/ethtool-$IF-pause.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-pause.STDERR
-    done
+		ethtool $IF    > $LOGDIR/ethtool/ethtool-$IF.STDOUT          2> $LOGDIR/ethtool/ethtool-$IF.STDERR
+		ethtool -i $IF > $LOGDIR/ethtool/ethtool-$IF-driver.STDOUT   2> $LOGDIR/ethtool/ethtool-$IF-driver.STDERR
+		ethtool -k $IF > $LOGDIR/ethtool/ethtool-$IF-offload.STDOUT  2> $LOGDIR/ethtool/ethtool-$IF-offload.STDERR
+		ethtool -c $IF > $LOGDIR/ethtool/ethtool-$IF-coalesce.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-coalesce.STDERR
+		ethtool -l $IF > $LOGDIR/ethtool/ethtool-$IF-channel.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-channel.STDERR
+		ethtool -g $IF > $LOGDIR/ethtool/ethtool-$IF-ring.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-ring.STDERR
+		ethtool -x $IF > $LOGDIR/ethtool/ethtool-$IF-rxfh.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-rxfh.STDERR
+		ethtool -a $IF > $LOGDIR/ethtool/ethtool-$IF-pause.STDOUT 2> $LOGDIR/ethtool/ethtool-$IF-pause.STDERR				       
+	done
     if which rpm &> /dev/null; then
 	rpm -qa | sort > $LOGDIR/rpm-qa.STDOUT 2> $LOGDIR/rpm-qa.STDERR
     fi

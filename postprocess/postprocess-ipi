@@ -1,0 +1,1091 @@
+#!/usr/bin/perl
+
+#
+# LPCPU (Linux Performance Customer Profiler Utility): ./postprocess/postprocess-ipi
+#
+# (C) Copyright IBM Corp. 2018
+#
+# This file is subject to the terms and conditions of the Eclipse
+# Public License.  See the file LICENSE.TXT in the main directory of the
+# distribution for more details.
+#
+
+# postprocess the IPI (Inter-Process Interrupt) profiler data.
+
+use strict;
+use autobench::strings;
+use autobench::time;
+use autobench::jschart;
+
+if (@ARGV < 1) {
+	print STDERR "postprocess-ipi: No working directory specified.\n";
+	exit 1;
+}
+
+if (@ARGV < 2) {
+	print STDERR "postprocess-ipi: No run number specified.\n";
+	exit 1;
+}
+
+my $working_directory = $ARGV[0];
+my $identifier = $ARGV[1];
+my $invocation_id;
+my $input_file;
+
+if (@ARGV > 2) {
+    $invocation_id = $ARGV[2];
+    $input_file = "proc-ipi." . $invocation_id . "." . $identifier;
+} else {
+    $input_file = "proc-ipi." . $identifier;
+}
+
+print "Processing IPI File : $input_file\n";
+
+my $interval = 5;
+
+if (open(INPUT,"<$working_directory/profile-log.$identifier")) {
+	while (<INPUT>) {
+		if (($_ =~ /starting ipi \[[0-9]+\]/i)) {
+			$_ =~ m/.*\[([0-9]+)\].*/;
+			$interval = $1;
+			print "Discovered IPI interval=[$interval]\n";
+		}
+	}
+} else {
+	print STDERR "postprocess-ipi: could not open $working_directory/profile-log.$identifier  Using default interval of $interval.\n";
+}
+
+close INPUT;
+
+if (!open(INPUT,"<$working_directory/$input_file")) {
+	print STDERR "postprocess-ipi: could not open specified input file.\n";
+	exit 1;
+}
+
+my $output_directory;
+
+if (@ARGV > 2) {
+    $output_directory = "$working_directory/ipi-processed.$invocation_id.$identifier";
+} else {
+    $output_directory = "$working_directory/ipi-processed.$identifier";
+}
+
+`rm -rf $output_directory`;
+mkdir $output_directory;
+mkdir "$output_directory/plot-files";
+
+my $elapsed_time = 0;
+my @intervals;
+my @cpus;
+my %ipi_data;
+my %cpu_data;
+my $prev_time = 0;
+my $line;
+my @fields;
+my $i;
+my @samples;  # raw per-sample data for the readable summary report
+
+while (<INPUT>) {
+	$line = $_;
+	chomp $line;
+
+	if ($line =~ /[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/) {
+		my $curr_time;
+		my $timestamp_str = $line;
+		if ($line =~ / \/ /) {
+		    $line =~ m/.*\/ ([0-9]+)/;
+		    $curr_time = $1;
+		    $timestamp_str =~ s/\s*\/.*$//;
+		    $timestamp_str =~ s/^\s+|\s+$//g;
+		} else {
+		    $curr_time = time_in_seconds($line);
+		}
+		if ($prev_time) {
+			$interval = $curr_time - $prev_time;
+		}
+		$elapsed_time += $interval;
+		push @intervals, $elapsed_time;
+		$prev_time = $curr_time;
+
+		@cpus = split " ", <INPUT>;
+
+		# Start a new sample record for the summary report
+		my $sample = { timestamp => $timestamp_str, cpus => [@cpus], rows => [] };
+
+		my $index = 0;
+		while (1) {
+			$line = <INPUT>;
+			chomp $line;
+			last if (! $line);
+
+			# Extract full IPI label by stripping all trailing numeric columns.
+			# The label is all leading non-purely-numeric tokens.
+			# e.g. "XIVE-IPI 0 Edge IPI-0   21  1  0 ..." -> "XIVE-IPI 0 Edge IPI-0"
+			my $ipi_label = $line;
+			$ipi_label =~ s/\s+\d+(\s+\d+)*\s*$//;  # strip trailing numbers
+			$ipi_label =~ s/^\s+|\s+$//g;            # trim whitespace
+
+			@fields = ();
+			@fields	= split " ", $line, @cpus + 2;
+
+			my $ipi = shift @fields;
+
+			# Get rid of the colon since we use the ipi name as part
+			# of the plot file name.
+			$ipi =~ s/://;
+
+			# Compute raw counts: after shifting $ipi, fields[0..num_cpus-1] are
+			# the counts but there may be extra name tokens at the front.
+			# Find where numeric counts start by skipping non-numeric leading fields.
+			my @all_fields = @fields;
+			while (@all_fields && $all_fields[0] !~ /^\d+$/) {
+			    shift @all_fields;
+			}
+			my @raw_counts = @all_fields[0 .. $#cpus];
+
+			# Store raw counts for the summary report
+			push @{$sample->{rows}}, { ipi => $ipi_label, counts => [@raw_counts] };
+
+			# Prepend an index number so that we can
+			# sort the IPI plot files in the order seen
+			# in the output.
+			$ipi = prepend($index, 2) . "|" . $ipi;
+
+			if (@fields > @cpus) {
+			    $fields[@fields - 1] =~ s/\s+/ /g;
+			    $ipi .= " " . $fields[@fields - 1];
+			}
+
+			for ($i = 0; $i < @cpus; $i++) {
+				# Prepend an index number so that we can
+				# sort the CPU plot files in the order seen
+				# in the output.
+				my $cpu = prepend($i, 2) . "|" . $cpus[$i];
+
+				push @{$ipi_data{$ipi}{$cpu}}, $fields[$i] / $interval;
+				push @{$cpu_data{$cpu}{$ipi}}, $fields[$i] / $interval;
+			}
+			$index++;
+		}
+
+		push @samples, $sample;
+	}
+
+}
+
+close INPUT;
+
+# ============================================================================
+# READABLE PER-SAMPLE IPI SUMMARY
+# Written to: $output_directory/proc-ipi-summary.txt
+# Also printed to stdout so it appears in lpcpu terminal output
+# ============================================================================
+
+my $summary_file = "$output_directory/proc-ipi-summary.txt";
+my $num_samples = scalar(@samples);
+
+open(SUMMARY_FILE, ">$summary_file") or print STDERR "postprocess-ipi: Could not create $summary_file\n";
+
+sub summary_print {
+    my ($line) = @_;
+    print $line . "\n";
+    print SUMMARY_FILE $line . "\n" if (fileno(SUMMARY_FILE));
+}
+
+summary_print("Generated by: Hamza Syed");
+summary_print("");
+summary_print("=" x 72);
+summary_print("  IPI PER-SAMPLE SUMMARY");
+summary_print("  File   : $input_file");
+summary_print("  Samples: $num_samples  (one per $interval-second interval)");
+summary_print("=" x 72);
+
+my $sample_num = 0;
+for my $s (@samples) {
+    $sample_num++;
+    my @sample_cpus = @{$s->{cpus}};
+    my $num_cpus = scalar(@sample_cpus);
+
+    summary_print("");
+    summary_print("  Sample $sample_num/$num_samples  [Timestamp: $s->{timestamp}]");
+    summary_print("  " . "-" x 60);
+
+    for my $row (@{$s->{rows}}) {
+        my $ipi_label = $row->{ipi};
+        my @counts    = @{$row->{counts}};
+
+        # Total for percentage calculation
+        my $row_total = 0;
+        for my $c (@counts) { $row_total += ($c || 0); }
+
+        summary_print("  IPI Type: $ipi_label");
+        summary_print(sprintf("    %-8s  %-12s  %-10s", "CPU", "IPI Count", "% of Total"));
+        summary_print("    " . "-" x 36);
+
+        # Print all CPUs in order (CPU0, CPU1, ...) — zeros included
+        for (my $ci = 0; $ci < $num_cpus; $ci++) {
+            my $cpu_name = $sample_cpus[$ci];
+            my $count    = $counts[$ci] || 0;
+            my $pct      = ($row_total > 0) ? ($count / $row_total * 100) : 0;
+            summary_print(sprintf("    %-8s  %-12d  %6.1f%%", $cpu_name, $count, $pct));
+        }
+        summary_print("");
+    }
+}
+
+# Overall totals across all samples
+my %cpu_grand_totals;
+for my $s (@samples) {
+    my @sample_cpus = @{$s->{cpus}};
+    for my $row (@{$s->{rows}}) {
+        my @counts = @{$row->{counts}};
+        for (my $ci = 0; $ci < scalar(@sample_cpus); $ci++) {
+            $cpu_grand_totals{$sample_cpus[$ci]} += ($counts[$ci] || 0);
+        }
+    }
+}
+
+my $grand_total = 0;
+for my $v (values %cpu_grand_totals) { $grand_total += $v; }
+
+summary_print("");
+summary_print("=" x 72);
+summary_print("  OVERALL TOTALS  (all samples combined)");
+summary_print("=" x 72);
+summary_print("");
+summary_print(sprintf("  Total IPIs across all samples: %d", $grand_total));
+summary_print("");
+summary_print(sprintf("  %-8s  %-12s  %-10s", "CPU", "Total IPIs", "% of Total"));
+summary_print("  " . "-" x 36);
+
+# Print all CPUs in order
+for my $cpu_name (sort { my ($na) = $a =~ /(\d+)/; my ($nb) = $b =~ /(\d+)/; $na <=> $nb } keys %cpu_grand_totals) {
+    my $total = $cpu_grand_totals{$cpu_name};
+    my $pct   = ($grand_total > 0) ? ($total / $grand_total * 100) : 0;
+    summary_print(sprintf("  %-8s  %-12d  %6.1f%%", $cpu_name, $total, $pct));
+}
+
+summary_print("");
+summary_print("=" x 72);
+summary_print("  Summary saved to: $summary_file");
+summary_print("=" x 72);
+summary_print("");
+
+close SUMMARY_FILE if (fileno(SUMMARY_FILE));
+
+# ============================================================================
+# SIMPLIFIED IPI TABLE FILE
+# Written to: $output_directory/proc-ipi-simplified.txt
+# One table per sample: IPI types as rows, CPUs as columns.
+# All data in one place, easy to read which IPI count belongs to which CPU.
+# ============================================================================
+
+my $simplified_file = "$output_directory/proc-ipi-simplified.txt";
+
+if (open(SIMP_FILE, ">$simplified_file")) {
+
+    my $num_samples = scalar(@samples);
+
+    print SIMP_FILE "Generated by: Hamza Syed\n";
+    print SIMP_FILE "\n";
+    print SIMP_FILE "IPI SIMPLIFIED DATA\n";
+    print SIMP_FILE "File   : $input_file\n";
+    print SIMP_FILE "Samples: $num_samples  (one per $interval-second interval)\n";
+    print SIMP_FILE "\n";
+
+    my $snum = 0;
+    for my $s (@samples) {
+        $snum++;
+        my @sc   = @{$s->{cpus}};
+        my $ncpu = scalar(@sc);
+
+        print SIMP_FILE "=" x 80 . "\n";
+        print SIMP_FILE "Sample $snum/$num_samples  Timestamp: $s->{timestamp}\n";
+        print SIMP_FILE "=" x 80 . "\n\n";
+
+        for my $row (@{$s->{rows}}) {
+            my $ipi_label = $row->{ipi};
+            my @counts    = @{$row->{counts}};
+            my $row_total = 0;
+            for my $c (@counts) { $row_total += ($c || 0); }
+
+            printf SIMP_FILE "  IPI Type : %s\n", $ipi_label;
+            printf SIMP_FILE "  Total    : %d\n\n", $row_total;
+
+            # Print in blocks of 8 CPUs per line for readability
+            my $block = 8;
+            for (my $ci = 0; $ci < $ncpu; $ci += $block) {
+                my $end = ($ci + $block - 1 < $ncpu - 1) ? $ci + $block - 1 : $ncpu - 1;
+
+                # CPU header line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    printf SIMP_FILE "  %-8s", $sc[$bi];
+                }
+                print SIMP_FILE "\n";
+
+                # Count line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    my $count = $counts[$bi] || 0;
+                    printf SIMP_FILE "  %-8d", $count;
+                }
+                print SIMP_FILE "\n";
+
+                # Percentage line
+                print SIMP_FILE "    ";
+                for my $bi ($ci .. $end) {
+                    my $count = $counts[$bi] || 0;
+                    my $pct   = ($row_total > 0) ? ($count / $row_total * 100) : 0;
+                    printf SIMP_FILE "  %-8s", sprintf("%.1f%%", $pct);
+                }
+                print SIMP_FILE "\n\n";
+            }
+        }
+    }
+
+    # Overall totals table
+    my %cpu_gt;
+    my %ipi_gt;
+    for my $s (@samples) {
+        my @sc = @{$s->{cpus}};
+        for my $row (@{$s->{rows}}) {
+            my @counts = @{$row->{counts}};
+            for (my $ci = 0; $ci < scalar(@sc); $ci++) {
+                $cpu_gt{$sc[$ci]}             += ($counts[$ci] || 0);
+                $ipi_gt{$row->{ipi}}{$sc[$ci]} += ($counts[$ci] || 0);
+            }
+        }
+    }
+
+    my $grand_total = 0;
+    for my $v (values %cpu_gt) { $grand_total += $v; }
+
+    print SIMP_FILE "=" x 80 . "\n";
+    print SIMP_FILE "OVERALL TOTALS  (all $num_samples samples combined)\n";
+    print SIMP_FILE "=" x 80 . "\n\n";
+    printf SIMP_FILE "  Grand Total: %d IPIs\n\n", $grand_total;
+
+    # One overall table per IPI type
+    for my $ipi_label (sort keys %ipi_gt) {
+        my $ipi_total = 0;
+        for my $v (values %{$ipi_gt{$ipi_label}}) { $ipi_total += $v; }
+
+        printf SIMP_FILE "  IPI Type : %s  (total: %d)\n\n", $ipi_label, $ipi_total;
+
+        # Get sorted CPU list
+        my @all_cpus = sort { my ($na) = $a =~ /(\d+)/; my ($nb) = $b =~ /(\d+)/; $na <=> $nb } keys %{$ipi_gt{$ipi_label}};
+        my $block    = 8;
+        for (my $ci = 0; $ci < scalar(@all_cpus); $ci += $block) {
+            my $end = ($ci + $block - 1 < scalar(@all_cpus) - 1) ? $ci + $block - 1 : scalar(@all_cpus) - 1;
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                printf SIMP_FILE "  %-8s", $all_cpus[$bi];
+            }
+            print SIMP_FILE "\n";
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                printf SIMP_FILE "  %-8d", ($ipi_gt{$ipi_label}{$all_cpus[$bi]} || 0);
+            }
+            print SIMP_FILE "\n";
+
+            print SIMP_FILE "    ";
+            for my $bi ($ci .. $end) {
+                my $t   = $ipi_gt{$ipi_label}{$all_cpus[$bi]} || 0;
+                my $pct = ($ipi_total > 0) ? ($t / $ipi_total * 100) : 0;
+                printf SIMP_FILE "  %-8s", sprintf("%.1f%%", $pct);
+            }
+            print SIMP_FILE "\n\n";
+        }
+    }
+
+    printf SIMP_FILE "Simplified data saved to: %s\n", $simplified_file;
+    close SIMP_FILE;
+
+    print "\nSimplified IPI table saved to: $simplified_file\n";
+
+} else {
+    print STDERR "postprocess-ipi: Could not create $simplified_file\n";
+}
+
+my $ipi;
+my $cpu;
+
+foreach $ipi (keys %ipi_data) {
+	my $ipi_filename = $ipi;
+	$ipi_filename =~ s/\s/_/g;
+	$ipi_filename =~ s/\|/_/g;
+	$ipi_filename =~ s/\//_/g;
+	$ipi_filename =~ s/,/_/g;
+	$ipi_filename =~ s/:/_/g;
+
+	foreach $cpu (keys %{$ipi_data{$ipi}}) {
+		my $cpu_filename = $cpu;
+		$cpu_filename =~ s/\s/_/g;
+		$cpu_filename =~ s/\|/_/g;
+
+		if (!open(OUTPUT_FILE, ">$output_directory/plot-files/ipi-" . $ipi_filename . "-" . $cpu_filename . ".plot")) {
+			print STDERR "postprocess-ipi: Failed to open output file $ipi for $cpu.\n";
+			next;
+		} else {
+			$cpu =~ m/.*\|(.*)$/;
+			print OUTPUT_FILE "#LABEL:" . $1 . "\n";
+
+			for ($i=0; $i<@{$ipi_data{$ipi}{$cpu}}; $i++) {
+				print OUTPUT_FILE $intervals[$i] . ' ' . $ipi_data{$ipi}{$cpu}[$i] . "\n";
+			}
+
+			close OUTPUT_FILE;
+		}
+	}
+}
+
+foreach $cpu (keys %cpu_data) {
+	my $cpu_filename = $cpu;
+	$cpu_filename =~ s/\s/_/g;
+	$cpu_filename =~ s/\|/_/g;
+
+	foreach $ipi (keys %{$cpu_data{$cpu}}) {
+		my $ipi_filename = $ipi;
+		$ipi_filename =~ s/\s/_/g;
+		$ipi_filename =~ s/\|/_/g;
+		$ipi_filename =~ s/\//_/g;
+		$ipi_filename =~ s/,/_/g;
+		$ipi_filename =~ s/:/_/g;
+
+		if (!open(OUTPUT_FILE, ">$output_directory/plot-files/ipi-" . $cpu_filename . "-" . $ipi_filename . ".plot")) {
+			print STDERR "postprocess-ipi: Failed to open output file $cpu for $ipi.\n";
+			next;
+		} else {
+			$ipi =~ m/.*\|(.*)$/;
+			print OUTPUT_FILE "#LABEL:IPI " . $1 . "\n";
+
+			for ($i=0; $i<@{$cpu_data{$cpu}{$ipi}}; $i++) {
+				print OUTPUT_FILE $intervals[$i] . ' ' . $cpu_data{$cpu}{$ipi}[$i] . "\n";
+			}
+
+			close OUTPUT_FILE;
+		}
+	}
+
+	$cpu_filename =~ s/.*(CPU.*)$/\1/;
+
+	if (!open(OUTPUT_FILE, ">$output_directory/plot-files/" . $cpu_filename . ".plot")) {
+	    print STDERR "postprocess-ipi: Failed to open output file " . $cpu_filename . ".plot\n";
+	    next;
+	} else {
+	    print OUTPUT_FILE "#LABEL:" . $cpu_filename . "\n";
+
+	    for ($i=0; $i<@intervals; $i++) {
+		my $ipis = 0;
+
+		foreach $ipi (keys (%{$cpu_data{$cpu}})) {
+		    $ipis += $cpu_data{$cpu}{$ipi}[$i];
+		}
+
+		print OUTPUT_FILE $intervals[$i] . ' ' . $ipis . "\n";
+	    }
+
+	    close OUTPUT_FILE;
+	}
+}
+
+if (! $ENV{'FORCE_CHART_PL'}) {
+    my $chart_page = new autobench::jschart("IPI (Inter-Process Interrupt) Charts");
+    if ($ENV{'FORCE_JSCHART_REMOTE_LIBRARY'}) {
+	$chart_page->set_library_remote;
+    }
+
+    if (! $ENV{'FORCE_JSCHART_NO_PACKED_PLOTFILES'}) {
+	$chart_page->enable_packed_plotfiles($output_directory);
+    }
+
+    $chart_page->enable_raw_data_file_links('../');
+
+    $chart_page->add_link('ipi_link', '#ipi_section', 'IPI Distribution');
+    $chart_page->add_link('cpu_link', '#cpu_section', 'Per CPU IPIs');
+
+    $chart_page->add_section('ipi_section', 'IPI Distribution');
+
+    for $ipi (sort { $a <=> $b } (keys %ipi_data)) {
+	$ipi =~ m/.*\|(.*)$/;
+	my $print_ipi = $1;
+	$ipi =~ s/\s/_/g;
+	$ipi =~ s/\|/_/g;
+	$ipi =~ s/\//_/g;
+	$ipi =~ s/,/_/g;
+	$ipi =~ s/:/_/g;
+	$ipi =~ s/\(/\\\(/g;
+	$ipi =~ s/\)/\\\)/g;
+	$ipi =~ s/\[/\\\[/g;
+	$ipi =~ s/\]/\\\]/g;
+
+	$chart_page->add_chart('ipi_' . $ipi, 'stacked', 'IPIs on ' . $print_ipi, 'Time (secs.)', 'IPIs / sec.');
+	foreach my $cpu (sort { $a <=> $b } (keys %cpu_data)) {
+	    $cpu =~ s/\s/_/g;
+	    $cpu =~ s/\|/_/g;
+
+	    $chart_page->add_plots('ipi_' . $ipi, 'ipi-' . $ipi . '-' . $cpu);
+	}
+
+	$chart_page->add_raw_data_sources('ipi_' . $ipi, $input_file);
+    }
+
+    $chart_page->add_section('cpu_section', 'Per CPU IPIs');
+
+    for $cpu (sort { $a <=> $b } (keys %cpu_data)) {
+	$cpu =~ m/.*\|(.*)$/;
+	my $print_cpu = $1;
+	$cpu =~ s/\s/_/g;
+	$cpu =~ s/\|/_/g;
+
+	$chart_page->add_chart('cpu_' . $cpu, 'stacked', 'IPIs on ' . $print_cpu, 'Time (secs.)', 'IPIs / sec.');
+	foreach my $ipi (sort { $a <=> $b } (keys %ipi_data)) {
+	    $ipi =~ s/\s/_/g;
+	    $ipi =~ s/\|/_/g;
+	    $ipi =~ s/\//_/g;
+	    $ipi =~ s/,/_/g;
+	    $ipi =~ s/:/_/g;
+
+	    $chart_page->add_plots('cpu_' . $cpu, 'ipi-' . $cpu . '-' . $ipi);
+	}
+
+	$chart_page->add_raw_data_sources('cpu_' . $cpu, $input_file);
+    }
+
+    if (!open(CHART_HTML, ">$output_directory/chart.html")) {
+ print STDERR "postprocess-ipi: Could not create chart.html file\n";
+ exit 1;
+    } else {
+ chmod (0644, "$output_directory/chart.html");
+ print CHART_HTML $chart_page->dump_page;
+ close CHART_HTML;
+    }
+}
+
+# ============================================================================
+# IPI ANALYSIS ENHANCEMENTS
+# ============================================================================
+
+print "\n";
+print "=" x 80 . "\n";
+print "IPI ANALYSIS REPORT\n";
+print "=" x 80 . "\n\n";
+
+# Calculate total IPIs and statistics per CPU
+my %cpu_totals;
+my %cpu_rates;
+my %cpu_max_rates;
+my %cpu_min_rates;
+my $total_ipis_system = 0;
+my $num_cpus = scalar(keys %cpu_data);
+my $total_time = $intervals[-1] || 1;
+
+foreach $cpu (keys %cpu_data) {
+    my $cpu_total = 0;
+    my @rates;
+    
+    foreach $ipi (keys %{$cpu_data{$cpu}}) {
+        for ($i = 0; $i < @{$cpu_data{$cpu}{$ipi}}; $i++) {
+            $cpu_total += $cpu_data{$cpu}{$ipi}[$i] * $interval;
+            push @rates, $cpu_data{$cpu}{$ipi}[$i];
+        }
+    }
+    
+    $cpu =~ m/.*\|(CPU\d+)$/;
+    my $cpu_name = $1;
+    $cpu_totals{$cpu_name} = $cpu_total;
+    $total_ipis_system += $cpu_total;
+    
+    # Calculate average rate
+    if (@rates > 0) {
+        my $sum = 0;
+        my $max = $rates[0];
+        my $min = $rates[0];
+        
+        foreach my $rate (@rates) {
+            $sum += $rate;
+            $max = $rate if $rate > $max;
+            $min = $rate if $rate < $min;
+        }
+        
+        $cpu_rates{$cpu_name} = $sum / @rates;
+        $cpu_max_rates{$cpu_name} = $max;
+        $cpu_min_rates{$cpu_name} = $min;
+    } else {
+        $cpu_rates{$cpu_name} = 0;
+        $cpu_max_rates{$cpu_name} = 0;
+        $cpu_min_rates{$cpu_name} = 0;
+    }
+}
+
+# 1. IPI RATE ANALYSIS
+print "1. IPI RATE ANALYSIS\n";
+print "-" x 80 . "\n";
+printf "Total IPIs (system-wide): %d\n", $total_ipis_system;
+printf "Collection Duration: %.1f seconds\n", $total_time;
+printf "Average System IPI Rate: %.2f IPIs/sec\n", $total_ipis_system / $total_time;
+printf "Number of CPUs: %d\n", $num_cpus;
+printf "Average per CPU: %.2f IPIs/sec\n\n", ($total_ipis_system / $total_time) / $num_cpus;
+
+# Find top 5 CPUs by rate
+my @sorted_cpus = sort { $cpu_rates{$b} <=> $cpu_rates{$a} } keys %cpu_rates;
+my @top_cpus = @sorted_cpus[0..4];
+
+print "Top 5 CPUs by Average IPI Rate:\n";
+foreach my $cpu (@top_cpus) {
+    last unless defined $cpu;
+    printf "  %-8s: %8.2f IPIs/sec (max: %8.2f, min: %8.2f)\n",
+           $cpu, $cpu_rates{$cpu}, $cpu_max_rates{$cpu}, $cpu_min_rates{$cpu};
+}
+
+# Flag high-rate CPUs (>1000 IPIs/sec threshold)
+my @high_rate_cpus = grep { $cpu_max_rates{$_} > 1000 } keys %cpu_max_rates;
+if (@high_rate_cpus) {
+    print "\n⚠️  HIGH IPI RATE ALERT:\n";
+    foreach my $cpu (sort @high_rate_cpus) {
+        printf "  %s exceeded 1000 IPIs/sec (peak: %.2f IPIs/sec)\n",
+               $cpu, $cpu_max_rates{$cpu};
+    }
+}
+
+# Detect IPI spikes (>2x average)
+print "\n";
+my @spike_cpus;
+foreach my $cpu (keys %cpu_rates) {
+    if ($cpu_rates{$cpu} > 0 && $cpu_max_rates{$cpu} > ($cpu_rates{$cpu} * 2)) {
+        push @spike_cpus, $cpu;
+    }
+}
+if (@spike_cpus) {
+    print "⚠️  IPI SPIKE DETECTION:\n";
+    foreach my $cpu (sort @spike_cpus) {
+        printf "  %s: Peak rate %.2fx higher than average\n",
+               $cpu, $cpu_max_rates{$cpu} / $cpu_rates{$cpu};
+    }
+}
+
+# 2. IPI IMBALANCE DETECTION
+print "\n\n2. IPI IMBALANCE ANALYSIS\n";
+print "-" x 80 . "\n";
+
+my $avg_per_cpu = $total_ipis_system / $num_cpus;
+my @hot_cpus = grep { $cpu_totals{$_} > ($avg_per_cpu * 2) } keys %cpu_totals;
+my @cold_cpus = grep { $cpu_totals{$_} < ($avg_per_cpu * 0.1) } keys %cpu_totals;
+
+if (@hot_cpus) {
+    my $hot_total = 0;
+    foreach my $cpu (@hot_cpus) {
+        $hot_total += $cpu_totals{$cpu};
+    }
+    my $hot_percentage = ($hot_total / $total_ipis_system) * 100;
+    
+    print "⚠️  IPI IMBALANCE DETECTED\n\n";
+    printf "Hot CPUs (%d CPUs handling >200%% of average):\n", scalar(@hot_cpus);
+    foreach my $cpu (sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus) {
+        printf "  %-8s: %6d IPIs (%.1f%% of total, %.1fx average)\n",
+               $cpu, $cpu_totals{$cpu},
+               ($cpu_totals{$cpu} / $total_ipis_system) * 100,
+               $cpu_totals{$cpu} / $avg_per_cpu;
+    }
+    printf "\nThese %d CPUs handle %.1f%% of all IPIs\n", scalar(@hot_cpus), $hot_percentage;
+    
+    if (@cold_cpus) {
+        printf "\nCold CPUs (%d CPUs handling <10%% of average):\n", scalar(@cold_cpus);
+        foreach my $cpu (sort @cold_cpus) {
+            printf "  %-8s: %6d IPIs (%.1f%% of total)\n",
+                   $cpu, $cpu_totals{$cpu},
+                   ($cpu_totals{$cpu} / $total_ipis_system) * 100;
+        }
+    }
+} else {
+    print "✅ IPI distribution is balanced\n";
+    print "   No CPU handles more than 2x the average IPI load\n";
+}
+
+# Calculate Gini coefficient for imbalance quantification
+my @sorted_totals = sort { $a <=> $b } values %cpu_totals;
+my $gini_sum = 0;
+for (my $i = 0; $i < @sorted_totals; $i++) {
+    $gini_sum += ($i + 1) * $sorted_totals[$i];
+}
+my $gini = (2 * $gini_sum) / ($num_cpus * $total_ipis_system) - ($num_cpus + 1) / $num_cpus;
+printf "\nImbalance Coefficient: %.3f ", $gini;
+if ($gini < 0.3) {
+    print "(Low - Well balanced)\n";
+} elsif ($gini < 0.5) {
+    print "(Moderate - Some imbalance)\n";
+} else {
+    print "(High - Significant imbalance)\n";
+}
+
+# 3. ACTIONABLE RECOMMENDATIONS
+print "\n\n3. RECOMMENDATIONS\n";
+print "-" x 80 . "\n";
+
+my @recommendations;
+
+if (@hot_cpus && $gini > 0.4) {
+    push @recommendations, {
+        priority => "HIGH",
+        issue => "Significant IPI imbalance detected",
+        actions => [
+            "Review CPU affinity settings for running processes",
+            "Check interrupt distribution: cat /proc/interrupts",
+            "Consider pinning high-IPI workloads to specific CPUs",
+            "Investigate if workload can be distributed more evenly"
+        ]
+    };
+}
+
+if (@high_rate_cpus) {
+    push @recommendations, {
+        priority => "HIGH",
+        issue => "CPUs experiencing very high IPI rates (>1000/sec)",
+        actions => [
+            "Profile the workload on hot CPUs to identify IPI sources",
+            "Check for excessive context switching or lock contention",
+            "Consider reducing thread count or adjusting scheduling policy",
+            "Review NUMA topology and ensure local memory access"
+        ]
+    };
+}
+
+if (@spike_cpus) {
+    push @recommendations, {
+        priority => "MEDIUM",
+        issue => "IPI rate spikes detected (>2x average)",
+        actions => [
+            "Correlate spike times with application events or system logs",
+            "Check for periodic tasks or timers causing bursts",
+            "Review workload patterns for optimization opportunities"
+        ]
+    };
+}
+
+if ($total_ipis_system / $total_time > 10000) {
+    push @recommendations, {
+        priority => "MEDIUM",
+        issue => "High system-wide IPI rate",
+        actions => [
+            "Evaluate if workload is appropriate for system size",
+            "Consider CPU isolation for latency-sensitive workloads",
+            "Review kernel scheduler settings (e.g., sched_migration_cost_ns)"
+        ]
+    };
+}
+
+if (@recommendations == 0) {
+    print "✅ No significant issues detected\n\n";
+    print "IPI activity appears normal for this workload. Key indicators:\n";
+    print "  • Balanced distribution across CPUs\n";
+    print "  • No excessive IPI rates\n";
+    print "  • No significant spikes detected\n";
+} else {
+    foreach my $rec (@recommendations) {
+        print "\n[$rec->{priority} PRIORITY] $rec->{issue}\n";
+        print "Actions:\n";
+        foreach my $action (@{$rec->{actions}}) {
+            print "  • $action\n";
+        }
+    }
+}
+
+# ============================================================================
+# 4. THREAD-TO-CPU CORRELATION ANALYSIS
+# ============================================================================
+
+# Check if cpu-affinity data file exists
+my $affinity_file;
+if (@ARGV > 2) {
+    $affinity_file = "$working_directory/proc-cpu-affinity.$invocation_id.$identifier";
+} else {
+    $affinity_file = "$working_directory/proc-cpu-affinity.$identifier";
+}
+
+if (-e $affinity_file && @hot_cpus) {
+    print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+    print "-" x 80 . "\n";
+    print "Analyzing which threads were observed on hot CPUs during collection...\n\n";
+    
+    # Parse the affinity data file
+    my %thread_observations;  # cpu -> tid -> {count, pid, comm, pcpu_sum, pcpu_count}
+    my %thread_migrations;    # tid -> {cpus -> count}
+    my %cpu_sample_counts;    # cpu -> total sample count
+    
+    if (open(AFFINITY, "<$affinity_file")) {
+        while (<AFFINITY>) {
+            next if /^#/;  # Skip header lines
+            chomp;
+            
+            # Format: Timestamp PID TID PSR PCPU COMM
+            my @fields = split /\s+/, $_, 6;
+            next unless @fields >= 6;
+            
+            my ($timestamp, $pid, $tid, $psr, $pcpu, $comm) = @fields;
+            my $cpu_name = "CPU$psr";
+            
+            # Track observations per CPU
+            if (!exists $thread_observations{$cpu_name}{$tid}) {
+                $thread_observations{$cpu_name}{$tid} = {
+                    count => 0,
+                    pid => $pid,
+                    comm => $comm,
+                    pcpu_sum => 0,
+                    pcpu_count => 0
+                };
+            }
+            
+            $thread_observations{$cpu_name}{$tid}{count}++;
+            $thread_observations{$cpu_name}{$tid}{pcpu_sum} += $pcpu;
+            # Count all samples for average calculation, not just non-zero
+            $thread_observations{$cpu_name}{$tid}{pcpu_count}++;
+            
+            # Track migrations
+            $thread_migrations{$tid}{$cpu_name}++;
+            
+            # Track total samples per CPU
+            $cpu_sample_counts{$cpu_name}++;
+        }
+        close AFFINITY;
+        
+        # Analyze each hot CPU
+        foreach my $cpu (sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus) {
+            next unless exists $thread_observations{$cpu};
+            
+            my $ipi_multiplier = $cpu_totals{$cpu} / $avg_per_cpu;
+            printf "\n%s (%.1fx average IPI rate)\n", $cpu, $ipi_multiplier;
+            print "-" x 60 . "\n";
+            
+            # Get total samples for this CPU
+            my $cpu_total_samples = $cpu_sample_counts{$cpu} || 0;
+            
+            if ($cpu_total_samples == 0) {
+                print "No thread observations recorded for this CPU.\n";
+                next;
+            }
+            
+            print "Threads observed on $cpu during the collection period:\n\n";
+            printf "%-6s %-6s %-6s %-12s %-12s %-6s  %s\n",
+                   "Rank", "PID", "TID", "Observations", "%Observed", "%CPU", "COMMAND";
+            print "-" x 60 . "\n";
+            
+            # Sort threads by observation count (primary) and average %CPU (secondary)
+            my @sorted_tids = sort {
+                my $count_cmp = $thread_observations{$cpu}{$b}{count} <=> $thread_observations{$cpu}{$a}{count};
+                return $count_cmp if $count_cmp != 0;
+                
+                # Secondary sort by average %CPU (across all samples, not just non-zero)
+                my $avg_pcpu_a = $thread_observations{$cpu}{$a}{count} > 0 ?
+                                $thread_observations{$cpu}{$a}{pcpu_sum} / $thread_observations{$cpu}{$a}{count} : 0;
+                my $avg_pcpu_b = $thread_observations{$cpu}{$b}{count} > 0 ?
+                                $thread_observations{$cpu}{$b}{pcpu_sum} / $thread_observations{$cpu}{$b}{count} : 0;
+                return $avg_pcpu_b <=> $avg_pcpu_a;
+            } keys %{$thread_observations{$cpu}};
+            
+            my $rank = 1;
+            my $displayed = 0;
+            my $max_display = 10;
+            
+            foreach my $tid (@sorted_tids) {
+                my $obs = $thread_observations{$cpu}{$tid};
+                my $pct_observed = ($obs->{count} / $cpu_total_samples) * 100;
+                # Calculate average %CPU across ALL samples (including zeros)
+                my $avg_pcpu = $obs->{count} > 0 ?
+                              $obs->{pcpu_sum} / $obs->{count} : 0;
+                
+                if ($displayed < $max_display) {
+                    printf "%-6d %-6d %-6d %-12d %-12s %-6.1f  %s\n",
+                           $rank, $obs->{pid}, $tid, $obs->{count},
+                           sprintf("%.1f%%", $pct_observed), $avg_pcpu, $obs->{comm};
+                    $displayed++;
+                }
+                $rank++;
+            }
+            
+            # Show omitted count
+            if (@sorted_tids > $max_display) {
+                printf "\n+ %d more threads omitted\n", scalar(@sorted_tids) - $max_display;
+            }
+            
+            # Process-level aggregation
+            my %process_obs;  # pid -> {count, comm}
+            foreach my $tid (keys %{$thread_observations{$cpu}}) {
+                my $obs = $thread_observations{$cpu}{$tid};
+                my $pid = $obs->{pid};
+                
+                if (!exists $process_obs{$pid}) {
+                    $process_obs{$pid} = {
+                        count => 0,
+                        comm => $obs->{comm}
+                    };
+                }
+                $process_obs{$pid}{count} += $obs->{count};
+            }
+            
+            # Show process summary for top processes
+            my @top_processes = sort { $process_obs{$b}{count} <=> $process_obs{$a}{count} }
+                               keys %process_obs;
+            
+            if (@top_processes > 0 && @top_processes != @sorted_tids) {
+                print "\nProcess summary (top processes by total observations):\n";
+                my $proc_count = 0;
+                foreach my $pid (@top_processes) {
+                    last if $proc_count >= 5;  # Show top 5 processes
+                    printf "- %s (PID %d): Observed in %d samples\n",
+                           $process_obs{$pid}{comm}, $pid, $process_obs{$pid}{count};
+                    $proc_count++;
+                }
+            }
+            
+            # Migration analysis for top threads
+            print "\nThread migration patterns:\n";
+            my $migration_shown = 0;
+            foreach my $tid (@sorted_tids[0..4]) {  # Top 5 threads
+                last unless defined $tid;
+                my @cpus_visited = keys %{$thread_migrations{$tid}};
+                
+                if (@cpus_visited > 1) {
+                    my $obs = $thread_observations{$cpu}{$tid};
+                    print "- Thread $tid ($obs->{comm}) was observed on: ";
+                    
+                    my @sorted_cpus = sort {
+                        $thread_migrations{$tid}{$b} <=> $thread_migrations{$tid}{$a}
+                    } @cpus_visited;
+                    
+                    my @cpu_details;
+                    foreach my $visited_cpu (@sorted_cpus[0..2]) {  # Top 3 CPUs
+                        last unless defined $visited_cpu;
+                        push @cpu_details, sprintf("%s (%d samples)",
+                                                  $visited_cpu,
+                                                  $thread_migrations{$tid}{$visited_cpu});
+                    }
+                    print join(", ", @cpu_details);
+                    if (@sorted_cpus > 3) {
+                        printf " (+%d more CPUs)", scalar(@sorted_cpus) - 3;
+                    }
+                    print "\n";
+                    $migration_shown++;
+                }
+            }
+            
+            if ($migration_shown == 0) {
+                print "- Top threads showed minimal migration between CPUs\n";
+            }
+        }
+        
+        # Disclaimer
+        print "\n" . "-" x 80 . "\n";
+        print "NOTE: These threads were observed on the hot CPUs during the collection\n";
+        print "period. This does not prove they caused the high IPI activity, but provides\n";
+        print "useful context for further investigation. The PSR field indicates the last\n";
+        print "CPU the thread executed on, not necessarily the current CPU at that instant.\n";
+        
+    } else {
+        # File open failed
+        print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+        print "-" x 80 . "\n";
+        print "Failed to open CPU affinity data file: $affinity_file\n";
+    }
+} elsif (!-e $affinity_file && @hot_cpus) {
+    # File doesn't exist but we have hot CPUs
+    print "\n\n4. THREAD-TO-CPU CORRELATION\n";
+    print "-" x 80 . "\n";
+    print "Thread-to-CPU correlation skipped: CPU affinity data not collected.\n";
+    print "To enable this analysis, run with: profilers=\"ipi cpu-affinity\"\n";
+}
+
+
+# Summary statistics file
+if (open(SUMMARY, ">$output_directory/ipi-analysis-summary.txt")) {
+    print SUMMARY "Generated by: Hamza Syed\n";
+    print SUMMARY "\n";
+    print SUMMARY "IPI Analysis Summary\n";
+    print SUMMARY "=" x 80 . "\n\n";
+    
+    # Generate executive summary
+    my $exec_summary = "";
+    my $hot_cpu_count = scalar(@hot_cpus);
+    my $spike_cpu_count = scalar(@spike_cpus);
+    
+    if (@recommendations == 0) {
+        $exec_summary = "**ASSESSMENT: System shows balanced IPI distribution with no significant issues.**";
+    } elsif ($gini >= 0.5) {
+        if ($hot_cpu_count > 0) {
+            my $hot_pct = 0;
+            foreach my $cpu (@hot_cpus) { $hot_pct += $cpu_totals{$cpu}; }
+            $hot_pct = ($hot_pct / $total_ipis_system) * 100;
+            
+            # List hot CPUs
+            my @sorted_hot = sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus;
+            my $hot_list = join(", ", @sorted_hot[0..2]);  # Show top 3
+            if ($hot_cpu_count > 3) {
+                $hot_list .= sprintf(" (+%d more)", $hot_cpu_count - 3);
+            }
+            
+            $exec_summary = sprintf("**ASSESSMENT: Severe IPI imbalance detected - %s handling %.0f%% of all IPIs (Gini: %.3f).**",
+                                   $hot_list, $hot_pct, $gini);
+        } else {
+            $exec_summary = sprintf("**ASSESSMENT: High IPI imbalance detected with Gini coefficient of %.3f.**", $gini);
+        }
+    } elsif ($gini >= 0.3) {
+        # List hot CPUs for moderate imbalance
+        my @sorted_hot = sort { $cpu_totals{$b} <=> $cpu_totals{$a} } @hot_cpus;
+        my $hot_list;
+        if ($hot_cpu_count <= 3) {
+            $hot_list = join(", ", @sorted_hot);
+        } else {
+            $hot_list = join(", ", @sorted_hot[0..2]) . sprintf(" (+%d more)", $hot_cpu_count - 3);
+        }
+        
+        $exec_summary = sprintf("**ASSESSMENT: Moderate IPI imbalance - %s are hot CPUs, %d CPUs showing spikes.**",
+                               $hot_list, $spike_cpu_count);
+    } elsif (@spike_cpus > 5) {
+        # List some spike CPUs
+        my @sorted_spikes = sort @spike_cpus;
+        my $spike_list = join(", ", @sorted_spikes[0..4]);
+        if ($spike_cpu_count > 5) {
+            $spike_list .= sprintf(" (+%d more)", $spike_cpu_count - 5);
+        }
+        $exec_summary = sprintf("**ASSESSMENT: %s showing bursty IPI behavior (spikes >2x average).**", $spike_list);
+    } else {
+        $exec_summary = "**ASSESSMENT: Minor IPI distribution issues detected - review recommendations below.**";
+    }
+    
+    print SUMMARY "$exec_summary\n\n";
+    print SUMMARY "-" x 80 . "\n\n";
+    
+    print SUMMARY "Collection Duration: $total_time seconds\n";
+    print SUMMARY "Total IPIs: $total_ipis_system\n";
+    print SUMMARY "System IPI Rate: " . sprintf("%.2f", $total_ipis_system / $total_time) . " IPIs/sec\n";
+    print SUMMARY "Number of CPUs: $num_cpus\n";
+    print SUMMARY "Imbalance Coefficient: " . sprintf("%.3f", $gini) . "\n\n";
+    
+    print SUMMARY "Top 5 CPUs by IPI Activity:\n";
+    foreach my $cpu (@top_cpus) {
+        last unless defined $cpu;
+        print SUMMARY sprintf("  %-8s: %6d IPIs (%.1f%% of total)\n",
+                             $cpu, $cpu_totals{$cpu},
+                             ($cpu_totals{$cpu} / $total_ipis_system) * 100);
+    }
+    
+    if (@recommendations) {
+        print SUMMARY "\nRecommendations: " . scalar(@recommendations) . " issue(s) identified\n";
+        foreach my $rec (@recommendations) {
+            print SUMMARY "  [$rec->{priority}] $rec->{issue}\n";
+        }
+    } else {
+        print SUMMARY "\nNo significant issues detected\n";
+    }
+    
+    close SUMMARY;
+    print "\n\n📄 Detailed analysis saved to: $output_directory/ipi-analysis-summary.txt\n";
+}
+
+print "\n" . "=" x 80 . "\n";
+print "IPI Analysis Complete\n";
+print "=" x 80 . "\n";
+
+# Made with Bob

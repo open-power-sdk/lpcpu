@@ -1,0 +1,170 @@
+#!/usr/bin/perl
+
+#
+# LPCPU (Linux Performance Customer Profiler Utility): ./postprocess/postprocess-ethtool
+#
+# (C) Copyright IBM Corp. 2024
+#
+# This file is subject to the terms and conditions of the Eclipse
+# Public License.  See the file LICENSE.TXT in the main directory of the
+# distribution for more details.
+#
+
+# postprocess the ethtool profiler data
+# Prints a terminal report of the Receive Flow Hash (RSS) indirection
+# tables collected by ethtool -x for each network interface.
+
+use strict;
+use warnings;
+
+if (@ARGV < 1) {
+    print STDERR "postprocess-ethtool: No working directory specified\n";
+    exit 1;
+}
+
+my $working_directory = $ARGV[0];
+my $ethtool_dir = "$working_directory/ethtool";
+
+unless (-d $ethtool_dir) {
+    print STDERR "postprocess-ethtool: ethtool directory not found at $ethtool_dir\n";
+    exit 0;
+}
+
+# ── collect all rxfh STDOUT files ────────────────────────────────────────────
+my @rxfh_files = sort glob("$ethtool_dir/ethtool-*-rxfh.STDOUT");
+
+if (!@rxfh_files) {
+    print "postprocess-ethtool: No rxfh data files found, skipping.\n";
+    exit 0;
+}
+
+print "postprocess-ethtool: Processing " . scalar(@rxfh_files) . " rxfh file(s).\n";
+
+# ── parse each interface ──────────────────────────────────────────────────────
+my @interfaces;
+
+for my $file (@rxfh_files) {
+    # extract interface name from filename: ethtool-<IF>-rxfh.STDOUT
+    (my $basename = $file) =~ s{.*/ethtool-(.+)-rxfh\.STDOUT$}{$1};
+    my $iface = $basename;
+
+    # check if ethtool -x was unsupported (non-empty STDERR, empty/missing STDOUT)
+    my $stderr_file = "$ethtool_dir/ethtool-$iface-rxfh.STDERR";
+    my $stderr_content = "";
+    if (-e $stderr_file) {
+        open(my $fh, '<', $stderr_file) or next;
+        $stderr_content = do { local $/; <$fh> };
+        close($fh);
+        $stderr_content =~ s/^\s+|\s+$//g;
+    }
+
+    # read STDOUT
+    open(my $fh, '<', $file) or next;
+    my $stdout = do { local $/; <$fh> };
+    close($fh);
+    $stdout =~ s/^\s+|\s+$//g;
+
+    if (!$stdout || $stderr_content) {
+        push @interfaces, {
+            name      => $iface,
+            supported => 0,
+            error     => $stderr_content || "No output",
+        };
+        next;
+    }
+
+    # parse header: "RX flow hash indirection table for <IF> with <N> RX ring(s):"
+    my $rx_rings = 0;
+    if ($stdout =~ /with\s+(\d+)\s+RX ring/) {
+        $rx_rings = $1;
+    }
+
+    # parse indirection table entries
+    my @table_lines;
+    my %queue_counts;
+    for my $line (split /\n/, $stdout) {
+        if ($line =~ /^\s*(\d+):\s+(.+)$/) {
+            my $entries = $2;
+            push @table_lines, $line;
+            for my $q (split /\s+/, $entries) {
+                $queue_counts{$q}++ if $q =~ /^\d+$/;
+            }
+        }
+    }
+
+    # parse RSS hash key
+    my $hash_key = "";
+    if ($stdout =~ /RSS hash key:\s*\n\s*([0-9a-f:]+)/i) {
+        $hash_key = $1;
+    }
+
+    # parse hash function (whichever is "on")
+    my $hash_func = "";
+    while ($stdout =~ /^\s+(\w[\w-]*):\s+on/mg) {
+        $hash_func .= ($hash_func ? ", " : "") . $1;
+    }
+
+    # determine balance: balanced if all queues appear roughly equal number of times
+    my $balanced = 1;
+    if (%queue_counts) {
+        my $max = (sort { $b <=> $a } values %queue_counts)[0];
+        my $min = (sort { $a <=> $b } values %queue_counts)[0];
+        $balanced = (($max - $min) <= 1) ? 1 : 0;
+    }
+
+    push @interfaces, {
+        name        => $iface,
+        supported   => 1,
+        rx_rings    => $rx_rings,
+        table_lines => \@table_lines,
+        queue_counts=> \%queue_counts,
+        hash_key    => $hash_key,
+        hash_func   => $hash_func,
+        balanced    => $balanced,
+    };
+}
+
+# ── print terminal report ─────────────────────────────────────────────────────
+my $sep  = "=" x 72;
+my $sep2 = "-" x 72;
+my $timestamp = localtime();
+
+print "\n$sep\n";
+print "  LPCPU -- ethtool Receive Flow Hash (RSS) Report\n";
+print "  Generated: $timestamp\n";
+print "$sep\n\n";
+
+for my $iface (@interfaces) {
+    print "$sep2\n";
+
+    if (!$iface->{supported}) {
+        printf "  Interface : %s\n", $iface->{name};
+        printf "  Status    : NOT SUPPORTED\n";
+        printf "  Error     : %s\n", $iface->{error};
+        print "$sep2\n\n";
+        next;
+    }
+
+    my $status        = $iface->{balanced} ? "BALANCED" : "UNEVEN";
+    my $total_entries = scalar(keys %{$iface->{queue_counts}});
+    my $total_table   = scalar(@{$iface->{table_lines}}) * 8;
+
+    printf "  Interface    : %s\n",  $iface->{name};
+    printf "  Status       : %s\n",  $status;
+    printf "  RX Rings     : %s\n",  $iface->{rx_rings};
+    printf "  Table Entries: %d\n",  $total_table;
+    printf "  Unique Queues: %d\n",  $total_entries;
+    printf "  Hash Function: %s\n",  $iface->{hash_func};
+    printf "  Hash Key     : %s\n",  $iface->{hash_key};
+    print  "\n  Indirection Table:\n";
+    for my $line (@{$iface->{table_lines}}) {
+        print  "    $line\n";
+    }
+    print "$sep2\n\n";
+}
+
+print "$sep\n";
+print "  postprocess-ethtool complete.\n";
+print "$sep\n\n";
+
+exit 0;
