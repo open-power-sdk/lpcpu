@@ -207,7 +207,7 @@ for my $s (@samples) {
     my $num_cpus = scalar(@sample_cpus);
 
     summary_print("");
-    summary_print("  Sample $sample_num/$num_samples  [Timestamp: $s->{timestamp}]");
+    summary_print("  $s->{timestamp}");
     summary_print("  " . "-" x 60);
 
     for my $row (@{$s->{rows}}) {
@@ -219,15 +219,17 @@ for my $s (@samples) {
         for my $c (@counts) { $row_total += ($c || 0); }
 
         summary_print("  IPI Type: $ipi_label");
-        summary_print(sprintf("    %-8s  %-12s  %-10s", "CPU", "IPI Count", "% of Total"));
-        summary_print("    " . "-" x 36);
+        summary_print(sprintf("    %-8s  %-12s  %-12s  %-10s", "CPU", "IPI Count", "Rate/sec", "% of Total"));
+        summary_print("    " . "-" x 48);
 
         # Print all CPUs in order (CPU0, CPU1, ...) — zeros included
+        my $sample_interval = $interval || 1;
         for (my $ci = 0; $ci < $num_cpus; $ci++) {
             my $cpu_name = $sample_cpus[$ci];
             my $count    = $counts[$ci] || 0;
+            my $rate     = $count / $sample_interval;
             my $pct      = ($row_total > 0) ? ($count / $row_total * 100) : 0;
-            summary_print(sprintf("    %-8s  %-12d  %6.1f%%", $cpu_name, $count, $pct));
+            summary_print(sprintf("    %-8s  %-12d  %-12.2f  %6.1f%%", $cpu_name, $count, $rate, $pct));
         }
         summary_print("");
     }
